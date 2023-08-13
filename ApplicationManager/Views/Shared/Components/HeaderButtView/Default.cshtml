@@ -1,0 +1,37 @@
+﻿@namespace ApplicationManager.Views.Shared.HeaderButtView
+
+@if (User.Identity.IsAuthenticated)
+{
+<div class="btn-group pull-right" style="width: 80%;">
+   @* <a class="navbar-brand" href="~/">В начало</a>*@
+    <a class="navbar-brand" herf="#">@User.Identity.Name в системе</a>
+
+        Этот перечень должен подгружаться из БД
+        <a class="navbar-brand" asp-action="Index" asp-controller="Home">Главная</a>
+        <a class="navbar-brand" asp-action="" asp-controller="Home">Услуги</a>
+        <a class="navbar-brand" asp-action="" asp-controller="Home">Проекты</a>
+        <a class="navbar-brand" asp-action="" asp-controller="Home">Блог</a>
+
+        @if (User.IsInRole("Admin"))
+        {
+            <a class="navbar-brand"  asp-action="CreateRole" asp-controller="Account">Панель админа</a>
+        }
+
+
+
+        @*<a asp-action="Logout" asp-controller="Account">Выход</a>*@
+        <form class="navbar-brand" method="post" asp-controller="Account" asp-action="Logout" id="logoutform" asp-antiforgery="true">
+            <a class="navbar-brand" href="#" onclick="document.getElementById('logoutform').submit()">Выход</a>
+    </form>
+        
+</div>
+}
+else
+{
+    <div class="btn-group pull-right">
+        <a class="navbar-brand" href="/Account/Login">Вход</a>
+        <a class="navbar-brand" href="/Account/Register">Регистрация </a>
+    </div>
+}
+
+@* <input type="submit" value="Выход"/>*@

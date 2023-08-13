@@ -19,6 +19,9 @@ builder.Services.AddIdentity<User, IdentityRole>()
 builder.Services.Configure<IdentityOptions>(options =>
 {
     options.Password.RequiredLength = 5; // минимальное количество знаков в пароле
+    options.Password.RequireDigit = false; // ƒолжна ли в пароле быть цифра
+    options.Password.RequireUppercase = false; // ƒолжен ли в пароле быть символ в верхнем регистре 
+    options.Password.RequireNonAlphanumeric = false; // ƒолжен ли в пароле быть символ не цифра или буква (пример -)
     options.Lockout.MaxFailedAccessAttempts = 10; // количество попыток о блокировки
     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10);
     options.Lockout.AllowedForNewUsers = true;
@@ -61,7 +64,7 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=Index}");
 
 app.Run();
 
@@ -72,7 +75,7 @@ public static class DbInitializer
         context.Database.EnsureCreated(); //создать, если еще не создана
                                           //со стандартными таблицами user 
                                           //и со всеми таблицами, что описаны в классе контекста
-        RoleManager<IdentityRole> roleMgr = new RoleStore<IdentityRole>(context);
+        //RoleManager<IdentityRole> roleMgr = new RoleStore<IdentityRole>(context);
 
         //тут же можно запихнуть базового админа admin-admin
         //и тут по умолчанию создать роль админа
