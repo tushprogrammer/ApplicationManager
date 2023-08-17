@@ -10,9 +10,9 @@
         private string name;
         public string Name { get { return name; } set { name = value; } }
 
-        //ссылка на блоки
-        private string url;
-        public string Url { get { return url; } set { url = value; } }
+        ////ссылка на блоки
+        //private string url;
+        //public string Url { get { return url; } set { url = value; } }
 
         //текущее значение (какое админ написал)
         private string value;

@@ -1,8 +1,24 @@
-﻿@{
+﻿@using ApplicationManager.Entitys
+@model List<MainPage>
+@{
     ViewData["Title"] = "Home Page";
 }
+@{
+    var image = Model.First(item => item.Id == 8).Value;
+    var image_path = "~/Images/" + image;
+}
+
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+   
+    <div class="ImageMain">
+        <img class="ImageMain" src="@image_path" asp-append-version="true" />
+        <h2>@Model.First(item => item.Id == 7).Value</h2>
+       @* два варианта кнопки:*@
+       @* <input type="button" value="@Model.First(item => item.Id == 6).Value"/>*@ @*- для этого варика надо еще js прописать, что нахер идет*@
+       @*для этого варика надо подпилить css*@
+        <form class="navbar-brand" method="post" asp-controller="Home" asp-action="AddRequest" id="AddRequestform" asp-antiforgery="true">
+            <a class="navbar-brand" href="#" onclick="document.getElementById('AddRequestform').submit()">@Model.First(item => item.Id == 6).Value</a>
+        </form>
+    </div>
 </div>

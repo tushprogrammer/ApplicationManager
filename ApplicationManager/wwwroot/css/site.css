@@ -16,3 +16,26 @@ html {
 body {
   margin-bottom: 60px;
 }
+.ImageMain {
+    для расположения по центру
+    margin-left: auto;
+    margin-right: auto;
+    width: 450px;
+}
+.navbar {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+.navbar-brand {
+    padding-top: 0.3125rem;
+    padding-bottom: 0.3125rem;
+    margin-right: 1rem;
+    font-size: 1.25rem;
+    text-decoration: none;
+    white-space: nowrap;
+}

@@ -1,5 +1,6 @@
 using ApplicationManager.AuthApp;
 using ApplicationManager.ContextFolder;
+using ApplicationManager.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -7,7 +8,8 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
-//builder.Services.AddTransient<IPersonData, PersonDataApi>(); // в контроллере есть экзмепл€р интерфейса IPersonData, через который идет обращение к api
+builder.Services.AddTransient<IAppData, AppData>(); // в контроллере есть экзмепл€р интерфейса IAppData,
+                                                    // через который идет обращение к api (или пока что к внутренней бд)
 builder.Services.AddMvc();
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(@"Server = (localdb)\MSSQLLocalDB; 
                                             DataBase = DataBaseApplication; 
