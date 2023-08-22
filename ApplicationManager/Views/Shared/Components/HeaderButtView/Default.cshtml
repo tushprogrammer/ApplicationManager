@@ -8,9 +8,9 @@
 
        @* Этот перечень должен подгружаться из БД*@
         <a class="navbar-brand" asp-action="Index" asp-controller="Home">Главная</a>
-        <a class="navbar-brand" asp-action="" asp-controller="Home">Услуги</a>
-        <a class="navbar-brand" asp-action="" asp-controller="Home">Проекты</a>
-        <a class="navbar-brand" asp-action="" asp-controller="Home">Блог</a>
+        <a class="navbar-brand" asp-action="Services" asp-controller="Home">Услуги</a>
+        <a class="navbar-brand" asp-action="Project" asp-controller="Home">Проекты</a>
+        <a class="navbar-brand" asp-action="Blogs" asp-controller="Home">Блог</a>
 
         @if (User.IsInRole("Admin"))
         {

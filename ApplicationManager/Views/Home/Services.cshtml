@@ -1,0 +1,14 @@
+﻿@model ServicesModel;
+<p>
+    <a asp-action="Index">Главная</a> -> @Model.Name_page
+</p>
+<h1>@Model.Name_page</h1>
+<div>
+    @foreach (Service item in Model.Services)
+    {
+        <details>
+            <summary>@item.Title</summary>
+            <p>@item.Description</p>
+        </details>
+    }
+</div>

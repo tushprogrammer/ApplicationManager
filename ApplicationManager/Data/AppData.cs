@@ -10,9 +10,9 @@ namespace ApplicationManager.Data
         {
             Context = context;
         }
-        public List<MainPage> GetMains()
+        public IQueryable<MainPage> GetMains()
         {
-            return Context.MainPage.Where(item => item.Id >= 6 && item.Id <= 9).ToList();
+            return Context.MainPage;
         }
         public MainPage GetMainRequest()
         {
@@ -24,6 +24,18 @@ namespace ApplicationManager.Data
             Context.Requests.Add(NewRequest);
             //Context.ChangeTracker.DetectChanges();
             Context.SaveChanges();
+        }
+        public IQueryable<Project> GetProjects()
+        {
+            return Context.Projects;
+        }
+        public IQueryable<Service> GetServices()
+        {
+            return Context.Services;
+        }
+        public IQueryable<Blog> GetBlogs()
+        {
+            return Context.Blogs;
         }
     }
 }

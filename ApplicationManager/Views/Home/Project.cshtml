@@ -1,0 +1,20 @@
+﻿@model ProjectsModel
+
+<p>
+    <a asp-action="Index">Главная</a> -> @Model.Name_page
+</p>
+<h1>@Model.Name_page</h1>
+<div class="boxes">
+    @foreach (Project item in Model.Projects)
+    {
+        var image_path = "~/Images/" + item.ImageUrl;
+        <div class="box">
+            <a asp-action="ProjectDetails" asp-route-id="@item.Id">
+                <figure>
+                    <img class="ImageProject" src="@image_path" asp-append-version="true" />
+                    <p>@item.Title</p>
+                </figure>
+            </a>
+        </div>
+    }
+</div>

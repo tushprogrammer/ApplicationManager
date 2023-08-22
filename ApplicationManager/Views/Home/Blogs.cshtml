@@ -1,0 +1,28 @@
+﻿@model BlogsModel
+<p>
+    <a asp-action="Index">Главная</a> -> @Model.Name_page
+</p>
+<h1>@Model.Name_page</h1>
+<div class="boxes">
+    @foreach (Blog item in Model.Blogs)
+    {
+        var image_path = "~/Images/" + item.ImageUrl;
+
+        string ShortDesc;
+        if (item.Description.IndexOf('.') < 40)
+            ShortDesc = item.Description.Substring(0, item.Description.IndexOf('.'));
+        else
+            ShortDesc = $"{item.Description.Substring(0, 38)}..." ;
+
+        <div class="box">
+            <a asp-action="BlogDetails" asp-route-id="@item.Id">
+                <figure>
+                    <p>@item.Created.ToString("D")</p>
+                    <img class="ImageProject" src="@image_path" asp-append-version="true" />
+                    <p>@item.Title</p>
+                    <h5>@ShortDesc</h5>
+                </figure>
+            </a>
+        </div>
+    }
+</div>

@@ -22,7 +22,7 @@ namespace ApplicationManager.Controllers
             //что мне надо вывести на страницу индекс:
             //3 элемента - картинка, кнопка и заголовок поверх картинки
             //все это хранится в таблице MainPage, то есть надо в интерфейсе IAppData реализовать получение этих трех товарищей, без лишнего
-            List<MainPage> mainPages = data.GetMains();
+            IQueryable<MainPage> mainPages = data.GetMains().Where(item => item.Id >= 6 && item.Id <= 9);
             return View(mainPages);
         }
         public IActionResult AddRequest() 
@@ -49,6 +49,56 @@ namespace ApplicationManager.Controllers
             };
             data.AddRequest(newRequest);
             return Redirect("~/"); //возврат к первой странице
+        }
+        public IActionResult Project()
+        {
+            //подгрузка данных из бд: 
+            //все проекты
+            ProjectsModel model = new()
+            {
+                Projects = data.GetProjects(),
+                Name_page = data.GetMains().First(i => i.Id == 1).Value
+        };
+            //имя странциы проектов из тб mainpage
+            return View(model);
+        }
+        public IActionResult ProjectDetails(int id) 
+        {
+            ProjectsModel model = new()
+            {
+                Projects = data.GetProjects(),
+                Name_page = data.GetMains().First(i => i.Id == 1).Value,
+                IdProject = id
+            };
+            return View(model);
+        }
+        public IActionResult Blogs() 
+        {
+            BlogsModel model = new()
+            {
+                Blogs = data.GetBlogs(),
+                Name_page = data.GetMains().First(i => i.Id == 4).Value,
+            };
+            return View(model);
+        }
+        public IActionResult BlogDetails(int id)
+        {
+            BlogsModel model = new()
+            {
+                Blogs = data.GetBlogs(),
+                Name_page = data.GetMains().First(i => i.Id == 4).Value,
+                BlogId = id
+            };
+            return View(model);
+        }
+        public IActionResult Services() 
+        {
+            ServicesModel model = new()
+            {
+                Services = data.GetServices(),
+                Name_page = data.GetMains().First(i => i.Id == 2).Value
+            };
+            return View(model);
         }
         public IActionResult Privacy()
         {

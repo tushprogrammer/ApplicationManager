@@ -1,0 +1,13 @@
+﻿@model ProjectsModel
+@{
+    Project projectnow = Model.Projects.First(i => i.Id == Model.IdProject);
+    var image_path = "~/Images/" + projectnow.ImageUrl;
+}
+<p>
+    <a asp-action="Index">Главная</a> -> <a asp-action="project">@Model.Name_page</a> -> @projectnow.NameCompany
+</p>
+<div>
+    <img class="ImageProject" src="@image_path" asp-append-version="true" />
+    <h2>@projectnow.Title</h2>
+    <p>@projectnow.Description</p>
+</div>

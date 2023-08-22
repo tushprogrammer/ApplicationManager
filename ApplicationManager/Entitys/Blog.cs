@@ -10,12 +10,14 @@
         public string Title { get { return title; } set { title = value; } }
 
         private DateTime created;
-        public DateTime Created { get { return created; } }
+        public DateTime Created { get { return created; } set { created = value; } }
 
         private string imageurl;
         public string ImageUrl { get { return imageurl; } set { imageurl = value; } }
 
         private string description;
         public string Description { get { return description; } set { description = value; } }
+        ////краткое описание: первое предложение до точки
+        //public string ShortDesc => description.Substring(0, description.IndexOf('.'));
     }
 }
