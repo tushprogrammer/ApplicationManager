@@ -1,4 +1,5 @@
 ﻿@namespace ApplicationManager.Views.Shared.HeaderButtView
+@model IQueryable<MainPage>
 
 @if (User.Identity.IsAuthenticated)
 {
@@ -6,11 +7,12 @@
    @* <a class="navbar-brand" href="~/">В начало</a>*@
     <a class="navbar-brand" herf="#">@User.Identity.Name в системе</a>
 
-       @* Этот перечень должен подгружаться из БД*@
-        <a class="navbar-brand" asp-action="Index" asp-controller="Home">Главная</a>
-        <a class="navbar-brand" asp-action="Services" asp-controller="Home">Услуги</a>
-        <a class="navbar-brand" asp-action="Project" asp-controller="Home">Проекты</a>
-        <a class="navbar-brand" asp-action="Blogs" asp-controller="Home">Блог</a>
+       
+        @foreach (MainPage item in Model)
+        {
+            <a class="navbar-brand" asp-action="@item.Name" asp-controller="Home">@item.Value</a>
+        }
+
 
         @if (User.IsInRole("Admin"))
         {
@@ -22,8 +24,8 @@
         @*<a asp-action="Logout" asp-controller="Account">Выход</a>*@
         <form class="navbar-brand" method="post" asp-controller="Account" asp-action="Logout" id="logoutform" asp-antiforgery="true">
             <a class="navbar-brand" href="#" onclick="document.getElementById('logoutform').submit()">Выход</a>
-    </form>
-        
+        </form>
+     
 </div>
 }
 else
