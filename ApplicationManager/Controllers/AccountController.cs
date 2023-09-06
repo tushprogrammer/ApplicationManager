@@ -98,7 +98,7 @@ namespace ApplicationManager.Controllers
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
-            return RedirectToAction("Index", "Book");
+            return RedirectToAction("Index", "Home");
         }
         #endregion
     }
