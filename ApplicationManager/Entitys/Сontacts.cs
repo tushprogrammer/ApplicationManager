@@ -1,7 +1,7 @@
 ﻿namespace ApplicationManager.Entitys
 {
     //контакты
-    public class Сontacts
+    public class Contacts
     {
         private int id;
         public int Id { get { return id; } set { id = value; } }

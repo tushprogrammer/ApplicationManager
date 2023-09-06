@@ -1,0 +1,25 @@
+﻿@model ContactsModel
+<p>
+    <a asp-action="Index">Главная</a> -> @Model.Name_page
+</p>
+<h1>@Model.Name_page</h1>
+<br />
+<div>
+    @foreach (Contacts item in Model.Contacts)
+    {
+        <p>@item.Name : @item.Description</p> 
+    }
+</div>
+<div>
+    @foreach (SocialNet item in Model.Nets)
+    {
+        var image_path = "~/Images/" + item.ImageUrl;
+        <a href="@item.Url">
+            <img class="ImageProject" src="@image_path" asp-append-version="true" />
+        </a>
+    }
+    @{
+        var image_address = "~/Images/" + Model.ImageUrl;
+    }
+    <img class="ImageProject" src="@image_address" asp-append-version="true" />
+</div>

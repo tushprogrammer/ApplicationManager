@@ -1,5 +1,6 @@
 ﻿using ApplicationManager.ContextFolder;
 using ApplicationManager.Entitys;
+using Microsoft.EntityFrameworkCore.Query;
 
 namespace ApplicationManager.Data
 {
@@ -36,6 +37,14 @@ namespace ApplicationManager.Data
         public IQueryable<Blog> GetBlogs()
         {
             return Context.Blogs;
+        }
+        public IQueryable<Contacts> GetContacts()
+        {
+            return Context.Contacts;
+        }
+        public IQueryable<SocialNet> GetSocialNet()
+        {
+            return Context.SocialNets;
         }
     }
 }

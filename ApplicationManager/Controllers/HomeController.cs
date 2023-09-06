@@ -100,6 +100,17 @@ namespace ApplicationManager.Controllers
             };
             return View(model);
         }
+        public IActionResult Contacts()
+        {
+            ContactsModel model = new()
+            {               
+                Contacts = data.GetContacts().Where(i => i.Id != 7),
+                ImageUrl = data.GetContacts().First(i => i.Id == 7).Description,
+                Nets = data.GetSocialNet(),
+                Name_page = data.GetMains().First(i => i.Id == 5).Value,
+            };
+            return View(model);
+        }
         public IActionResult Privacy()
         {
             return View();

@@ -17,6 +17,6 @@ namespace ApplicationManager.ContextFolder
         public DbSet<Service> Services { get; set; }
         public DbSet<SocialNet> SocialNets { get; set; }
         public DbSet<StatusRequest> Statuses { get; set; }
-        public DbSet<Сontacts> Сontacts { get; set; }
+        public DbSet<Contacts> Contacts { get; set; }
     }
 }
