@@ -1,5 +1,6 @@
 ﻿@namespace ApplicationManager.Views.Shared.HeaderButtView
-@model IQueryable<MainPage>
+@model HeaderModel
+@*@model IQueryable<MainPage>*@
 
 @if (User.Identity.IsAuthenticated)
 {
@@ -8,11 +9,12 @@
     <a class="navbar-brand" herf="#">@User.Identity.Name в системе</a>
 
        
-        @foreach (MainPage item in Model)
+        @foreach (MainPage item in Model.MainPages)
         {
             <a class="navbar-brand" asp-action="@item.Name" asp-controller="Home">@item.Value</a>
         }
-
+        @*Случайный заголовок*@
+        <h3>@Model.Title</h3>
 
         @if (User.IsInRole("Admin"))
         {
