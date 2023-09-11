@@ -52,9 +52,14 @@ app.UseAuthentication();
 
 using (var scope = app.Services.CreateScope())
 {
+    var _RoleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    var _UserManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+
+
+
     var s = scope.ServiceProvider;
     var c = s.GetRequiredService<ApplicationDbContext>();
-    DbInitializer.Initialize(c);
+    DbInitializer.Initialize(c, _UserManager, _RoleManager);
 }
 
 app.UseHttpsRedirection();
@@ -72,17 +77,20 @@ app.Run();
 
 public static class DbInitializer
 {
-    public static void Initialize(ApplicationDbContext context)
+    public static void Initialize(ApplicationDbContext context, UserManager<User> _UserManager, RoleManager<IdentityRole> _RoleManager)
     {
         context.Database.EnsureCreated(); //создать, если еще не создана
                                           //со стандартными таблицами user 
                                           //и со всеми таблицами, что описаны в классе контекста
-        //RoleManager<IdentityRole> roleMgr = new RoleStore<IdentityRole>(context);
 
-        //тут же можно запихнуть базового админа admin-admin
-        //и тут по умолчанию создать роль админа
-        //вот только как это сделать, если для этого нужны менеджеры
-        //если есть записи в основной таблице, то выйти
+        if (context.Users.Any()) return; //если есть хоть один пользователь, то создание по умолчанию:
+        var res = _RoleManager.CreateAsync(new IdentityRole("Admin")).Result; //создание роли в системе
+        User admin = new User { UserName = "admin" }; //создать базового админа
+        var createResult = _UserManager.CreateAsync(admin, "admin").Result; //зарегистрировать админа в бд
+        res = _UserManager.AddToRoleAsync(admin, "Admin").Result; //выдать админу роль админа
+
+
+        //тут же заполнить стандартные значения таблиц 
 
 
     }
