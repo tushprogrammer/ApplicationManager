@@ -1,0 +1,119 @@
+﻿@model AdminModel
+
+@{
+    ViewData["Title"] = "Admin Page";
+}
+<h3>Всего @Model.AllRequestsCount заявок</h3>
+@*добавить условия вывода текста в зависимости от количества (заявок, заявки)*@
+
+@*кнопки выбора периода заявок*@
+<div>
+    <div>
+        <p>
+            <a asp-action="TodayRequests">Сегодня</a>
+        </p>
+        <p>
+            <a asp-action="YesterdayRequests">Вчера</a>
+        </p>
+        <p>
+            <a asp-action="WeekRequests">Неделя</a>
+        </p>
+        <p>
+            <a asp-action="MonthRequests">Месяц</a>
+        </p>
+        <div>
+            <form action="~/Admin/RangeDateRequests" method="post">
+                <input name ="DateFor" type="date" value="Период С"/>
+                <input name="DateTo" type="date" value="По"/>
+                <input type="submit" value="Найти"/>
+            </form>
+        </div>
+    </div>
+</div>
+<h3>За указанный период поступило @Model.Requests.Count() заявок</h3>
+@*комбо бокс для выбора заявок по статусу:*@
+<div>
+    <select asp-items="new SelectList(Model.Statuses)" onchange="PassSelectedValue(this)">
+        <option value="" selected="selected">Выберете статус заявки</option>
+    </select>
+</div>
+
+<table>
+    @*настроить ширину столбцов таблицы*@
+    <thead class="thead-light">
+        <tr>
+            <th>Номер заявки</th>
+            <th>Время заявки</th>
+            <th>Имя</th>
+            <th>Текст заявки</th>
+            <th>Контакты</th>
+            @*тут будут походу кнопки на изменение статуса (или комбо бокс)*@
+            <th>Дополнительно</th>
+            
+
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            int i = 1;
+        }
+        @foreach (Request item in Model.Requests)
+        {
+            <form id="@item.Id" method="post" asp-action="SaveNewStatusRequest">
+                <tr>
+                    <td>
+                    
+                        @i
+                        @{
+                            i++;
+                        }
+                    </td>
+                    <input type="hidden" name="RequestId" value="@item.Id" />
+                    <td>
+                        @item.DateCreated.ToString("g")
+                    </td>
+                    <td>
+                        @item.Fullname
+                    </td>
+                    <td>
+                        @item.Textrequest
+                    </td>
+                    <td>
+                        @item.Email
+                    </td>
+                    <td>
+                        @*комбо бокс со статусами*@
+                        @*https://demos.telerik.com/aspnet-core/combobox*@
+                        @*<combobox name="combobox" index="0" suggest="true" datatextfield="Text" datavaluefield="Value" filter="FilterType.Contains">
+                            <label content="Статус" />
+                            <datasource>
+                                <transport>
+                                    <read url="@Url.Action("GetStatuses", "Admin")" />
+                                </transport>
+                            </datasource>
+                        </combobox>*@
+                        @*пока что не хочет корректно выводится, так как коллекция статусов это коллекция классов, а эта хрень выводит только по строкам
+                        как тут работать, я пока что хз
+                        возможно на уровне контроллера выгрузить статусы и отправить сюда чисто текст статуса, а уже по возвращению соотнести текст и id*@
+                        <select name="StatusName" asp-items="new SelectList(Model.Statuses, item.Status.StatusName)" onchange="document.getElementById(@item.Id).submit()">
+
+                        </select>
+                    </td>
+                </tr>
+            </form>
+        }
+    </tbody>
+</table>
+@section Scripts
+    {
+    <script>
+        function PassSelectedValue(selectObject) {
+            /*console.log(selectObject.value);*/  //For testing the selected item
+            //if you have a Details.cshtml in Pages folder
+            //the request url should be like below....
+            location.href =            
+            "Admin/StatusRequests?statusName=" + selectObject.value;
+        }
+
+    </script>
+}

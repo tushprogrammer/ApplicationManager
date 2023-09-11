@@ -8,6 +8,8 @@ namespace ApplicationManager.Entitys
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         private int id;
         public int Id { get { return id; } set { id = value; } }
+        private DateTime dateCreated;
+        public DateTime DateCreated { get { return dateCreated; }  set { dateCreated = value; } }
 
         private string fullname;
         public string Fullname { get { return fullname; } set {  fullname = value; } }
@@ -21,7 +23,7 @@ namespace ApplicationManager.Entitys
         [ForeignKey("StatusRequest")]
         public int StatusId { get; set; }
 
-        //private StatusRequest status;
-        //public StatusRequest Status { get { return status; } set { status = value; } }
+        private StatusRequest status;
+        public StatusRequest Status { get { return status; } set { status = value; } }
     }
 }
