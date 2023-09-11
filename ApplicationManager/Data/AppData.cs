@@ -1,6 +1,7 @@
 ﻿using ApplicationManager.ContextFolder;
 using ApplicationManager.Entitys;
 using Microsoft.EntityFrameworkCore.Query;
+using Microsoft.VisualBasic;
 
 namespace ApplicationManager.Data
 {
@@ -14,6 +15,10 @@ namespace ApplicationManager.Data
         public IQueryable<MainPage> GetMains()
         {
             return Context.MainPage;
+        }
+        public IQueryable<MainTitle> GetMainTitles()
+        {
+            return Context.Titles;
         }
         public MainPage GetMainRequest()
         {
