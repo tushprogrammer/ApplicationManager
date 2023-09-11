@@ -41,6 +41,7 @@ namespace ApplicationManager.Controllers
             //};
             Request newRequest = new Request()
             {
+                DateCreated = DateTime.Now,
                 Email = Email,
                 Fullname = Name,
                 Textrequest = Description,
