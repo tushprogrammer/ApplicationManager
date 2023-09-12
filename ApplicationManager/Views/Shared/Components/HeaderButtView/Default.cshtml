@@ -1,41 +1,38 @@
 ﻿@namespace ApplicationManager.Views.Shared.HeaderButtView
 @model HeaderModel
 @*@model IQueryable<MainPage>*@
+<div class="btn-group pull-right" style="width: 80%;">
+    @foreach (MainPage item in Model.MainPages)
+    {
+        <a class="navbar-brand" asp-action="@item.Name" asp-controller="Home">@item.Value</a>
+    }
+    @*Случайный заголовок*@
+    <h3>@Model.Title</h3>
+
+
 
 @if (User.Identity.IsAuthenticated)
 {
-<div class="btn-group pull-right" style="width: 80%;">
    @* <a class="navbar-brand" href="~/">В начало</a>*@
-    <a class="navbar-brand" herf="#">@User.Identity.Name в системе</a>
-
-       
-        @foreach (MainPage item in Model.MainPages)
-        {
-            <a class="navbar-brand" asp-action="@item.Name" asp-controller="Home">@item.Value</a>
-        }
-        @*Случайный заголовок*@
-        <h3>@Model.Title</h3>
-
+    <a class="navbar-brand" herf="#">@User.Identity.Name</a>
         @if (User.IsInRole("Admin"))
         {
             <a class="navbar-brand"  asp-action="Index" asp-controller="Admin">Панель админа</a>
         }
-
-
-
         @*<a asp-action="Logout" asp-controller="Account">Выход</a>*@
         <form class="navbar-brand" method="post" asp-controller="Account" asp-action="Logout" id="logoutform" asp-antiforgery="true">
             <a class="navbar-brand" href="#" onclick="document.getElementById('logoutform').submit()">Выход</a>
         </form>
      
-</div>
+
 }
 else
 {
-    <div class="btn-group pull-right">
+    @*<div class="btn-group pull-right">*@
         <a class="navbar-brand" href="/Account/Login">Вход</a>
-        <a class="navbar-brand" href="/Account/Register">Регистрация </a>
-    </div>
+       @* <a class="navbar-brand" href="/Account/Register">Регистрация </a>*@
+    @*</div>*@
 }
+</div>
 
 @* <input type="submit" value="Выход"/>*@
