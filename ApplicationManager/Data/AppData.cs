@@ -1,20 +1,69 @@
 ﻿using ApplicationManager.ContextFolder;
 using ApplicationManager.Entitys;
+using ApplicationManager.Models;
+using Microsoft.AspNetCore;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.VisualBasic;
+using Newtonsoft.Json.Linq;
+using System.Text;
 
 namespace ApplicationManager.Data
 {
     public class AppData : IAppData
     {
         private readonly ApplicationDbContext Context;
-        public AppData(ApplicationDbContext context)
+        private readonly IWebHostEnvironment webHost;
+        public AppData(ApplicationDbContext context, IWebHostEnvironment WebHost)
         {
+            webHost = WebHost;
             Context = context;
         }
         public IQueryable<MainPage> GetMains()
         {
             return Context.MainPage;
+        }
+        
+        public void EditMain(MainPageUploadModel model)
+        {
+            // путь к папке images 
+            
+            //если картинку в этот раз не захотели поменять
+            if (model.Image != null)
+            {
+                string uploadPath =
+                Path.Combine(webHost.WebRootPath, "Images");
+                string UniqueName = Guid.NewGuid().ToString() + "_" + model.Image.FileName;
+                string FilePath = Path.Combine(uploadPath, UniqueName);
+                model.Image.CopyTo(new FileStream(FilePath, FileMode.Create));
+                //сохранение новых заголовков
+                //(изначально хотел чтоб делался через 1 запрос, во избежании многократного обращения к бд)
+                //так как update не работает с union,
+                //а так как у меня постоянно разные источники данных,
+                //то и запросы придется делать несколько раз
+                //буква N перед данными - это позволение сохранять русский текст
+                var rowsModified = Context.Database.ExecuteSqlRaw(
+                   $"UPDATE MainPage SET Value = N'{model.ButtonTitle}' WHERE Id = 6");
+                rowsModified = Context.Database.ExecuteSqlRaw(
+                    $"UPDATE MainPage SET Value = N'{model.Title}' WHERE Id = 7");
+                rowsModified = Context.Database.ExecuteSqlRaw(
+                    $"UPDATE MainPage SET Value = N'{UniqueName}' WHERE Id = 8");
+                rowsModified = Context.Database.ExecuteSqlRaw(
+                    $"UPDATE MainPage SET Value = N'{model.RequestTitle}' WHERE Id = 9");
+            }
+            else
+            {
+                var rowsModified = Context.Database.ExecuteSqlRaw(
+                    $"UPDATE MainPage SET Value = N'{model.ButtonTitle}' WHERE Id = 6");
+                rowsModified = Context.Database.ExecuteSqlRaw(
+                    $"UPDATE MainPage SET Value = N'{model.Title}' WHERE Id = 7");
+                rowsModified = Context.Database.ExecuteSqlRaw(
+                    $"UPDATE MainPage SET Value = N'{model.RequestTitle}' WHERE Id = 9");
+            }
+            /*Context.SaveChanges();*/ //эта штука нужна, если идет изменение через сам контекст, а тут sql
+                
+            
         }
         public IQueryable<MainTitle> GetMainTitles()
         {

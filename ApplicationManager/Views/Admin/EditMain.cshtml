@@ -1,0 +1,38 @@
+﻿@model MainPageUploadModel
+@{
+    ViewData["Title"] = "Редактирование страницы 'Главная'";
+}
+@{
+    var image = ViewBag.Image;
+    var image_path = "~/Images/" + image;
+}
+
+<form class="navbar-brand" method="post" asp-controller="Admin" asp-action="EditMainSave" id="EditMainform" asp-antiforgery="true" enctype="multipart/form-data">
+<div class="text-center">
+
+    <div class="ImageMain">
+        <img class="ImageMain" src="@image_path" asp-append-version="true" />
+        @*загрузка картинки*@
+            <input asp-for="Image" />
+            <input type="text" asp-for="Title" value="@Model.Title" />
+
+        @* два варианта кнопки:*@
+            @* <input type="button" value="@Model.ButtonTitle"/>*@ @*- для этого варика надо еще js прописать, что нахер идет*@
+        @*для этого варика надо подпилить css*@
+            <input type="text"  asp-for="ButtonTitle" value="@Model.ButtonTitle" />
+    </div>
+</div>
+<div class="text-center">
+        <input type="text" asp-for="RequestTitle" value="@Model.RequestTitle" />
+</div>
+<div>
+    <form action="~/Home/AddNewRequest" method="post">
+            <p>Имя: </p>          <input type="text" name="Name" disabled /><br />
+            <p>Email: </p>        <input type="text" name="Email" disabled /><br />
+            <p>Текст сообщения: </p>     <input type="text" name="Description" disabled /><br /><br />
+            <p><input type="submit" value="Отправить" disabled /></p>
+    </form>
+</div>
+
+    <a class="navbar-brand" href="#" onclick="document.getElementById('EditMainform').submit()">Сохранить</a>
+</form>

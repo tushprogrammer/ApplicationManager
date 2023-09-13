@@ -5,17 +5,27 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Hosting.Internal;
+using System.IO;
+//using System.Web.HttpPostedFileWrapper;
 
 namespace ApplicationManager.Controllers
 {
     public class AdminController : Controller
     {
         private readonly IAppData data;
-        public AdminController(IAppData Data)
+        private readonly IWebHostEnvironment webHost;
+        public AdminController(IAppData Data, IWebHostEnvironment WebHost)
         {
+            webHost = WebHost;
             data = Data;
         }
-        //рабочий стол (где отображаются все заявки)
+       
+       
+
+        #region Заявки
+
+        //все заявки
         [Authorize(Roles = "Admin")]
         public IActionResult Index()
         {
@@ -34,17 +44,7 @@ namespace ApplicationManager.Controllers
             };
             return View("Index", model);
         }
-        [HttpGet]
-        public IActionResult StatusRequests(string statusName)
-        {
-            AdminModel model = new AdminModel()
-            {
-                Requests = data.GetRequestsStatus(statusName),
-                Statuses = GetNameStatuses(),
-                AllRequestsCount = data.CountRequests(),
-            };
-            return View("Index",model);
-        }
+
         public IActionResult TodayRequests()
         {
             //вопрос по реализации: как будет лучше организовать запросы к бд по поводу заявок в сортированном виде,
@@ -90,6 +90,7 @@ namespace ApplicationManager.Controllers
             };
             return View("Index", model);
         }
+        //заявки по диапазону дат
         public IActionResult RangeDateRequests(DateTime DateFor, DateTime DateTo)
         {
             AdminModel model = new AdminModel()
@@ -101,10 +102,23 @@ namespace ApplicationManager.Controllers
             return View("Index", model);
         }
 
+        [HttpGet]
+        public IActionResult StatusRequests(string statusName) //заявки по статусам
+        {
+            AdminModel model = new AdminModel()
+            {
+                Requests = data.GetRequestsStatus(statusName),
+                Statuses = GetNameStatuses(),
+                AllRequestsCount = data.CountRequests(),
+            };
+            return View("Index", model);
+        }
+        #endregion
 
+        //выдача заявкам элемент статуса в дополнение к id
         private IQueryable<string> GetNameStatuses()
         {
-            List<string> ListStatuses = new List<string>();
+            List<string> ListStatuses = new();
             IQueryable<StatusRequest> statusRequests = data.GetStatuses();
             foreach (var statusRequest in statusRequests)
             {
@@ -112,13 +126,14 @@ namespace ApplicationManager.Controllers
             }
             return ListStatuses.AsQueryable();
         }
+        //обновление статусов у заявок
         public IActionResult SaveNewStatusRequest(string RequestId, string StatusName)
         {
             Request reqNow = data.GetRequestsNow(RequestId);
             StatusRequest Status = data.GetStatuses().First(s => s.StatusName == StatusName);
             reqNow.StatusId = Status.Id;
             data.SaveNewRequest(reqNow);
-            AdminModel model = new AdminModel()
+            AdminModel model = new()
             {
                 Requests = data.GetRequests(), //все заявки
                 Statuses = GetNameStatuses(),
@@ -127,8 +142,48 @@ namespace ApplicationManager.Controllers
             var r = Request.Headers["Referer"].ToString();
             return Redirect(r);
             //обновленме всего рабочего стола, а все настройки сортировки остаются
+        }
+        //вызов страницы просмотра перед редактированием
+        public IActionResult MainAdmin()
+        {
+            IQueryable<MainPage> mainPages = data.GetMains().Where(item => item.Id >= 6 && item.Id <= 9);
+            MainPageModel model = new()
+            {
+                Image_path = mainPages.First(i => i.Id == 8).Value,
+                Title = mainPages.First(i => i.Id == 7).Value,
+                ButtonTitle = mainPages.First(i => i.Id == 6).Value,
+                RequestTitle = mainPages.First(i => i.Id == 9).Value,
+            };
+            
+            return View(model);
+        }
 
+        //вызов страницы редактирования
+        public IActionResult EditMain()
+        {
+            //сюда должны перебрасываться те же данные, что и выше
+            //может все таки модель полноценную сделать ?
+            //и в модели разбить по состовляющим
+            //а то херня какая то получается, если еще на фронте искать через LINQ нужный элемент
+            IQueryable<MainPage> mainPages = data.GetMains().Where(item => item.Id >= 6 && item.Id <= 9);
+            MainPageUploadModel model = new()
+            {
+                Title = mainPages.First(i => i.Id == 7).Value,
+                ButtonTitle = mainPages.First(i => i.Id == 6).Value,
+                RequestTitle = mainPages.First(i => i.Id == 9).Value,
+            };
+            ViewBag.Image = mainPages.First(i => i.Id == 8).Value;
+            return View(model);
+        }
 
+        //вызов метода редактирования 
+        [HttpPost]
+        public IActionResult EditMainSave(MainPageUploadModel model)
+        {
+            //всякое сохранение
+            data.EditMain(model);            
+            
+            return Redirect("~/Admin/MainAdmin");
         }
     }
 }

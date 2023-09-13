@@ -1,4 +1,5 @@
 ﻿using ApplicationManager.Entitys;
+using ApplicationManager.Models;
 using Microsoft.EntityFrameworkCore.Query;
 
 namespace ApplicationManager.Data
@@ -26,5 +27,6 @@ namespace ApplicationManager.Data
         public int CountRequests();
        public Request GetRequestsNow(string requestId);
        public void SaveNewRequest(Request reqNow);
+       public void EditMain(MainPageUploadModel model);
     }
 }
