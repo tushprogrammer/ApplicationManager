@@ -12,5 +12,6 @@ namespace ApplicationManager.AuthApp
 
         [DataType(DataType.Password), Compare(nameof(Password))]
         public string ConfirmPassword { get; set; }
+        public bool IsAdmin { get; set; }
     }
 }

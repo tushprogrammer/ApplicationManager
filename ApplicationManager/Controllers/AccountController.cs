@@ -62,7 +62,7 @@ namespace ApplicationManager.Controllers
         #endregion
 
         #region Регистрация 
-        [HttpGet, AllowAnonymous, Authorize(Roles = "Admin")]
+        [HttpGet, Authorize(Roles = "Admin")]
         public IActionResult Register()
         {
             return View(new UserRegistration());
@@ -76,9 +76,12 @@ namespace ApplicationManager.Controllers
                 var user = new User { UserName = model.LoginProp };
                 var createResult = await _userManager.CreateAsync(user, model.Password);
 
-                if (createResult.Succeeded)
+                //добавление нового пользователя гарантированно идет от админа,
+                //поэтому пока что автоматическая авторизация не нужна
+                if (createResult.Succeeded && model.IsAdmin)
                 {
-                    return RedirectToAction("Index", "Home");
+                    var res = _userManager.AddToRoleAsync(user, "Admin").Result; //админ создает других админов
+                    return RedirectToAction("UserList", "Account"); //открывается по умолчанию страница со списком пользователей
                 }
                 else //если регистрация не удалась
                 {
@@ -99,6 +102,26 @@ namespace ApplicationManager.Controllers
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
+        }
+        #endregion
+        
+        [Authorize(Roles = "Admin")]
+        public IActionResult UserList() //список пользователей
+        {
+            return View("Users", _userManager.Users.ToList());
+        }
+
+        #region Удаление пользователя
+
+        [HttpGet, Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteUser(string userid)
+        {
+            User user = await _userManager.FindByIdAsync(userid);
+            if (user != null)
+            {
+                _userManager.DeleteAsync(user);
+            }
+            return RedirectToAction("UserList");
         }
         #endregion
     }
