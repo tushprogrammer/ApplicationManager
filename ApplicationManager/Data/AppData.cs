@@ -73,6 +73,7 @@ namespace ApplicationManager.Data
         {
             return Context.MainPage.First(item => item.Id == 9);
         }
+        
         public void AddRequest(Request NewRequest)
         {
 
@@ -83,6 +84,63 @@ namespace ApplicationManager.Data
         public IQueryable<Project> GetProjects()
         {
             return Context.Projects;
+        }
+        public Project GetProject(int id)
+        {
+            return Context.Projects.First(i => i.Id == id);
+        }
+        public void AddProject(DetailsProjectModel model)
+        {
+            //проверка на валидацию
+            //сохранение нового проекта в бд
+            if (model.Image != null)
+            {
+                string uploadPath =
+                Path.Combine(webHost.WebRootPath, "Images");
+                string UniqueName = Guid.NewGuid().ToString() + "_" + model.Image.FileName;
+                string FilePath = Path.Combine(uploadPath, UniqueName);
+                model.Image.CopyTo(new FileStream(FilePath, FileMode.Create));
+                Project newproject = new()
+                {
+                    Title = model.Title,
+                    NameCompany = model.NameCompany,
+                    Description = model.Description,
+                    ImageUrl = UniqueName
+                };
+                Context.Projects.Add(newproject);
+                Context.SaveChanges();
+            }
+        }
+        public void EditProject(DetailsProjectModel model)
+        {
+            
+            if (model.Image != null)
+            {
+                string uploadPath =
+                Path.Combine(webHost.WebRootPath, "Images");
+                string UniqueName = Guid.NewGuid().ToString() + "_" + model.Image.FileName;
+                string FilePath = Path.Combine(uploadPath, UniqueName);
+                model.Image.CopyTo(new FileStream(FilePath, FileMode.Create));
+                //сохранение новых заголовков
+
+                var rowsModified = Context.Database.ExecuteSqlRaw(
+                   $"UPDATE [Projects] SET Title = N'{model.Title}', NameCompany = N'{model.NameCompany}', " +
+                   $" Description = N'{model.Description}', ImageUrl = N'{UniqueName}' WHERE Id = {model.Id}");
+       
+            }
+            else
+            {
+                var rowsModified = Context.Database.ExecuteSqlRaw(
+                   $"UPDATE [Projects] SET Title = N'{model.Title}', NameCompany = N'{model.NameCompany}', " +
+                   $" Description = N'{model.Description}' WHERE Id = {model.Id}");
+
+            }
+        }
+        public void DeleteProject(int id)
+        {
+            Project project = GetProject(id);
+            Context.Projects.Remove(project);
+            Context.SaveChanges();
         }
         public IQueryable<Service> GetServices()
         {

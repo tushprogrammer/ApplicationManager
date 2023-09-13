@@ -1,0 +1,58 @@
+﻿@model DetailsProjectModel
+@{
+    var image_path = string.Empty; //можно переделать на дефолтную картинку
+    if (Model is null)
+    {
+        ViewData["Title"] = "Добавить новый проект";
+    }
+    else
+    {
+        ViewData["Title"] = "Изменить проект";
+        image_path = "~/Images/" + ViewBag.ImageUrl;
+    }
+
+}
+<p>
+    <a asp-action="Index">Главная</a> -> @ViewBag.Title
+</p>
+<div>
+    @if (Model is null)
+    {
+        <form asp-action="AddProjectMethod" asp-controller="Admin" method="post" asp-antiforgery="true" enctype="multipart/form-data" id="AddProjectForm">
+            <p>Имя компании</p>
+            <input type="text" asp-for="NameCompany" />
+            <br />
+            <p>Название проекта</p>
+            <input type="text" asp-for="Title" />
+            <br />
+            <p>Описание проекта</p>
+            <input type="text" asp-for="Description" />
+            <br />
+            <input asp-for="Image" value="Добавить фото"/>
+            <br />
+
+            <a class="navbar-brand" href="#" onclick="document.getElementById('AddProjectForm').submit()">Сохранить</a>
+        </form>
+    }
+    else
+    {
+        <form asp-action="EditProjectMethod" asp-controller="Admin" method="post" asp-antiforgery="true" enctype="multipart/form-data" id="EditProjectForm">
+            <input asp-for="Id" value="@Model.Id" type="hidden">
+            <p>Имя компании</p>
+            <input type="text" asp-for="NameCompany" value="@Model.NameCompany"/>
+            <br />
+            <p>Название проекта</p>
+            <input type="text" asp-for="Title" value="@Model.Title"/>
+            <br />
+            <p>Описание проекта</p>
+            <input type="text" asp-for="Description" value="@Model.Description"/>
+            <br />
+            <img class="ImageMain" src="@image_path" asp-append-version="true" />
+            <input asp-for="Image" value="Изменить фото"/>
+            <br />
+
+            <a class="navbar-brand" href="#" onclick="document.getElementById('EditProjectForm').submit()">Сохранить</a>
+        </form>
+    }
+
+</div>

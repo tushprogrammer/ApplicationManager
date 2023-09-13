@@ -1,0 +1,27 @@
+﻿@model ProjectsModel
+
+<p>
+    <a asp-action="Index">Рабочий стол</a> -> @Model.Name_page
+</p>
+<h1>@Model.Name_page</h1>
+<a asp-action="AddNewProject">Добавить проект</a>
+<div class="boxes">
+    @foreach (Project item in Model.Projects)
+    {
+        var image_path = "~/Images/" + item.ImageUrl;
+        <div>
+            <div class="box">
+                <a asp-action="ProjectDetails" asp-controller="Home" asp-route-id="@item.Id">
+                    <figure>
+                        <img class="ImageProject" src="@image_path" asp-append-version="true" />
+                        <p>@item.Title</p>
+                    </figure>
+                </a>
+            </div>
+
+            @*тут будут хранится кнопки редактирования и удаления*@
+            <a asp-action="DetailsProject" asp-controller="Admin" asp-route-id="@item.Id">Редактировать</a>
+            <a asp-action="DeleteProjectMethod" asp-controller="Admin" asp-route-id="@item.Id">Удалить</a>
+        </div>
+    }
+</div>

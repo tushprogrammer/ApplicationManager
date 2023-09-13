@@ -143,6 +143,7 @@ namespace ApplicationManager.Controllers
             return Redirect(r);
             //обновленме всего рабочего стола, а все настройки сортировки остаются
         }
+
         //вызов страницы просмотра перед редактированием
         public IActionResult MainAdmin()
         {
@@ -184,6 +185,59 @@ namespace ApplicationManager.Controllers
             data.EditMain(model);            
             
             return Redirect("~/Admin/MainAdmin");
+        }
+
+        //вывод страницы для редактирования
+        public IActionResult ProjectAdmin()
+        {
+            //все проекты
+            ProjectsModel model = new()
+            {
+                Projects = data.GetProjects(),
+                Name_page = data.GetMains().First(i => i.Id == 1).Value
+            };
+            //имя странциы проектов из тб mainpage
+            return View(model);
+        }
+        //страница добавления нового проекта
+        public IActionResult AddNewProject() 
+        {
+            //заголовок для шапки
+            ViewBag.Name_page = data.GetMains().First(i => i.Id == 1).Value;
+            return View();
+        }
+        //метод добавления нового проекта
+        public IActionResult AddProjectMethod(DetailsProjectModel model)
+        {
+            //data логика добавления
+            data.AddProject(model);
+            return Redirect("~/Admin/ProjectAdmin");
+        }
+        //страница изменения проекта
+        public IActionResult DetailsProject(int id)
+        {
+            Project temp = data.GetProject(id);
+            ViewBag.ImageUrl = temp.ImageUrl;
+            DetailsProjectModel model = new()
+            {
+                Id = id,
+                Description = temp.Description,
+                Title = temp.Title,
+                NameCompany = temp.NameCompany,
+            };
+            return View(model);
+        }
+        //метод изменения проекта
+        public IActionResult EditProjectMethod(DetailsProjectModel model)
+        {
+            data.EditProject(model);
+            return Redirect("~/Admin/ProjectAdmin");
+        }
+        //метод удаления проекта
+        public IActionResult DeleteProjectMethod(int id)
+        {
+            data.DeleteProject(id);
+            return Redirect("~/Admin/ProjectAdmin");
         }
     }
 }

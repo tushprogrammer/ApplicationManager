@@ -59,7 +59,7 @@ namespace ApplicationManager.Controllers
             {
                 Projects = data.GetProjects(),
                 Name_page = data.GetMains().First(i => i.Id == 1).Value
-        };
+            };
             //имя странциы проектов из тб mainpage
             return View(model);
         }

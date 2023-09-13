@@ -25,8 +25,12 @@ namespace ApplicationManager.Data
         public MainPage GetMainRequest();
         public void AddRequest(Request request);
         public int CountRequests();
-       public Request GetRequestsNow(string requestId);
-       public void SaveNewRequest(Request reqNow);
-       public void EditMain(MainPageUploadModel model);
+        public Request GetRequestsNow(string requestId);
+        public void SaveNewRequest(Request reqNow);
+        public void EditMain(MainPageUploadModel model);
+        public void AddProject(DetailsProjectModel model);
+        public Project GetProject(int id);
+        public void EditProject(DetailsProjectModel model);
+        public void DeleteProject(int id);
     }
 }
