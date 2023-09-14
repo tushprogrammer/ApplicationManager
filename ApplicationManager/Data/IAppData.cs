@@ -32,5 +32,9 @@ namespace ApplicationManager.Data
         public Project GetProject(int id);
         public void EditProject(DetailsProjectModel model);
         public void DeleteProject(int id);
+        public Service GetService(int id);
+        public void AddService(Service newService);
+        public void DeleteService(int id);
+        public void EditService(Service service);
     }
 }

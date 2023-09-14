@@ -239,5 +239,44 @@ namespace ApplicationManager.Controllers
             data.DeleteProject(id);
             return Redirect("~/Admin/ProjectAdmin");
         }
+        //вызов страницы для редактирования
+        public IActionResult ServicesAdmin()
+        {
+            ServicesModel model = new()
+            {
+                Services = data.GetServices(),
+                Name_page = data.GetMains().First(i => i.Id == 2).Value
+            };
+            return View(model);
+        }
+        //изменение услуги
+        public IActionResult EditService(int id)
+        {
+            Service model = data.GetService(id);
+            ViewBag.Name_page = data.GetMains().First(i => i.Id == 2).Value;
+            return View("DetailsService", model);
+            
+        }
+        //добавление услуги
+        public IActionResult AddNewService() 
+        {
+            ViewBag.Name_page = data.GetMains().First(i => i.Id == 2).Value;
+            return View("DetailsService");
+        }
+        public IActionResult AddNewServiceMethod(Service newService)
+        {
+            data.AddService(newService);
+            return Redirect("~/Admin/ServicesAdmin");
+        }
+        public IActionResult DeleteServiceMethod(int id)
+        {
+            data.DeleteService(id);
+            return Redirect("~/Admin/ServicesAdmin");
+        }
+        public IActionResult EditServiceMethod(Service Service)
+        {
+            data.EditService(Service);
+            return Redirect("~/Admin/ServicesAdmin");
+        }
     }
 }

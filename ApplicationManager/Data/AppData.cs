@@ -146,6 +146,26 @@ namespace ApplicationManager.Data
         {
             return Context.Services;
         }
+        public Service GetService(int id)
+        {
+            return Context.Services.First(i => i.Id == id);
+        }
+        public void AddService(Service newService)
+        {
+            Context.Services.Add(newService);
+            Context.SaveChanges();
+        }
+        public void DeleteService(int id)
+        {
+            Context.Services.Remove(GetService(id));
+            Context.SaveChanges();
+        }
+        public void EditService(Service model)
+        {
+            var rowsModified = Context.Database.ExecuteSqlRaw(
+                  $"UPDATE [Services] SET Title = N'{model.Title}', " +
+                  $" Description = N'{model.Description}' WHERE Id = {model.Id}");
+        }
         public IQueryable<Blog> GetBlogs()
         {
             return Context.Blogs;
