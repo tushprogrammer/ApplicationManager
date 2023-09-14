@@ -138,8 +138,7 @@ namespace ApplicationManager.Data
         }
         public void DeleteProject(int id)
         {
-            Project project = GetProject(id);
-            Context.Projects.Remove(project);
+            Context.Projects.Remove(GetProject(id));
             Context.SaveChanges();
         }
         public IQueryable<Service> GetServices()

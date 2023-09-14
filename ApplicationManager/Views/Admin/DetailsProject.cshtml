@@ -13,7 +13,7 @@
 
 }
 <p>
-    <a asp-action="Index">Главная</a> -> @ViewBag.Title
+    <a asp-action="Index">Главная</a> -> <a asp-action="ProjectAdmin" asp-controller="Admin">@ViewBag.Name_page</a> ->@ViewBag.Title
 </p>
 <div>
     @if (Model is null)

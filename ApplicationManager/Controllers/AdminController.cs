@@ -204,12 +204,11 @@ namespace ApplicationManager.Controllers
         {
             //заголовок для шапки
             ViewBag.Name_page = data.GetMains().First(i => i.Id == 1).Value;
-            return View();
+            return View("DetailsProject");
         }
         //метод добавления нового проекта
         public IActionResult AddProjectMethod(DetailsProjectModel model)
         {
-            //data логика добавления
             data.AddProject(model);
             return Redirect("~/Admin/ProjectAdmin");
         }
@@ -218,6 +217,7 @@ namespace ApplicationManager.Controllers
         {
             Project temp = data.GetProject(id);
             ViewBag.ImageUrl = temp.ImageUrl;
+            ViewBag.Name_page = data.GetMains().First(i => i.Id == 1).Value;
             DetailsProjectModel model = new()
             {
                 Id = id,
