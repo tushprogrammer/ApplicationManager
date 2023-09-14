@@ -36,5 +36,9 @@ namespace ApplicationManager.Data
         public void AddService(Service newService);
         public void DeleteService(int id);
         public void EditService(Service service);
+        public Blog GetBlog(int id);
+        public void AddBlog(DetailsBlogModel newBlog);
+        public void EditBlog(DetailsBlogModel blog);
+        void DeleteBlog(int id);
     }
 }

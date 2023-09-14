@@ -239,7 +239,7 @@ namespace ApplicationManager.Controllers
             data.DeleteProject(id);
             return Redirect("~/Admin/ProjectAdmin");
         }
-        //вызов страницы для редактирования
+        //вызов страницы для редактирования страницы улсуг
         public IActionResult ServicesAdmin()
         {
             ServicesModel model = new()
@@ -277,6 +277,51 @@ namespace ApplicationManager.Controllers
         {
             data.EditService(Service);
             return Redirect("~/Admin/ServicesAdmin");
+        }
+        //вызов страницы для редактирования страницы блога
+        public IActionResult BlogsAdmin()
+        {
+            BlogsModel model = new()
+            {
+                Blogs = data.GetBlogs(),
+                Name_page = data.GetMains().First(i => i.Id == 4).Value,
+            };
+            return View(model);
+        }
+        //страница добавления блога
+        public IActionResult AddNewBlog()
+        {
+            ViewBag.Name_page = data.GetMains().First(i => i.Id == 4).Value;
+            return View("DetailsBlog");
+        }
+        public IActionResult AddNewBlogMethod(DetailsBlogModel newBlog)
+        {
+            data.AddBlog(newBlog);
+            return Redirect("~/Admin/BlogsAdmin");
+        }
+        public IActionResult EditBlog(int id)
+        {
+            ViewBag.Name_page = data.GetMains().First(i => i.Id == 4).Value;
+            Blog blogNow =  data.GetBlog(id);
+            ViewBag.ImageUrl = blogNow.ImageUrl;
+            DetailsBlogModel model = new()
+            {
+                Id = id,
+                Title = blogNow.Title,
+                //Created = blogNow.Created,
+                Description = blogNow.Description,
+            };
+            return View("DetailsBlog", model);
+        }
+        public IActionResult EditBlogMethod(DetailsBlogModel model)
+        {
+            data.EditBlog(model);
+            return Redirect("~/Admin/BlogsAdmin");
+        }
+        public IActionResult DeleteBlogMEthod(int id)
+        {
+            data.DeleteBlog(id);
+            return Redirect("~/Admin/BlogsAdmin");
         }
     }
 }

@@ -169,6 +169,58 @@ namespace ApplicationManager.Data
         {
             return Context.Blogs;
         }
+        public Blog GetBlog(int id)
+        {
+            return Context.Blogs.First(i => i.Id == id);
+        }
+        public void AddBlog(DetailsBlogModel model)
+        {
+            if (model.Image != null)
+            {
+                string uploadPath =
+                Path.Combine(webHost.WebRootPath, "Images");
+                string UniqueName = Guid.NewGuid().ToString() + "_" + model.Image.FileName;
+                string FilePath = Path.Combine(uploadPath, UniqueName);
+                model.Image.CopyTo(new FileStream(FilePath, FileMode.Create));
+                Blog newBlog = new()
+                {
+                    Title = model.Title,
+                    Description = model.Description,
+                    ImageUrl = UniqueName,
+                    Created = DateTime.Now,
+                };
+                Context.Blogs.Add(newBlog);
+                Context.SaveChanges();
+            }
+        }
+        public void EditBlog(DetailsBlogModel model)
+        {
+            if (model.Image != null)
+            {
+                string uploadPath =
+                Path.Combine(webHost.WebRootPath, "Images");
+                string UniqueName = Guid.NewGuid().ToString() + "_" + model.Image.FileName;
+                string FilePath = Path.Combine(uploadPath, UniqueName);
+                model.Image.CopyTo(new FileStream(FilePath, FileMode.Create));
+
+                var rowsModified = Context.Database.ExecuteSqlRaw(
+                   $"UPDATE [Blogs] SET Title = N'{model.Title}', " +
+                   $" Description = N'{model.Description}', ImageUrl = N'{UniqueName}' WHERE Id = {model.Id}");
+
+            }
+            else
+            {
+                var rowsModified = Context.Database.ExecuteSqlRaw(
+                   $"UPDATE [Blogs] SET Title = N'{model.Title}', " +
+                   $" Description = N'{model.Description}' WHERE Id = {model.Id}");
+
+            }
+        }
+        public void DeleteBlog(int id)
+        {
+            Context.Blogs.Remove(GetBlog(id));
+            Context.SaveChanges();
+        }
         public IQueryable<Contacts> GetContacts()
         {
             return Context.Contacts;

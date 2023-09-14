@@ -4,6 +4,7 @@
 </p>
 <h1>@Model.Name_page</h1>
 <br />
+<a asp-action="AddNewBlog">Добавить элемент блога</a>
 <div class="boxes">
     @foreach (Blog item in Model.Blogs)
     {
@@ -24,8 +25,10 @@
             }
         }
 
+            
+
         <div class="box">
-            <a asp-action="BlogDetails" asp-route-id="@item.Id">
+            <a asp-action="BlogDetails" asp-controller="Home" asp-route-id="@item.Id">
                 <figure>
                     <p>@item.Created.ToString("D")</p>
                     <img class="ImageProject" src="@image_path" asp-append-version="true" />
@@ -33,6 +36,8 @@
                     <h5>@ShortDesc</h5>
                 </figure>
             </a>
+            <a asp-action="EditBlog" asp-controller="Admin" asp-route-id="@item.Id">Редактировать</a>
+            <a asp-action="DeleteBlogMethod" asp-controller="Admin" asp-route-id="@item.Id">Удалить</a>
         </div>
     }
 </div>
