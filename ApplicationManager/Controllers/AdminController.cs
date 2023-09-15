@@ -351,12 +351,21 @@ namespace ApplicationManager.Controllers
             };
             return View(model);
         }
+
         [HttpGet]
-        public JsonResult GetString()
+        public IActionResult GetString()
         {
             string myString = "Привет из контроллера!";
             string json = JsonConvert.SerializeObject(data.GetContacts().Where(i => i.Id != 7));
-            return Json(myString, System.Web.Mvc.JsonRequestBehavior.AllowGet);
+            return new JsonResult(json);
+        }
+        
+        public JsonResult SaveContacts(string stringData) 
+        {
+            List<Contacts> list = JsonConvert.DeserializeObject<List<Contacts>>(stringData);
+            //полученную коллекцию сохранить вместо всего старого, сейчас эта в приоритете
+            return new JsonResult("все ок");
+
         }
     }
 }
