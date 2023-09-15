@@ -97,7 +97,7 @@
         //};
 
         $scope.getString = function () {
-            $http.get('~/AdminController/GetString')
+            $http.get('/Admin/GetString')
                 .then(function (response) {
                     $scope.myString = response.data;
                     alert($scope.myString);
