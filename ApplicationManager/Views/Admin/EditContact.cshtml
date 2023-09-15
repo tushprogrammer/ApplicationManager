@@ -1,0 +1,113 @@
+﻿@using Microsoft.JSInterop;
+@using Newtonsoft.Json;
+@model ContactsModel
+@inject IJSRuntime JS
+
+<p>
+    <a asp-action="Index">Главная</a> -> @Model.Name_page
+</p>
+<h1>@Model.Name_page</h1>
+<br />
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+@{
+    //попробовать свой массив переделать в json и его отдельно отправить в js
+    string json = JsonConvert.SerializeObject(Model.Contacts);
+    //как вызвать функцию js из c# после загрузки страницы
+    //await JS.InvokeVoidAsync("ToContacts", item.Name, item.Description);
+}
+@*это работает только вне контроллера*@
+
+@*<label>Введите имя:</label>
+<input type="text" ng-model="name" placeholder="Введите имя">
+<h1>Добро пожаловать {{name}}!</h1>*@
+
+<div ng-controller="AdminContacts">
+
+    <div>
+        <table>
+            <thead class="thead-light">
+                <tr>
+                    <th>Название</th>
+                    <th>Описание</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    @foreach (var item in Model.Contacts)
+                    {
+                        <td>
+                            <input type="text" value="@item.Name">
+                            <input type="text" value="@item.Description">
+                        </td>
+                    }
+                </tr>
+                <tr ng-repeat="Contact in Contacts">
+                    <td class="right"><input ng-model="Contact.Name" ng-true-value="Contact.Name.value" /></td>
+                    <td class="right"><input ng-model="Contact.Description" value="Contact.Description.value" /></td>
+                </tr>
+                <tr>
+                    <td>
+                        
+                        <a href="#" ng-click="AddNewRow()"><i class="fa fa-plus">+</i></a>
+                        <input type="submit" ng-click="getString()" value="Проверка" />
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+@*    <div>
+        @foreach (SocialNet item in Model.Nets)
+        {
+            var image_path = "~/Images/" + item.ImageUrl;
+            <a href="@item.Url">
+                <img class="ImageProject" src="@image_path" asp-append-version="true" />
+            </a>
+        }
+        @{
+            var image_address = "~/Images/" + Model.ImageUrl;
+        }
+        <img class="ImageProject" src="@image_address" asp-append-version="true" />
+    </div>*@
+    @*при нажатии тут надо внутренний массив contact передать в форму*@
+    <a asp-action="EditContact" asp-controller="Admin">Сохранить</a>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+<script src="~/js/angular.min.js"></script>
+<script src="~/js/admincontact.js"></script>
+<script>
+    //function ToContacts(name, description) {
+    //    alert("name:" + name + "Description: " + description)
+    //    model.push(Name: name, Description: description)
+    //};
+    
+    var MyApp = angular.module("MyApp", []);
+    MyApp.controller('AdminContacts', function ($scope) {
+        $scope.Contacts = [];
+        //window.addEventListener('load', () => {
+        //    //$scope.Contacts = jsJSON;
+        //    alert(jsJSON);
+        //});
+        //$scope.Contacts =/* JsonConvert.SerializeObject(json);*/
+        $scope.AddNewRow = function () {
+            $scope.Contacts.push({ Name: '', Description: '' });
+        };
+        //$scope.ToContacts = function (name, description) {
+        //    $scope.Contacts.push({ Name: name, Description: description });
+        //};
+
+        $scope.getString = function () {
+            $http.get('~/AdminController/GetString')
+                .then(function (response) {
+                    $scope.myString = response.data;
+                    alert($scope.myString);
+                    // Другие действия с полученной строкой
+                }, function (error) {
+                    // Обработка ошибки
+                });
+            //alert("что нибудь");
+        };
+        //$scope.getString();
+    });
+    
+</script>

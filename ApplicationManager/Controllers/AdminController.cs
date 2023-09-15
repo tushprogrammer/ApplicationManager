@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Hosting.Internal;
+using Newtonsoft.Json;
 using System.IO;
 //using System.Web.HttpPostedFileWrapper;
 
@@ -323,5 +324,41 @@ namespace ApplicationManager.Controllers
             data.DeleteBlog(id);
             return Redirect("~/Admin/BlogsAdmin");
         }
+        //вызов страницы для предпросмотра страницы контактов
+        public IActionResult ContactsAdmin()
+        {
+            ContactsModel model = new()
+            {
+                Contacts = data.GetContacts().Where(i => i.Id != 7),
+                ImageUrl = data.GetContacts().First(i => i.Id == 7).Description,
+                Nets = data.GetSocialNet(),
+                Name_page = data.GetMains().First(i => i.Id == 5).Value,
+            };
+            return View(model);
+        }
+        //вызов страницы для редактирования страницы контактов
+        public IActionResult EditContact()
+        {
+            //что сюда будет передаваться ?
+            //модель ?
+            //на страницу должны передаваться данные, которые в начале будут закидываться во внутренний js массив
+            ContactsModel model = new()
+            {
+                Contacts = data.GetContacts().Where(i => i.Id != 7),
+                ImageUrl = data.GetContacts().First(i => i.Id == 7).Description,
+                Nets = data.GetSocialNet(),
+                Name_page = "Изменить контакты",
+            };
+            return View(model);
+        }
+        [HttpGet]
+        public JsonResult GetString()
+        {
+            string myString = "Привет из контроллера!";
+            string json = JsonConvert.SerializeObject(data.GetContacts().Where(i => i.Id != 7));
+            return Json(myString, System.Web.Mvc.JsonRequestBehavior.AllowGet);
+        }
     }
 }
+
+

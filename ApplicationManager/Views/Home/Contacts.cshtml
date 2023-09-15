@@ -5,10 +5,25 @@
 <h1>@Model.Name_page</h1>
 <br />
 <div>
-    @foreach (Contacts item in Model.Contacts)
-    {
-        <p>@item.Name : @item.Description</p> 
-    }
+    @*сделать этот вывод через таблицу*@
+    <table>
+        <thead class="thead-light">
+            <tr>
+                <th>Название</th>
+                <th>Описание</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Contacts item in Model.Contacts)
+            {
+                <tr>
+                    <td>@item.Name :</td>
+                    <td>@item.Description :</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+  
 </div>
 <div>
     @foreach (SocialNet item in Model.Nets)
