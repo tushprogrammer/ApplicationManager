@@ -1,38 +1,47 @@
 ﻿@namespace ApplicationManager.Views.Shared.HeaderButtView
 @model HeaderModel
 @*@model IQueryable<MainPage>*@
-<div class="btn-group pull-right" style="width: 80%;">
-    @foreach (MainPage item in Model.MainPages)
-    {
-        <a class="navbar-brand" asp-action="@item.Name" asp-controller="Home">@item.Value</a>
-    }
-    @*Случайный заголовок*@
-    <h3>@Model.Title</h3>
-
-
-
-@if (User.Identity.IsAuthenticated)
-{
-   @* <a class="navbar-brand" href="~/">В начало</a>*@
-    <a class="navbar-brand" herf="#">@User.Identity.Name</a>
-        @if (User.IsInRole("Admin"))
+<div class="btn-group pull-right header_right" style="width: 80%;">
+    @*кнопки через цикл*@
+    <div class="buttons_nav">
+        @foreach (MainPage item in Model.MainPages)
         {
-            <a class="navbar-brand"  asp-action="Index" asp-controller="Admin">Панель админа</a>
+            <a class="navbar-brand" asp-action="@item.Name" asp-controller="Home">@item.Value</a>
         }
-        @*<a asp-action="Logout" asp-controller="Account">Выход</a>*@
-        <form class="navbar-brand" method="post" asp-controller="Account" asp-action="Logout" id="logoutform" asp-antiforgery="true">
-            <a class="navbar-brand" href="#" onclick="document.getElementById('logoutform').submit()">Выход</a>
-        </form>
-     
+        @*    кнопки для админа, если авторизован и текущий пользователь админ, то ему кнопки выхода и кнопка на панель админа*@
+        @if (User.Identity.IsAuthenticated)
+        {
+            @* <a class="navbar-brand" href="~/">В начало</a>*@
+            <a class="navbar-brand" herf="#">@User.Identity.Name</a>
+            @if (User.IsInRole("Admin"))
+            {
+                <a class="navbar-brand" asp-action="Index" asp-controller="Admin">Панель админа</a>
+            }
+            @*<a asp-action="Logout" asp-controller="Account">Выход</a>*@
+            <form class="navbar-brand" method="post" asp-controller="Account" asp-action="Logout" id="logoutform" asp-antiforgery="true">
+                <a class="navbar-brand" href="#" onclick="document.getElementById('logoutform').submit()">Выход</a>
+            </form>
 
-}
-else
-{
-    @*<div class="btn-group pull-right">*@
-        <a class="navbar-brand" href="/Account/Login">Вход</a>
-       @* <a class="navbar-brand" href="/Account/Register">Регистрация </a>*@
-    @*</div>*@
-}
+
+        }
+        else
+        {
+            @*    если не авторизован то кнопка на вход*@
+            @*<div class="btn-group pull-right">*@
+            <a class="navbar-brand" href="/Account/Login">Вход</a>
+            @* <a class="navbar-brand" href="/Account/Register">Регистрация </a>*@
+            @*</div>*@
+        }
+    </div>
+ 
+    @*Случайный заголовок*@
+    <div class="render-title">
+        <h3>@Model.Title</h3>
+    </div>
+
+
+
+
 </div>
 
 @* <input type="submit" value="Выход"/>*@

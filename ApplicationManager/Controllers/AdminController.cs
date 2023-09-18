@@ -355,7 +355,7 @@ namespace ApplicationManager.Controllers
         [HttpGet]
         public IActionResult GetString()
         {
-            string myString = "Привет из контроллера!";
+            //string myString = "Привет из контроллера!";
             string json = JsonConvert.SerializeObject(data.GetContacts().Where(i => i.Id != 7));
             return new JsonResult(json);
         }
@@ -367,6 +367,7 @@ namespace ApplicationManager.Controllers
             return new JsonResult("все ок");
 
         }
+
     }
 }
 

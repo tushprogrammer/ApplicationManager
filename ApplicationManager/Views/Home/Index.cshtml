@@ -4,14 +4,14 @@
 }
 @{
     var image = Model.First(item => item.Id == 8).Value;
-    var image_path = "~/Images/" + image;
+    var image_path = "/Images/" + image;
 }
 
 
 <div class="text-center">
    
-    <div class="ImageMain">
-        <img class="ImageMain" src="@image_path" asp-append-version="true" />
+    <div class="ImageMain" style="background-image: url(@image_path)">
+     @*   <img class="ImageMain-image" src="@image_path" asp-append-version="true" />*@
         <h2>@Model.First(item => item.Id == 7).Value</h2>
        @* два варианта кнопки:*@
        @* <input type="button" value="@Model.First(item => item.Id == 6).Value"/>*@ @*- для этого варика надо еще js прописать, что нахер идет*@
