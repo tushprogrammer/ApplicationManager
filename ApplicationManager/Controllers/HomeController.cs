@@ -25,12 +25,18 @@ namespace ApplicationManager.Controllers
             IQueryable<MainPage> mainPages = data.GetMains().Where(item => item.Id >= 6 && item.Id <= 9);
             return View(mainPages);
         }
-        public IActionResult AddRequest() 
+        public IActionResult AddRequest()
         {
             //на страницу добавление надо вывести заголовок id == 9
             MainPage Title = data.GetMainRequest();
-            return View(Title);
+            return PartialView(Title);
         }
+        //public IActionResult AddRequest() 
+        //{
+        //    //на страницу добавление надо вывести заголовок id == 9
+        //    MainPage Title = data.GetMainRequest();
+        //    return View(Title);
+        //}
         public IActionResult AddNewRequest(string Name, string Email, string Description) 
         {
             //тут же создать статус по умолчанию
