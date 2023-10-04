@@ -8,7 +8,7 @@
     else
     {
         ViewData["Title"] = "Изменить элемент блога";
-        image_path = "~/Images/" + ViewBag.ImageUrl;
+        image_path = "/Images/" + ViewBag.ImageUrl;
     }
 
 }
@@ -23,9 +23,9 @@
             <input type="text" asp-for="Title"><br />
             <p>Содержимое поста</p>
             <input type="text" asp-for="Description"><br />
-            <input asp-for="Image" value="Добавить фото" />
+            <div class="ImageBlog" id="image-blog" style="background-image: url(@image_path)" />
+            <input asp-for="Image" value="Добавить фото" id="NewBlogImage" />
             <br />
-
             <a class="navbar-brand" href="#" onclick="document.getElementById('AddBlogForm').submit()">Сохранить</a>
         </form>
     }
@@ -37,11 +37,19 @@
             <input type="text" asp-for="Title" value="@Model.Title"><br />
             <p>Содержимое поста</p>
             <input type="text" asp-for="Description" value="@Model.Description"><br />
-            <img class="ImageMain" src="@image_path" asp-append-version="true" />
-            <input asp-for="Image" value="Изменить фото" />
+            <div class="ImageBlog" id="image-blog" style="background-image: url(@image_path)" />
+            @*<img class="ImageMain" src="@image_path" asp-append-version="true" />*@
+            <input asp-for="Image" value="Изменить фото" id="NewBlogImage"/>
             <br />
 
             <a class="navbar-brand" href="#" onclick="document.getElementById('EditBlogForm').submit()">Сохранить</a>
         </form>
     }
 </div>
+<script>
+    document.getElementById("NewBlogImage").addEventListener("change", function (event) {
+        var file = event.target.files[0];
+        var url = URL.createObjectURL(file);
+        document.getElementById("image-blog").style.backgroundImage = "url(" + url + ")";
+    });
+</script>

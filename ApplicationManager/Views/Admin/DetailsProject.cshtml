@@ -8,7 +8,7 @@
     else
     {
         ViewData["Title"] = "Изменить проект";
-        image_path = "~/Images/" + ViewBag.ImageUrl;
+        image_path = "/Images/" + ViewBag.ImageUrl;
     }
 
 }
@@ -28,7 +28,8 @@
             <p>Описание проекта</p>
             <input type="text" asp-for="Description" />
             <br />
-            <input asp-for="Image" value="Добавить фото"/>
+            <div class="ImageProject" id="image-project" style="background-image: url(@image_path)" />
+            <input asp-for="Image" value="Добавить фото" id="NewProjectImage"/>
             <br />
 
             <a class="navbar-brand" href="#" onclick="document.getElementById('AddProjectForm').submit()">Сохранить</a>
@@ -47,8 +48,9 @@
             <p>Описание проекта</p>
             <input type="text" asp-for="Description" value="@Model.Description"/>
             <br />
-            <img class="ImageMain" src="@image_path" asp-append-version="true" />
-            <input asp-for="Image" value="Изменить фото"/>
+            <div class="ImageProject" id="image-project" style="background-image: url(@image_path)" />
+            @*<img class="ImageMain" src="@image_path" asp-append-version="true" />*@
+            <input asp-for="Image" value="Изменить фото" id="NewProjectImage"/>
             <br />
 
             <a class="navbar-brand" href="#" onclick="document.getElementById('EditProjectForm').submit()">Сохранить</a>
@@ -56,3 +58,10 @@
     }
 
 </div>
+<script>
+    document.getElementById("NewProjectImage").addEventListener("change", function (event) {
+        var file = event.target.files[0];
+        var url = URL.createObjectURL(file);
+        document.getElementById("image-project").style.backgroundImage = "url(" + url + ")";
+    });
+</script>

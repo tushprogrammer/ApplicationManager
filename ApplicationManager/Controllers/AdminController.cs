@@ -1,13 +1,17 @@
-﻿using ApplicationManager.Data;
+﻿using AjaxControlToolkit;
+using ApplicationManager.Data;
 using ApplicationManager.Entitys;
 using ApplicationManager.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Hosting.Internal;
 using Newtonsoft.Json;
 using System.IO;
+using System.Text;
+using System.Web.Helpers;
 //using System.Web.HttpPostedFileWrapper;
 
 namespace ApplicationManager.Controllers
@@ -344,9 +348,9 @@ namespace ApplicationManager.Controllers
             //на страницу должны передаваться данные, которые в начале будут закидываться во внутренний js массив
             ContactsModel model = new()
             {
-                Contacts = data.GetContacts().Where(i => i.Id != 7),
+                //Contacts = data.GetContacts().Where(i => i.Id != 7),//это подгружает AngularJS
                 ImageUrl = data.GetContacts().First(i => i.Id == 7).Description,
-                Nets = data.GetSocialNet(),
+                //Nets = data.GetSocialNet(), //это подгружает AngularJS
                 Name_page = "Изменить контакты",
             };
             return View(model);
@@ -359,13 +363,52 @@ namespace ApplicationManager.Controllers
             string json = JsonConvert.SerializeObject(data.GetContacts().Where(i => i.Id != 7));
             return new JsonResult(json);
         }
-        
-        public JsonResult SaveContacts(string stringData) 
+        [HttpGet]
+        public IActionResult GetStringSocialNet() 
         {
-            List<Contacts> list = JsonConvert.DeserializeObject<List<Contacts>>(stringData);
-            //полученную коллекцию сохранить вместо всего старого, сейчас эта в приоритете
-            return new JsonResult("все ок");
+            string json = JsonConvert.SerializeObject(data.GetSocialNet());
+            return new JsonResult(json);
+        }
+        
+        public IActionResult SaveContacts(string stringData, IFormFile ImageUrl) 
+        {
+            if (stringData is not null)
+            {
+                ContactsNewModel model = new()
+                {
+                    Contacts = data.GetContacts().ToList(),
+                    SocialNets = data.GetSocialNet().ToList()
+                };
+                string json = JsonConvert.SerializeObject(model);
+                var info = JsonConvert.DeserializeObject<ContactsNewModel>(stringData);
+                //перед сохранением осталось загрузить в форму картинку, прислать сюда, и закинуть в таблицу Contacts
+                data.SaveContacts(info);
+            }
 
+
+
+
+            //return new JsonResult("все ок");
+            return Redirect("~/Admin/ContactsAdmin");
+
+        }
+        [HttpPost]
+        public IActionResult SaveContactfiles(List<IFormFile> files)
+        {
+            //загрузка на сервер
+            if (files is not null)
+            {
+                data.SaveNewFiles(files);
+            }
+            
+            return Ok();
+        }
+
+        //вызов верстки модального окна (надо на случай, если данные динамические)
+        public IActionResult ModalViewContactsSocialNets()
+        {
+            //а так ли мне надо вызывать отдельно верстку если оно у меня одинаковое, а данные подгружаются за счёт angular?
+            return View();
         }
 
     }

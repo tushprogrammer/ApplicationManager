@@ -1,0 +1,20 @@
+﻿@*@model IQueryable<SocialNet>*@
+@using Microsoft.JSInterop;
+@inject IJSRuntime JS
+@{
+    Layout = "";
+}
+
+<div ng-controller="AdminContacts">
+    <div class="social-nets">
+        <div ng-repeat="SocialNet in SocialNets" class="flex-container">
+
+            <div class="image-socialnet" ng-style="{'background-image': 'url(/Images/' + SocialNet.ImageUrl + ')'}"></div>
+            <input ng-model="SocialNet.Url" ng-true-value="SocialNet.Url.value" />
+            <a class="btn" href="#" ng-click="RowDeleteNets($index)"><i class="fa fa-times"> - </i></a><br />
+            <input type="file" id="file" name='file' onchange="angular.element(this).scope().fileUrlChanged(this)" />
+        </div>
+        <a class="btn btn-primary" href="#" ng-click="AddNewRowNets()"><i class="fa fa-plus">+</i></a><br />
+    </div>
+</div>
+

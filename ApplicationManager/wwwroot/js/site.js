@@ -1,4 +1,13 @@
-﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
-
-// Write your JavaScript code.
+﻿document.getElementById('openModalButton').addEventListener('click', function ()
+{
+    $.ajax({
+        url: 'путь_к_вашему_файлу.cshtml',
+        type: 'GET',
+        success: function (data) {
+            // Вставляем полученное содержимое в модальное окно
+            $('#myModal .modal-body').html(data);
+            // Открываем модальное окно
+            $('#myModal').modal('show');
+        }
+    }); 
+});

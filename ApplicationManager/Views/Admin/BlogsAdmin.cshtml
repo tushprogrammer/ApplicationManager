@@ -8,7 +8,7 @@
 <div class="boxes">
     @foreach (Blog item in Model.Blogs)
     {
-        var image_path = "~/Images/" + item.ImageUrl;
+        var image_path = "/Images/" + item.ImageUrl;
 
         string ShortDesc;
         if (item.Description.IndexOf('.') < 40 && item.Description.Contains('.'))
@@ -31,6 +31,7 @@
             <a asp-action="BlogDetails" asp-controller="Home" asp-route-id="@item.Id">
                 <figure>
                     <p>@item.Created.ToString("D")</p>
+                    <div class="ImageBlog" id="image-project" style="background-image: url(@image_path)" />
                     <img class="ImageProject" src="@image_path" asp-append-version="true" />
                     <p>@item.Title</p>
                     <h5>@ShortDesc</h5>

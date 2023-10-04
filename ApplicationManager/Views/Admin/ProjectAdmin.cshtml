@@ -8,12 +8,13 @@
 <div class="boxes">
     @foreach (Project item in Model.Projects)
     {
-        var image_path = "~/Images/" + item.ImageUrl;
-        <div>
+        var image_path = "/Images/" + item.ImageUrl;
+       
             <div class="box">
                 <a asp-action="ProjectDetails" asp-controller="Home" asp-route-id="@item.Id">
                     <figure>
-                        <img class="ImageProject" src="@image_path" asp-append-version="true" />
+                        <div class="ImageProject" id="image-project" style="background-image: url(@image_path)" />
+                        @*<img class="ImageProject" src="@image_path" asp-append-version="true" />*@
                         <p>@item.Title</p>
                     </figure>
                 </a>
@@ -22,6 +23,6 @@
             @*тут будут хранится кнопки редактирования и удаления*@
             <a asp-action="DetailsProject" asp-controller="Admin" asp-route-id="@item.Id">Редактировать</a>
             <a asp-action="DeleteProjectMethod" asp-controller="Admin" asp-route-id="@item.Id">Удалить</a>
-        </div>
+        
     }
 </div>

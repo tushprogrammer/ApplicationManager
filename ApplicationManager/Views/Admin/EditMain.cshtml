@@ -4,16 +4,17 @@
 }
 @{
     var image = ViewBag.Image;
-    var image_path = "~/Images/" + image;
+    var image_path = "/Images/" + image;
 }
 
 <form class="navbar-brand" method="post" asp-controller="Admin" asp-action="EditMainSave" id="EditMainform" asp-antiforgery="true" enctype="multipart/form-data">
 <div class="text-center">
 
     <div class="ImageMain">
-        <img class="ImageMain" src="@image_path" asp-append-version="true" />
+            <div class="ImageMain" id="Image-main" style="background-image: url(@image_path)"/>
+        @*<img class="ImageMain" src="@image_path" asp-append-version="true" />*@
         @*загрузка картинки*@
-            <input asp-for="Image" />
+            <input asp-for="Image" id="NewMainImage"/>
             <input type="text" asp-for="Title" value="@Model.Title" />
 
         @* два варианта кнопки:*@
@@ -36,3 +37,10 @@
 
     <a class="navbar-brand" href="#" onclick="document.getElementById('EditMainform').submit()">Сохранить</a>
 </form>
+<script>    
+    document.getElementById("NewMainImage").addEventListener("change", function (event) {
+        var file = event.target.files[0];
+        var url = URL.createObjectURL(file);
+        document.getElementById("Image-main").style.backgroundImage = "url(" + url + ")";
+    });
+</script>

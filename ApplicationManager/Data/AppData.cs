@@ -229,6 +229,44 @@ namespace ApplicationManager.Data
         {
             return Context.SocialNets;
         }
+        public void SaveContacts(ContactsNewModel info)
+        {
+            //чтоб выполнить сохранение изменений, надо:
+            //найти все элементы, которые есть еще в контексте и поменять их значения, по id, если они были изменены
+            //всех, кого не стало, удалить из контекста
+            //всех, кого не было, добавить
+            //но это придется 2 раз обращаться к бд для получения исходных данных,
+            //а после сравнения еще 6 раз запросами на изменение
+            //или
+            //заменить полностью коллекции внутри контекста
+            //как показала практика, низя тупо заменить таблицы, хы
+            //а если попробовать сначала полносью опустошить таблицы, а потом их заполнить новыми объектами?
+            //сохранение идет с привязкой к именам новых файлов
+            var oldSocialNets = Context.SocialNets;
+            Context.SocialNets.RemoveRange(oldSocialNets);
+
+            Context.SocialNets.AddRange(info.SocialNets);
+            Context.SaveChanges();
+
+            //перед сохранением осталось загрузить в форму картинку адреса, прислать сюда, и закинуть в таблицу Contacts
+            //Context.SaveChanges();
+        }
+        public void SaveNewFiles(List<IFormFile> files)
+        {
+            //загрузка всех новых файлов на сервер
+            if (files != null)
+            {
+                foreach (IFormFile item in files)
+                {
+                    string uploadPath =
+                    Path.Combine(webHost.WebRootPath, "Images");
+                    string UniqueName = Guid.NewGuid().ToString() + "_" + item.FileName;
+                    string FilePath = Path.Combine(uploadPath, UniqueName);
+                    item.CopyTo(new FileStream(FilePath, FileMode.Create));
+                }
+     
+            }
+        }
         public IQueryable<Request> GetRequests()
         {
             List<Request> tempRequests = Context.Requests.ToList();
@@ -324,5 +362,6 @@ namespace ApplicationManager.Data
             requestNow.StatusId = reqChange.StatusId;
             Context.SaveChanges();
         }
+
     }
 }

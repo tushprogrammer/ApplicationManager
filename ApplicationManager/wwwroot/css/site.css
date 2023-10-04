@@ -23,6 +23,18 @@ body {
     width: 100%;
     height:500px;
 }
+.ImageProject {
+    background-size: cover;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+}
+.ImageBlog {
+    background-size: cover;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+}
 .ImageMain-image{
 }
 .navbar {
@@ -56,6 +68,26 @@ body {
     width: 100%;
     height: 100%;
     object-fit: cover;
+}
+.image-socialnet {
+    width: 32px;
+    height: 32px;
+    padding-left: 30px;
+    object-fit: cover;
+    background-size: cover;
+}
+.image-address {
+    width: 600px;
+    height: 500px;
+    background-size: cover;
+}
+.LoadNewAddress {
+    visibility: hidden;
+}
+
+.flex-container {
+    display: flex;
+    align-items: center;
 }
 p {
     display: block;
@@ -102,4 +134,42 @@ details[open] summary::after {
 .render-title{
     text-align:center;
 }
+
+.MyModal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.MyModal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+     
+}
+
+.MyClose {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+     
+}
+
+.close:hover,   .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+         
+}
+
+ 
 

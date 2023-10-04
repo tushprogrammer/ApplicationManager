@@ -1,29 +1,22 @@
 ﻿@using Microsoft.JSInterop;
-@using Newtonsoft.Json;
 @model ContactsModel
 @inject IJSRuntime JS
 
+@{
+    var image_path = "/Images/" + Model.ImageUrl;
+}
 <p>
     <a asp-action="Index">Главная</a> -> @Model.Name_page
 </p>
 <h1>@Model.Name_page</h1>
 <br />
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
-@{
-    //попробовать свой массив переделать в json и его отдельно отправить в js
-    string json = JsonConvert.SerializeObject(Model.Contacts);
-    //как вызвать функцию js из c# после загрузки страницы
-    //await JS.InvokeVoidAsync("ToContacts", item.Name, item.Description);
-}
-@*это работает только вне контроллера*@
 
-@*<label>Введите имя:</label>
-<input type="text" ng-model="name" placeholder="Введите имя">
-<h1>Добро пожаловать {{name}}!</h1>*@
 
 <div ng-controller="AdminContacts">
-
     <div>
+        <form asp-controller="Admin" asp-action="SaveContacts" method="post" id="SaveContactsForm" asp-antiforgery="true" enctype="multipart/form-data">
+
         <table>
             <thead class="thead-light">
                 <tr>
@@ -33,15 +26,6 @@
                 </tr>
             </thead>
             <tbody>
-@*                <tr>
-                    @foreach (var item in Model.Contacts)
-                    {
-                        <td>
-                            <input type="text" value="@item.Name">
-                            <input type="text" value="@item.Description">
-                        </td>
-                    }
-                </tr>*@
                 <tr ng-repeat="Contact in Contacts">
                     <td class="center">{{$index+1}}</td>
                     <td class="right"><input ng-model="Contact.Name" ng-true-value="Contact.Name.value" /></td>
@@ -52,117 +36,206 @@
                     <td>
                         
                         <a href="#" ng-click="AddNewRow()"><i class="fa fa-plus">+</i></a>
-                        <form asp-controller="Admin" asp-action="SaveContacts" method="post">
-                            <input type="hidden" name="stringData" ng-value="data()" />
-                            <input type="submit" value="Сохранить"/>
-                        </form>
-                        @*<input type="submit" ng-click="getString()" value="Проверка" />*@
+                            
+                            @*<input class="btn btn-primary" type="submit" value="Сохранить" ng-click="loadfiles()" />*@
+                        
                     </td>
                 </tr>
             </tbody>
         </table>
+            <div class="btn btn-primary">
+                <label for="LoadNewAddress">Загрузить новое расположение</label>
+       </div>            
+            <input type="file" name="ImageUrl" accept="image/*" class="LoadNewAddress"
+                   id="LoadNewAddress" file-on-change="OnAddressChange" />
+   
+            <input type="hidden" name="stringData" ng-value="data()" />
 
+            <div id="image-address" class="image-address" style="background-image: url(@image_path)"> </div>
+            <a class="btn btn-primary" href="#" onclick="document.getElementById('SaveContactsForm').submit()"
+               ng-click="loadfiles()">Сохранить</a>
+        </form>
     </div>
-@*    <div>
-        @foreach (SocialNet item in Model.Nets)
-        {
-            var image_path = "~/Images/" + item.ImageUrl;
-            <a href="@item.Url">
-                <img class="ImageProject" src="@image_path" asp-append-version="true" />
-            </a>
-        }
-        @{
-            var image_address = "~/Images/" + Model.ImageUrl;
-        }
-        <img class="ImageProject" src="@image_address" asp-append-version="true" />
-    </div>*@
-    @*при нажатии тут надо внутренний массив contact передать в форму*@
-    <a href="#" ng-click="SaveContacts()">Сохранить</a>
+    <button id="openModalButton" ng-click="OpenMyModal()">Открыть окно с контактами</button>
+    @* Начало модального окна*@
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Модальное окно</h5>
+                    <button type="button" class="close" ng-click="CloseMyModal()">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="social-nets">
+                        <div ng-repeat="SocialNet in SocialNets" class="flex-container">
+                            <div class="image-socialnet" ng-style="{'background-image': 'url(/Images/' + SocialNet.ImageUrl + ')'}"></div>
+                            <input ng-model="SocialNet.Url" ng-true-value="SocialNet.Url.value" />
+                            <a class="btn" href="#" ng-click="RowDeleteNets($index)"><i class="fa fa-times"> - </i></a><br />
+                            <input type="file" id="file" name='file' ng-model="SocialNet.ImageUrl"
+                                   file-on-change="onFileChange" additional-param="$index"/>
+                        </div>
+                        <a class="btn btn-primary" href="#" ng-click="AddNewRowNets()"><i class="fa fa-plus">+</i></a><br />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" ng-click="CloseMyModal()">Закрыть</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
 <script src="~/js/angular.min.js"></script>
-<script src="~/js/admincontact.js"></script>
+<script src="~/js/site.js"></script>
 <script>
-    //function ToContacts(name, description) {
-    //    alert("name:" + name + "Description: " + description)
-    //    model.push(Name: name, Description: description)
-    //};
-    
     var MyApp = angular.module("MyApp", []);
+    //для обработки изменения <input type = "file">
+    MyApp.directive('fileOnChange', function () {
+        return {
+            restrict: 'A',
+            scope: {
+                fileOnChange: '=',
+                additionalParam: '=' // Дополнительный параметр
+            },
+            link: function (scope, element, attrs) {
+                var onChangeHandler = function (event) {
+                    scope.fileOnChange(event, scope.additionalParam); // Передача дополнительного параметра (если нужен)
+                };
+                element.bind('change', onChangeHandler);
+            }
+        };
+    });
+
     MyApp.controller('AdminContacts', function ($scope, $http) {
-        //$scope.Contacts = [];
-        //window.addEventListener('load', () => {
-        //    //$scope.Contacts = jsJSON;
-        //    alert(jsJSON);
-        //});
-        //$scope.Contacts =/* JsonConvert.SerializeObject(json);*/
+
+        //временный массив новых загружаемых файлов
+        $scope.files = [] 
+        $scope.onFileChange = function (event, index) {
+            var filename = event.target.files[0].name;
+            $scope.SocialNets[index].ImageUrl = filename;
+
+             //получили текущий файл
+            var file = event.target.files[0];
+            //закинули во временный массив, где хранятся все файлы на текущий момент
+            $scope.files.push(file);
+
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $scope.$apply(); // обновление модели AngularJS
+            };
+            reader.readAsDataURL(file);
+
+           
+            // (ибо зачем нам при каждом выборе файла сразу его загружать?)
+           
+        };
+        //метод, ответственный за изменение картинки адреса при загрузке новой
+        $scope.OnAddressChange = function (event) {
+            //получили файл
+            var file = event.target.files[0];
+            //получили его текущий физический путь
+            var url = URL.createObjectURL(file);
+            //указали нужному блоку стиль бакграунда с новой картинкой
+            document.getElementById("image-address").style.backgroundImage = "url(" + url + ")";
+        }
+
+        $scope.loadfiles = function(){
+            alert('вызов сохранения картинок');
+            // Создаем объект FormData
+            var formData = new FormData();
+
+            // Добавляем каждый файл в массиве к объекту FormData
+            for (var i = 0; i < $scope.files.length; i++) {
+                formData.append("files", $scope.files[i]);
+            }
+
+            // Отправляем данные формы на сервер
+            $http.post("/Admin/SaveContactfiles", formData, {
+                transformRequest: angular.identity,
+                headers: { 'Content-Type': undefined }
+            }).then(function (response) {
+                // Обработка успешного ответа от сервера
+            }, function (error) {
+                // Обработка ошибки
+            });
+        };
+
+        $scope.OpenMyModal = function(){
+            $.ajax({
+                url: '/Admin/ModalViewContactsSocialNets',
+                type: 'GET',
+                success: function (data) {
+                    // Вставляем полученное содержимое в модальное окно
+                    //$('#myModal .modal-body').html(data); сейчас это уже не надо, 
+                    // так как наполнение статичное, для подгрузки данных через angularJS
+                    //а иначе данные через перебор массива не выводятся
+                    $scope.GetStringNets();
+                    // Открываем модальное окно
+                    $('#myModal').modal('show');
+                }
+            });
+        }
+        $scope.CloseMyModal = function(){
+            $('#myModal').modal('hide');
+        }
+
         $scope.AddNewRow = function () {
             $scope.Contacts.push({ Name: '', Description: '' });
         };
-        //$scope.ToContacts = function (name, description) {
-        //    $scope.Contacts.push({ Name: name, Description: description });
-        //};
+
 
         $scope.getString = function () {
             $http.get('/Admin/GetString')
                 .then(function (response) {
                     $scope.Contacts = JSON.parse(response.data);
-                    //$scope.myString = response.data;
-                    //alert(response.data);
-                    // Другие действия с полученной строкой
                 }, function (error) {
-                    // Обработка ошибки
                     alert(error)
                 });
-            //alert("что нибудь");
         };
         $scope.getString();
+
         $scope.RowDelete = function (index) {
             if (index > -1) {
-                //alert("сейчас удалим элемент №" + index);
                 $scope.Contacts.splice(index, 1);
             }
         };
-        $scope.data = function(){
-            return JSON.stringify(
-                $scope.Contacts
-            );
-        }
-        
-        $scope.SaveContacts = function () {
-            var data = JSON.stringify({
-                Contact: $scope.Contacts
-            });
-            var dataArray = $scope.Contacts;
-            alert(data);
-            //$http.post('/Admin/SaveContacts', { json: data }, { headers: { 'Content-Type': 'application/json' } })
-            //    .then(function (response) {
-            //        alert("Сохранение данных успешно");
-            //    }, function (error) {
-            //        alert("Упс, что то пошло не так");
-            //    });
-            return $.ajax({
-                contentType: 'application/json; charset=utf-8',
-                dataType: 'json',
-                type: 'POST',
-                url: "/Admin/SaveContacts",
-                data: data,
-                success: function (result) {
-                    if (result.IsSuccess == true) {
 
-                        //Reset();
-                        alert("Save Success!");
-                    }
-                    else {
-                        alert("Save failed!");
-                    }
-                },
-                error: function () {
-                    alert("Error!")
-                }
+        //сбор значений двух массивов перед отправкой на сервер
+        $scope.data = function(){
+            var data = JSON.stringify({
+                Contacts: $scope.Contacts,
+                SocialNets: $scope.SocialNets
             });
+            return data;
+        }
+
+
+        $scope.AddNewRowNets = function () {
+            $scope.SocialNets.push({ Url: '', ImageUrl: '' });
         };
+        $scope.RowDeleteNets = function (index) {
+            if (index > -1) {
+                $scope.SocialNets.splice(index, 1);
+            }
+        };
+
+        $scope.GetStringNets = function () {
+            $http.get('/Admin/GetStringSocialNet')
+                .then(function (response) {
+                    $scope.SocialNets = JSON.parse(response.data);
+                    /*alert(response.data);*/ //по прежнему работает, и корректно срабатывает, но в самой верствке не выводятся блять ебанный нахуй рот элементы
+                }, function (error) {
+                    alert(error)
+                });
+        };
+        $scope.GetStringNets();
         
     });
+
     
 </script>

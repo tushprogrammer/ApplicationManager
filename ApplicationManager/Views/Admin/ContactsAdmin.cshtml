@@ -26,17 +26,26 @@
 
     </div>
     <div>
-        @foreach (SocialNet item in Model.Nets)
-        {
-            var image_path = "~/Images/" + item.ImageUrl;
-            <a href="@item.Url">
-                <img class="ImageProject" src="@image_path" asp-append-version="true" />
-            </a>
-        }
+        <div>
+            @foreach (SocialNet item in Model.Nets)
+            {
+                var image_path = "/Images/" + item.ImageUrl;
+                <a href="@item.Url">
+                    <div class="image-socialnet" style="background-image: url(@image_path)"/>
+
+                    @*<img class="ImageProject" src="@image_path" asp-append-version="true" />*@
+                </a>
+            }
+        </div>
         @{
-            var image_address = "~/Images/" + Model.ImageUrl;
+            var image_address = "/Images/" + Model.ImageUrl;
         }
-        <img class="ImageProject" src="@image_address" asp-append-version="true" />
+        <div class="image-address" style="background-image: url(@image_address)"/>
+          
+            @*<img class="ImageProject" src="@image_address" asp-append-version="true" />*@
+       
     </div>
 <a asp-action="EditContact" asp-controller="Admin">Редактировать</a>
 </div>
+
+

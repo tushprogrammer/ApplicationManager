@@ -39,6 +39,8 @@ namespace ApplicationManager.Data
         public Blog GetBlog(int id);
         public void AddBlog(DetailsBlogModel newBlog);
         public void EditBlog(DetailsBlogModel blog);
-        void DeleteBlog(int id);
+        public void DeleteBlog(int id);
+        public void SaveContacts(ContactsNewModel info);
+        public void SaveNewFiles(List<IFormFile> files);
     }
 }

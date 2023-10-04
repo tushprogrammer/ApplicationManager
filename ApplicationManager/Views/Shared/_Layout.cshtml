@@ -40,6 +40,26 @@
 
         </main>
     </div>
+    <div ng-controller="AdminContacts">
+        <div class="Modal fade" id="modal" tabindex="1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5>Социальные сети</h5>
+                    </div>
+                    <div class="modal-body">
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-close btn-secondary" data-bs-dismiss="modal"></button>
+                        <button type="button" class="btn btn-primary" id="saveBtn">Сохранить</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 
     <footer class="border-top footer text-muted">
         <div class="container">
@@ -52,3 +72,4 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+
