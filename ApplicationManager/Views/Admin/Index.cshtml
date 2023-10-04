@@ -3,16 +3,45 @@
 @{
     ViewData["Title"] = "Admin Page";
 }
+<div class="pad-top">
 @*пока что кнопки навигации для панели админа тут, но их надо вынести отдельно в собственный layout*@
-<div>
+@*<div class="butt-list">
     <a asp-action="UserList" asp-controller="Account">Список пользователей</a> <br />
-    <a asp-action="MainAdmin">Редактирование раздела "Главная" </a><br />
-    <a asp-action="ProjectAdmin">Раздел "Проекты"</a><br />
-    <a asp-action="ServicesAdmin">Раздел "Услуги"</a><br />
-    <a asp-action="BlogsAdmin">Раздел "Блог"</a><br />
-    <a asp-action="ContactsAdmin">Раздел "Контакты"</a><br />
-</div>
-<h3>Всего @Model.AllRequestsCount заявок</h3>
+    <a asp-action="MainAdmin">Ред. "Главная" </a><br />
+    <a asp-action="ProjectAdmin">Ред. "Проекты"</a><br />
+    <a asp-action="ServicesAdmin">Ред. "Услуги"</a><br />
+    <a asp-action="BlogsAdmin">Ред. "Блог"</a><br />
+    <a asp-action="ContactsAdmin">Ред. "Контакты"</a><br />
+</div>*@
+@{
+    int lastDigit = Model.AllRequestsCount % 10;
+    int lastTwoDigits = Model.AllRequestsCount % 100;
+
+    if (lastTwoDigits >= 11 && lastTwoDigits <=19)
+    {
+        <h3>Всего @Model.AllRequestsCount заявок</h3>
+    }
+    else
+    {
+        if (lastDigit == 1)
+        {
+            <h3>Всего @Model.AllRequestsCount заявка</h3>
+        }
+        else
+        {
+            if (lastDigit >= 2 && lastDigit <=4)
+            {
+                <h3>Всего @Model.AllRequestsCount заявки</h3>
+            }
+            else
+            {
+                <h3>Всего @Model.AllRequestsCount заявок</h3>
+            }
+
+        }
+    }
+}
+@*<h3>Всего @Model.AllRequestsCount заявок</h3>*@
 @*добавить условия вывода текста в зависимости от количества (заявок, заявки)*@
 
 @*кнопки выбора периода заявок*@
@@ -39,10 +68,37 @@
         </div>
     </div>
 </div>
-<h3>За указанный период поступило @Model.Requests.Count() заявок</h3>
+@{
+    lastDigit = Model.Requests.Count() % 10;
+    lastTwoDigits = Model.Requests.Count() % 100;
+
+    if (lastTwoDigits >= 11 && lastTwoDigits <= 19)
+    {
+        <h3>За указанный период поступило @Model.Requests.Count()  заявок</h3>
+    }
+    else
+    {
+        if (lastDigit == 1)
+        {
+            <h3>За указанный период поступило @Model.Requests.Count()  заявка</h3>
+        }
+        else
+        {
+            if (lastDigit >= 2 && lastDigit <= 4)
+            {
+                <h3>За указанный период поступило @Model.Requests.Count()  заявки</h3>
+            }
+            else
+            {
+                <h3>За указанный период поступило @Model.Requests.Count()  заявок</h3>
+            }
+
+        }
+    }
+}
 @*комбо бокс для выбора заявок по статусу:*@
 <div>
-    <select asp-items="new SelectList(Model.Statuses)" onchange="PassSelectedValue(this)">
+        <select asp-items="new SelectList(Model.Statuses)" onchange="PassSelectedValue(this)">
         <option value="" selected="selected">Выберете статус заявки</option>
     </select>
 </div>
@@ -113,16 +169,13 @@
         }
     </tbody>
 </table>
+</div>
 
 @section Scripts
     {
     <script>
         function PassSelectedValue(selectObject) {
-            /*console.log(selectObject.value);*/  //For testing the selected item
-            //if you have a Details.cshtml in Pages folder
-            //the request url should be like below....
-            location.href =            
-            "Admin/StatusRequests?statusName=" + selectObject.value;
+            window.location.replace("/Admin/StatusRequests?statusName=" + selectObject.value);
         }
 
     </script>

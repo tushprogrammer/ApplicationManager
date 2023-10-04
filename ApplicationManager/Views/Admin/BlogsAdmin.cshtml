@@ -1,44 +1,46 @@
 ﻿@model BlogsModel
-<p>
-    <a asp-action="Index">Главная</a> -> @Model.Name_page
-</p>
-<h1>@Model.Name_page</h1>
-<br />
-<a asp-action="AddNewBlog">Добавить элемент блога</a>
-<div class="boxes">
-    @foreach (Blog item in Model.Blogs)
-    {
-        var image_path = "/Images/" + item.ImageUrl;
-
-        string ShortDesc;
-        if (item.Description.IndexOf('.') < 40 && item.Description.Contains('.'))
-            ShortDesc = item.Description.Substring(0, item.Description.IndexOf('.'));
-        else
+<div class="pad-top">
+    <p>
+        <a asp-action="Index">Главная</a> -> @Model.Name_page
+    </p>
+    <h1>@Model.Name_page</h1>
+    <br />
+    <a asp-action="AddNewBlog">Добавить элемент блога</a>
+    <div class="boxes">
+        @foreach (Blog item in Model.Blogs)
         {
-            if (item.Description.Length > 40)
-            {
-                ShortDesc = $"{item.Description.Substring(0, 38)}...";
-            }
+            var image_path = "/Images/" + item.ImageUrl;
+
+            string ShortDesc;
+            if (item.Description.IndexOf('.') < 40 && item.Description.Contains('.'))
+                ShortDesc = item.Description.Substring(0, item.Description.IndexOf('.'));
             else
             {
-                ShortDesc = item.Description;
+                if (item.Description.Length > 40)
+                {
+                    ShortDesc = $"{item.Description.Substring(0, 38)}...";
+                }
+                else
+                {
+                    ShortDesc = item.Description;
+                }
             }
-        }
 
             
 
-        <div class="box">
-            <a asp-action="BlogDetails" asp-controller="Home" asp-route-id="@item.Id">
-                <figure>
-                    <p>@item.Created.ToString("D")</p>
-                    <div class="ImageBlog" id="image-project" style="background-image: url(@image_path)" />
-                    <img class="ImageProject" src="@image_path" asp-append-version="true" />
-                    <p>@item.Title</p>
-                    <h5>@ShortDesc</h5>
-                </figure>
-            </a>
-            <a asp-action="EditBlog" asp-controller="Admin" asp-route-id="@item.Id">Редактировать</a>
-            <a asp-action="DeleteBlogMethod" asp-controller="Admin" asp-route-id="@item.Id">Удалить</a>
-        </div>
-    }
+            <div class="box">
+                <a asp-action="BlogDetails" asp-controller="Home" asp-route-id="@item.Id">
+                    <figure>
+                        <p>@item.Created.ToString("D")</p>
+                        <div class="ImageBlog" id="image-project" style="background-image: url(@image_path)" />
+                        <img class="ImageProject" src="@image_path" asp-append-version="true" />
+                        <p>@item.Title</p>
+                        <h5>@ShortDesc</h5>
+                    </figure>
+                </a>
+                <a asp-action="EditBlog" asp-controller="Admin" asp-route-id="@item.Id">Редактировать</a>
+                <a asp-action="DeleteBlogMethod" asp-controller="Admin" asp-route-id="@item.Id">Удалить</a>
+            </div>
+        }
+    </div>
 </div>

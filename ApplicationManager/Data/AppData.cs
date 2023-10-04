@@ -24,7 +24,11 @@ namespace ApplicationManager.Data
         {
             return Context.MainPage;
         }
-        
+        public IQueryable<MainPage> GetMainsAdmin()
+        {
+            //цифры временные, из-за сбитого порядка, при инициализации проекта будут другие, надо будет перенастроить
+            return Context.MainPage.Where(i => i.Id >= 21 && i.Id <= 26);
+        }
         public void EditMain(MainPageUploadModel model)
         {
             // путь к папке images 

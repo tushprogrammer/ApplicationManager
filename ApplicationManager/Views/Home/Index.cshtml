@@ -14,10 +14,28 @@
      @*   <img class="ImageMain-image" src="@image_path" asp-append-version="true" />*@
         <h2>@Model.First(item => item.Id == 7).Value</h2>
        @* два варианта кнопки:*@
-       @* <input type="button" value="@Model.First(item => item.Id == 6).Value"/>*@ @*- для этого варика надо еще js прописать, что нахер идет*@
+        <input type="button" class="navbar-brand"  
+        value="@Model.First(item => item.Id == 6).Value" 
+        onclick="LoadAddRequestform()" /> 
        @*для этого варика надо подпилить css*@
-        <form class="navbar-brand" method="post" asp-controller="Home" asp-action="AddRequest" id="AddRequestform" asp-antiforgery="true">
+@*        <form class="navbar-brand" method="post" asp-controller="Home" asp-action="AddRequest" id="AddRequestform" asp-antiforgery="true">
             <a class="navbar-brand" href="#" onclick="document.getElementById('AddRequestform').submit()">@Model.First(item => item.Id == 6).Value</a>
-        </form>
+        </form>*@
+    </div>
+    <div class="animated-container">
+        <div id="additionalViewContainer"></div>
     </div>
 </div>
+
+<script>
+    function LoadAddRequestform() {
+        $.ajax({
+            url: '/Home/AddRequest', 
+            type: 'GET',
+            success: function (result) {
+                $('#additionalViewContainer').html(result);
+                $('#additionalViewContainer').addClass('slide-in-down');
+            }
+        });
+    }
+</script>

@@ -42,5 +42,6 @@ namespace ApplicationManager.Data
         public void DeleteBlog(int id);
         public void SaveContacts(ContactsNewModel info);
         public void SaveNewFiles(List<IFormFile> files);
+        public IQueryable<MainPage> GetMainsAdmin();
     }
 }
