@@ -6,8 +6,14 @@
 <p>
     <a asp-action="Index">Главная</a> -> <a asp-action="project">@Model.Name_page</a> -> @projectnow.NameCompany
 </p>
-<div>
-    <img class="ImageProject" src="@image_path" asp-append-version="true" />
-    <h2>@projectnow.Title</h2>
-    <p>@projectnow.Description</p>
+<div class="article-container">
+   
+    <div class="article-content">
+        <h2>@projectnow.Title</h2>
+        <hr />
+        <p>@projectnow.Description</p>
+    </div>
+    <img class="article-image" src="@image_path" asp-append-version="true" />
+    
+   
 </div>

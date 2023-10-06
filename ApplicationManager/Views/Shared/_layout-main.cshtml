@@ -9,16 +9,17 @@
     <link rel="stylesheet" href="~/ApplicationManager.styles.css" asp-append-version="true" />
 </head>
 <body>
-    <header class="header-admin">
-       
-            @await Component.InvokeAsync("HeaderAdmin")
-           
-
-               
-
-     
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom">
+            <div class="container-fluid">
+                <div style="width: 40%">
+                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">ApplicationManager</a> @*название проекта в углу, ссылка первую страницу*@
+                </div>
+                <div style="width: 60%"> @await Component.InvokeAsync("HeaderButtView") </div>
+            </div>
+        </nav>
     </header>
-    <div class="container-admin">
+    <div class="container-main">
         <main role="main" class="pb-3">
             @RenderBody()
 

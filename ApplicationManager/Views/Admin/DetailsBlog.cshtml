@@ -12,6 +12,7 @@
     }
 
 }
+<div class="pad-top">
 <p>
     <a asp-action="Index">Главная</a> -> <a asp-action="BlogsAdmin" asp-controller="Admin">@ViewBag.Name_page</a> -> @ViewBag.Title
 </p>
@@ -45,6 +46,7 @@
             <a class="navbar-brand" href="#" onclick="document.getElementById('EditBlogForm').submit()">Сохранить</a>
         </form>
     }
+</div>
 </div>
 <script>
     document.getElementById("NewBlogImage").addEventListener("change", function (event) {

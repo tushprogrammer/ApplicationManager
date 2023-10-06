@@ -23,18 +23,8 @@ body {
     width: 100%;
     height:500px;
 }
-.ImageProject {
-    background-size: cover;
-    margin-left: auto;
-    margin-right: auto;
-    width: 100%;
-}
-.ImageBlog {
-    background-size: cover;
-    margin-left: auto;
-    margin-right: auto;
-    width: 100%;
-}
+
+
 .ImageMain-image{
 }
 .navbar {
@@ -56,20 +46,102 @@ body {
     white-space: nowrap;
 }
 .boxes {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+/*    display: flex;
+    flex-wrap: wrap;*/
 }
 .box {
-    border: 1px solid black;
+    border: 1px solid #ccc;
+    /*padding: 20px;*/
+
+    display: flex;
+    flex-direction: column;
+    background-color: #f9f9f9; /*хз зачем это*/
+    /*    border: 1px solid black;
     width: 33%;
-    height: 200px;
+    height: 200px;*/
+}
+.boxes-blog {
+       display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+/*    display: flex;
+    justify-content: space-between;*/
+}
+.box-blog {
+    /*border: 1px solid #ccc;*/
+    /*padding: 20px 10px;*/
+    /*width: 25%;*/
+    display: flex;
+    flex-direction: column;
+}
+.box-blog a {
+    color: black; 
+    text-decoration: none; 
+}
+.date-blog {
+    color: gray;
+    font-size: 12px;
+}
+.title-blog {
+    height: 50px;
+    margin: 10px 5px;
+}
+.description-blog {
+    height: 100px;
+    word-break: break-word;
+}
+.description-blog-details {
+    word-break: break-word;
+    flex: 1;
 }
 .ImageProject {
+    background-size: cover;
+    background-position: center;
+    height: 200px;
+    margin-left: auto;
+    margin-right: auto;
+    /*height: auto;*/
+    /*position: absolute;*/
+    /*    top: 0;
+    left: 0;*/
     width: 100%;
-    height: 100%;
+    /*height: 100%;*/
     object-fit: cover;
 }
-.image-socialnet {
+
+.ImageBlog {
+    background-size: cover;
+    background-position: center;
+    margin-left: auto;
+    margin-right: auto;
+    height: 250px;
+    width: 100%;
+    object-fit: cover;
+}
+.ImageBlog-details {
+    flex: 1;
+    max-width: 20%; /* Ширина изображения */
+    height: 200px; /* Автоматическая высота изображения */
+    margin-right: 20px; /* Расстояние между изображением и текстом */
+    background-size: cover;
+}
+.block-title {
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.block-title div{
+    margin: 0px;
+}
+
+    .image-socialnet {
     width: 32px;
     height: 32px;
     padding-left: 30px;
@@ -97,33 +169,7 @@ p {
     margin-inline-start: 0px;
     margin-inline-end: 0px;
 }
-/*summary::-webkit-details-marker {
-    display: none
-}*/
 
-/*details summary::-webkit-details-marker {
-    background: red;
-    color: #fff;
-    font-size: 500%;
-}*/
-
-summary::after {
-    background: red;
-    border-radius: 5px;
-    content: "+";
-    color: #fff;
-    float: left;
-    font-size: 1.5em;
-    font-weight: bold;
-    margin: -5px 10px 0 0;
-    padding: 0;
-    text-align: center;
-    width: 30px;
-}
-
-details[open] summary::after {
-    content: "-";
-}
 .buttons_nav{
     display: flex;
     flex-direction: row;
@@ -186,6 +232,8 @@ details[open] summary::after {
 
 .slide-in-down {
     animation: slideInDown 0.3s ease-in-out;
+    margin-left: 20%;
+    width: 60%;
 }
 .animated-container {
     /* overflow: hidden;*/
@@ -239,14 +287,186 @@ details[open] summary::after {
             background-color: cornflowerblue;
             border: 1px solid white;
         }
-.container {
-    margin-left: 190px;
+.container-admin {
+    margin-left: 190px;main
 }
 .butt-list{
     padding-top: 60px;
 }
 .pad-top {
-    padding-top: 60px;
+    padding: 60px 20px 0;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+.butt-sort {
+    border: 1px solid #000;
+    padding: 10px;
+    transition: background-color 0.15s;
+}
+.butt-sort:hover {
+    background-color: cadetblue;
+}
+.normal-width {
+    flex: 1;
+}
+.large-width {
+    flex: 2;
+}
+.butt-sort a {
+    display: block;
+    color: black;
+    /*margin: 0 10px;*/
+    padding: 10px 20px;
+    width: 100%;
+    text-decoration: none;
+    text-align: center;
+    transition: color 0.15s;
+}
+.butt-sort a:active {
+    color: blue;
+    font-weight: bold;
+}
+.dates {
+    display: block;
+    /*margin: 0 10px;*/
+    padding: 15px 20px;
+    width: 100%;
+    text-decoration: none;
+    text-align: center;
+}
+.table-requests {
+    table-layout: fixed;
+
+    width: 100%;
+    margin-bottom: 20px;
+    border: 15px solid #F2F8F8;
+    border-top: 5px solid #F2F8F8;
+    border-collapse: collapse;
+}
+
+.table-requests td {
+    padding: 10px;
+    border: none;
+    border-bottom: 5px solid #F2F8F8;
+    text-align: center;
+}
+
+
+.table-requests th {
+    font-size: 11px;
+    text-align: center;
+    font-weight: bold;
+    padding: 5px;
+    background: #F2F8F8;
+    border: none;
+    border-bottom: 5px solid #F2F8F8;
+}
+.table-requests tr {
+    margin: 5px;
+}
+
+.select-status {
+    margin: 15px;
+}
+.butt-main{
+    width: 20%;
+    margin-top: 5%;
+}
+.container-main {
+    padding: 0px;
+    width: 100%;
+    max-width: none;
+    margin-left: 0px;
+}
+.form-row {
+    display: flex;
+    justify-content: space-between;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+    .form-group label {
+        display: block;
+        text-align: left;
+    }
+
+    .form-group input,
+    .form-group textarea {
+        width: 100%;
+    }
+.description {
+    height: 80px;
+}
+.form-group-sub {
+    margin: 20px;
+    text-align: end;
+}
+.article-container {
+    display: flex;
+    align-items: center;
+}
+.article-container-blog {
+    display: flex;
+    flex-direction: column;
+}
+.article-image {
+    max-width: 200px; /* Ширина изображения */
+    height: auto; /* Автоматическая высота изображения */
+    margin-left: 20px; /* Расстояние между изображением и текстом */
+}
+.article-content {
+    flex: 1; /* Занимает доступное пространство слева от изображения */
+}
+.article-content-blog {
+    flex: 1; /* Занимает доступное пространство слева от изображения */
+    display: flex;
+}
+
+details {
+    width: 60%; /* Фиксированная ширина */
+    background-color: #0d6efd; /* Синий цвет */
+    border: 2px solid #0d6efd; /* Синяя рамка */
+    margin-bottom: 10px; /* Расстояние между блоками */
+    border-radius: 10px;
+}
+
+    details[open] {
+        background-color: white; /* При раскрытии блок становится белым */
+    }
+
+summary {
+    outline: none; /* Убираем стандартный стиль для summary */
+    cursor: pointer; /* Делаем курсор при наведении на summary */
+    position: relative; /* Позволяет позиционировать псевдоэлемент */
+    padding: 5px 30px;
+    list-style-type: none;
+    color: white;
+}
+details[open] summary {
+    color: blue; /* Устанавливаем синий цвет для заголовка после раскрытия */
+}
+
+    /* Стили для изменения значка раскрытия */
+    summary::before {
+        content: "+"; /* Изменяемый символ, например, + */
+        position: absolute;
+        left: 5px; /* Расположение символа относительно summary */
+        margin-left: 5px;
+    }
+
+details[open] summary::before {
+    content: "-"; /* Заменяем на другой символ при раскрытии, например, - */
+}
+
+details p {
+    word-wrap: break-word; /* Перенос по словам */
+    padding: 10px 30px;
 }
 
 

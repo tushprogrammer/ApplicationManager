@@ -3,20 +3,20 @@
     <a asp-action="Index">Главная</a> -> @Model.Name_page
 </p>
 <h1>@Model.Name_page</h1>
-<br />
-<div class="boxes">
+<hr />
+<div class="boxes-blog">
     @foreach (Blog item in Model.Blogs)
     {
-        var image_path = "~/Images/" + item.ImageUrl;
+        var image_path = "/Images/" + item.ImageUrl;
 
         string ShortDesc;
-        if (item.Description.IndexOf('.') < 40 && item.Description.Contains('.'))
+        if (item.Description.IndexOf('.') < 80 && item.Description.Contains('.'))
             ShortDesc = item.Description.Substring(0, item.Description.IndexOf('.'));
         else
         {
-            if (item.Description.Length > 40)
+            if (item.Description.Length > 80)
             {
-                ShortDesc = $"{item.Description.Substring(0, 38)}...";
+                ShortDesc = $"{item.Description.Substring(0, 78)}...";
             }
             else
             {
@@ -24,14 +24,22 @@
             }
         }
 
-        <div class="box">
+        <div class="box-blog">
             <a asp-action="BlogDetails" asp-route-id="@item.Id">
-                <figure>
+                <div class="date-blog">
                     <p>@item.Created.ToString("D")</p>
-                    <img class="ImageProject" src="@image_path" asp-append-version="true" />
-                    <p>@item.Title</p>
-                    <h5>@ShortDesc</h5>
-                </figure>
+                </div>
+                   
+                    <div class="ImageBlog" style="background-image: url(@image_path)"></div>
+
+                    <div class="title-blog">
+                        <h6>@item.Title</h6>
+                    </div>
+                   <div class="description-blog">
+                    <p>@ShortDesc</p>
+                   </div>
+
+                   
             </a>
         </div>
     }

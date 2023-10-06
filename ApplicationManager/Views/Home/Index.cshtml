@@ -1,32 +1,28 @@
 ﻿@model IQueryable<MainPage>
 @{
     ViewData["Title"] = "Home Page";
+    Layout = "_Layout-main";
 }
 @{
     var image = Model.First(item => item.Id == 8).Value;
     var image_path = "/Images/" + image;
 }
 
-
 <div class="text-center">
    
     <div class="ImageMain" style="background-image: url(@image_path)">
-     @*   <img class="ImageMain-image" src="@image_path" asp-append-version="true" />*@
-        <h2>@Model.First(item => item.Id == 7).Value</h2>
-       @* два варианта кнопки:*@
-        <input type="button" class="navbar-brand"  
-        value="@Model.First(item => item.Id == 6).Value" 
+        <h2 style=" padding-top: 150px;">
+            @Model.First(item => item.Id == 7).Value
+        </h2>
+        <input type="button" class="navbar-brand btn btn-primary butt-main"
+               value="@Model.First(item => item.Id == 6).Value" 
         onclick="LoadAddRequestform()" /> 
-       @*для этого варика надо подпилить css*@
-@*        <form class="navbar-brand" method="post" asp-controller="Home" asp-action="AddRequest" id="AddRequestform" asp-antiforgery="true">
-            <a class="navbar-brand" href="#" onclick="document.getElementById('AddRequestform').submit()">@Model.First(item => item.Id == 6).Value</a>
-        </form>*@
+
     </div>
     <div class="animated-container">
         <div id="additionalViewContainer"></div>
     </div>
 </div>
-
 <script>
     function LoadAddRequestform() {
         $.ajax({

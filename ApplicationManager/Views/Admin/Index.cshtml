@@ -46,20 +46,21 @@
 
 @*кнопки выбора периода заявок*@
 <div>
-    <div>
-        <p>
-            <a asp-action="TodayRequests">Сегодня</a>
-        </p>
-        <p>
+    <div class="button-container">
+            <div class="butt-sort normal-width">
+                <a asp-action="TodayRequests">Сегодня</a>
+        </div>
+
+            <div class="butt-sort normal-width">
             <a asp-action="YesterdayRequests">Вчера</a>
-        </p>
-        <p>
+        </div>
+            <div class="butt-sort normal-width">
             <a asp-action="WeekRequests">Неделя</a>
-        </p>
-        <p>
+        </div>
+            <div class="butt-sort normal-width">
             <a asp-action="MonthRequests">Месяц</a>
-        </p>
-        <div>
+        </div>
+            <div class="butt-sort large-width dates">
             <form action="~/Admin/RangeDateRequests" method="post">
                 <input name ="DateFor" type="date" value="Период С"/>
                 <input name="DateTo" type="date" value="По"/>
@@ -97,23 +98,22 @@
     }
 }
 @*комбо бокс для выбора заявок по статусу:*@
-<div>
+<div class="select-status">
         <select asp-items="new SelectList(Model.Statuses)" onchange="PassSelectedValue(this)">
         <option value="" selected="selected">Выберете статус заявки</option>
     </select>
 </div>
 
-<table>
+<table class="table-requests">
     @*настроить ширину столбцов таблицы*@
     <thead class="thead-light">
         <tr>
-            <th>Номер заявки</th>
-            <th>Время заявки</th>
-            <th>Имя</th>
-            <th>Текст заявки</th>
-            <th>Контакты</th>
-            @*тут будут походу кнопки на изменение статуса (или комбо бокс)*@
-            <th>Дополнительно</th>
+            <th style="width: 5%;">Номер заявки</th>
+            <th style="width: 15%;">Время заявки</th>
+            <th style="width: 20%;">Имя</th>
+            <th style="width: 30%;">Текст заявки</th>
+            <th style="width: 10%;">Контакты</th>
+            <th style="width: 20%;">Дополнительно</th>
             
 
         </tr>
