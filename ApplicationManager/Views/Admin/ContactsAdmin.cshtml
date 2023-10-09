@@ -1,53 +1,61 @@
 ﻿@model ContactsModel
+@{
+    var image_address = "/Images/" + Model.ImageUrl;
+}
 <div class="pad-top">
     <p>
         <a asp-action="Index">Главная</a> -> @Model.Name_page
     </p>
     <h1>@Model.Name_page</h1>
-    <br />
-    <div>
-        <div>
-            <table>
-                <thead class="thead-light">
-                    <tr>
-                        <th>Название</th>
-                        <th>Описание</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (Contacts item in Model.Contacts)
-                    {
-                        <tr>
-                            <td>@item.Name :</td>
-                            <td>@item.Description :</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-
-        </div>
+    <hr />
+    <div class="contacts-content">
         <div>
             <div>
-                @foreach (SocialNet item in Model.Nets)
-                {
-                    var image_path = "/Images/" + item.ImageUrl;
-                    <a href="@item.Url">
-                        <div class="image-socialnet" style="background-image: url(@image_path)"/>
+                <table class="table-contacts">
+                   @* <thead class="thead-light">
+                        <tr>
+                            <th>Название</th>
+                            <th>Описание</th>
+                        </tr>
+                    </thead>*@
+                    <tbody>
+                        @foreach (Contacts item in Model.Contacts)
+                        {
+                            <tr>
+                                <td>@item.Name:</td>
+                                <td>@item.Description</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
 
-                        @*<img class="ImageProject" src="@image_path" asp-append-version="true" />*@
-                    </a>
-                }
             </div>
-            @{
-                var image_address = "/Images/" + Model.ImageUrl;
-            }
-            <div class="image-address" style="background-image: url(@image_address)"/>
+            <div>
+                <div class="contacts-socialnets">
+                    @foreach (SocialNet item in Model.Nets)
+                    {
+                        var image_path = "/Images/" + item.ImageUrl;
+                        <a href="@item.Url">
+                            <div class="image-socialnet" style="background-image: url(@image_path)">
+                            </div>
+
+                            @*<img class="ImageProject" src="@image_path" asp-append-version="true" />*@
+                        </a>
+                    }
+                </div>
+           
+           
           
-                @*<img class="ImageProject" src="@image_address" asp-append-version="true" />*@
        
+            </div>
         </div>
-    <a asp-action="EditContact" asp-controller="Admin">Редактировать</a>
+        <div>
+            <div class="image-address" style="background-image: url(@image_address)">
+            </div>
+        </div>
+       
     </div>
+    <a asp-action="EditContact" asp-controller="Admin">Редактировать</a>
 </div>
 
 
