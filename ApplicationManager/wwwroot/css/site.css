@@ -302,8 +302,9 @@ p {
 
 .button-container {
     display: flex;
-    justify-content: center;
+    justify-content: right;
     width: 100%;
+    padding-right: 10px;
 }
 .butt-sort {
     border: 1px solid #000;
@@ -430,18 +431,20 @@ p {
     flex: 1; /* Занимает доступное пространство слева от изображения */
     display: flex;
 }
-
+.service-details {
+    width: 60%;
+}
 details {
-    width: 60%; /* Фиксированная ширина */
+     /* Фиксированная ширина */
     background-color: #0d6efd; /* Синий цвет */
     border: 2px solid #0d6efd; /* Синяя рамка */
     margin-bottom: 10px; /* Расстояние между блоками */
     border-radius: 10px;
 }
 
-    details[open] {
-        background-color: white; /* При раскрытии блок становится белым */
-    }
+details[open] {
+    background-color: white; /* При раскрытии блок становится белым */
+}
 
 summary {
     outline: none; /* Убираем стандартный стиль для summary */
@@ -513,5 +516,6 @@ details p {
     background-size: cover;
     margin: 5px;
 }
+
 
 

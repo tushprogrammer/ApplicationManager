@@ -18,17 +18,22 @@
                             <p>@item.Title</p>
                         </figure>
                     </a>
+                    @*кнопки редактирования и удаления*@
+                    <div class="button-container">
+                        <a asp-action="DetailsProject" asp-controller="Admin" asp-route-id="@item.Id">
+                            <div class="btn-edit-image"> </div>
+                        </a>
+
+                        <a asp-action="DeleteProjectMethod" asp-controller="Admin" asp-route-id="@item.Id">
+                            <div class="btn-close-image"></div>
+                        </a>
+                    </div>
+                   
                 </div>
 
-                @*тут будут хранится кнопки редактирования и удаления*@ 
+              
                 
-                <a asp-action="DetailsProject" asp-controller="Admin" asp-route-id="@item.Id">
-                    <div class="btn-edit-image"> </div>
-                </a>
-                
-                <a asp-action="DeleteProjectMethod" asp-controller="Admin" asp-route-id="@item.Id">
-                    <div class="btn-close-image"></div>
-                </a>
+               
                 
         
         }
