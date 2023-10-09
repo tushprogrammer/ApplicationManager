@@ -5,19 +5,22 @@
     </p>
     <h1>@Model.Name_page</h1>
     <a asp-action="AddNewProject">Добавить проект</a>
-    <div class="boxes">
+    <div class="boxes-project">
         @foreach (Project item in Model.Projects)
         {
             var image_path = "/Images/" + item.ImageUrl;
-       
-                <div class="box">
-                    <a asp-action="ProjectDetails" asp-controller="Home" asp-route-id="@item.Id">
-                        <figure>
-                            <div class="ImageProject" id="image-project" style="background-image: url(@image_path)" />
-                            @*<img class="ImageProject" src="@image_path" asp-append-version="true" />*@
-                            <p>@item.Title</p>
-                        </figure>
-                    </a>
+
+                <div class="box-project">
+                    <div class="box-project-border">
+                        <a asp-action="ProjectDetails" asp-controller="Home" asp-route-id="@item.Id">
+                                <div class="ImageProject" id="image-project" style="background-image: url(@image_path)"></div>
+                                <div class="block-title">
+                                    <div>@item.Title</div>
+                                </div>
+
+                        </a>
+                    </div>
+                   
                     @*кнопки редактирования и удаления*@
                     <div class="button-container">
                         <a asp-action="DetailsProject" asp-controller="Admin" asp-route-id="@item.Id">

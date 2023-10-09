@@ -4,18 +4,22 @@
     <a asp-action="Index">Главная</a> -> @Model.Name_page
 </p>
 <h1>@Model.Name_page</h1>
-<div class="boxes">
+<div class="boxes-project">
     @foreach (Project item in Model.Projects)
     {
         var image_path = "/Images/" + item.ImageUrl;
-        <div class="box">
-            <a asp-action="ProjectDetails" asp-route-id="@item.Id">
-                <div class="ImageProject" style="background-image: url(@image_path)"></div>
-                <div class="block-title">
-                    <div>@item.Title</div>
-                </div>
-          
-            </a>
+        <div class="box-project">
+            <div class="box-project-border">
+                <a asp-action="ProjectDetails" asp-route-id="@item.Id">
+                    <div class="ImageProject" style="background-image: url(@image_path)"></div>
+                    <div class="block-title">
+                        <div>@item.Title</div>
+                    </div>
+
+                </a>
+            </div>
+
+           
         </div>
     }
 </div>
