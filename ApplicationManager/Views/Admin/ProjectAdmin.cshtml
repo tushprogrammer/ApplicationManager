@@ -20,9 +20,16 @@
                     </a>
                 </div>
 
-                @*тут будут хранится кнопки редактирования и удаления*@
-                <a asp-action="DetailsProject" asp-controller="Admin" asp-route-id="@item.Id">Редактировать</a>
-                <a asp-action="DeleteProjectMethod" asp-controller="Admin" asp-route-id="@item.Id">Удалить</a>
+                @*тут будут хранится кнопки редактирования и удаления*@ 
+                
+                <a asp-action="DetailsProject" asp-controller="Admin" asp-route-id="@item.Id">
+                    <div class="btn-edit-image"> </div>
+                </a>
+                
+                <a asp-action="DeleteProjectMethod" asp-controller="Admin" asp-route-id="@item.Id">
+                    <div class="btn-close-image"></div>
+                </a>
+                
         
         }
     </div>

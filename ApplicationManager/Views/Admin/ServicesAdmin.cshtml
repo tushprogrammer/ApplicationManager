@@ -13,8 +13,12 @@
                 <p>@item.Description</p>
             </details>
             @*кнопки редактирования и удаления*@
-            <a asp-action="EditService" asp-controller="Admin" asp-route-id="@item.Id">Редактировать</a>
-            <a asp-action="DeleteServiceMethod" asp-controller="Admin" asp-route-id="@item.Id">Удалить</a>
+            <a asp-action="EditService" asp-controller="Admin" asp-route-id="@item.Id">
+                <div class="btn-edit-image"> </div>
+            </a>
+            <a asp-action="DeleteServiceMethod" asp-controller="Admin" asp-route-id="@item.Id">
+                <div class="btn-close-image"></div>
+            </a>
         }
     </div>
 </div>

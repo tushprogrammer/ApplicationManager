@@ -38,8 +38,12 @@
                         <h5>@ShortDesc</h5>
                     </figure>
                 </a>
-                <a asp-action="EditBlog" asp-controller="Admin" asp-route-id="@item.Id">Редактировать</a>
-                <a asp-action="DeleteBlogMethod" asp-controller="Admin" asp-route-id="@item.Id">Удалить</a>
+                <a asp-action="EditBlog" asp-controller="Admin" asp-route-id="@item.Id">
+                    <div class="btn-edit-image"> </div>
+                </a>
+                <a asp-action="DeleteBlogMethod" asp-controller="Admin" asp-route-id="@item.Id">
+                    <div class="btn-close-image"></div>
+                </a>
             </div>
         }
     </div>

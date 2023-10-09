@@ -258,9 +258,9 @@ p {
     margin-top: 32px;
     background-color: skyblue;
 }
-/*.right {
+.right {
     float: right
-}*/
+}
 .nav-panel-admin ul {
     list-style: none;
     padding: 0;
@@ -498,6 +498,20 @@ details p {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
+}
+.btn-close-image {
+    background-image: url(/Images/delete.png);
+    width: 32px;
+    height: 32px;
+    background-size: cover;
+    margin: 5px;
+}
+.btn-edit-image {
+    background-image: url(/Images/edit.png);
+    width: 32px;
+    height: 32px;
+    background-size: cover;
+    margin: 5px;
 }
 
 

@@ -12,11 +12,8 @@
 
     <div class="ImageMain">
         <div class="ImageMain" style="background-image: url(@image_path)" />
-        @*<img class="ImageMain" src="@image_path" asp-append-version="true" />*@
         <h2>@Model.Title</h2>
-        @* два варианта кнопки:*@
-        @* <input type="button" value="@Model.First(item => item.Id == 6).Value"/>*@ @*- для этого варика надо еще js прописать, что нахер идет*@
-        @*для этого варика надо подпилить css*@
+
         <form class="navbar-brand" method="post" asp-controller="Home" asp-action="AddRequest" id="AddRequestform" asp-antiforgery="true">
             <a class="navbar-brand" href="#" onclick="document.getElementById('AddRequestform').submit()">@Model.ButtonTitle</a>
         </form>
@@ -34,5 +31,7 @@
     </form>
 </div>
 <form class="navbar-brand" method="post" asp-controller="Admin" asp-action="EditMain" id="EditMainform" asp-antiforgery="true">
-    <a class="navbar-brand" href="#" onclick="document.getElementById('EditMainform').submit()">Редактировать</a>
+    <a class="btn btn-primary" href="#" onclick="document.getElementById('EditMainform').submit()">
+        Редактировать
+    </a>
 </form>

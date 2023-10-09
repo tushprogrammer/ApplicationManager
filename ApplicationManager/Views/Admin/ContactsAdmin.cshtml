@@ -38,8 +38,6 @@
                         <a href="@item.Url">
                             <div class="image-socialnet" style="background-image: url(@image_path)">
                             </div>
-
-                            @*<img class="ImageProject" src="@image_path" asp-append-version="true" />*@
                         </a>
                     }
                 </div>
@@ -55,7 +53,7 @@
         </div>
        
     </div>
-    <a asp-action="EditContact" asp-controller="Admin">Редактировать</a>
+    <a class="btn btn-primary" asp-action="EditContact" asp-controller="Admin">Редактировать</a>
 </div>
 
 

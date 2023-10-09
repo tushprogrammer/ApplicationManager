@@ -12,14 +12,11 @@
 
     <div class="ImageMain">
             <div class="ImageMain" id="Image-main" style="background-image: url(@image_path)"/>
-        @*<img class="ImageMain" src="@image_path" asp-append-version="true" />*@
         @*загрузка картинки*@
             <input asp-for="Image" id="NewMainImage"/>
             <input type="text" asp-for="Title" value="@Model.Title" />
 
-        @* два варианта кнопки:*@
-            @* <input type="button" value="@Model.ButtonTitle"/>*@ @*- для этого варика надо еще js прописать, что нахер идет*@
-        @*для этого варика надо подпилить css*@
+
             <input type="text"  asp-for="ButtonTitle" value="@Model.ButtonTitle" />
     </div>
 </div>
