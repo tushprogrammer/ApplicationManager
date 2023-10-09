@@ -1,68 +1,76 @@
 ﻿@using Microsoft.JSInterop;
 @model ContactsModel
 @inject IJSRuntime JS
-
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
 @{
     var image_path = "/Images/" + Model.ImageUrl;
 }
+<div class="pad-top">
 <p>
     <a asp-action="Index">Главная</a> -> @Model.Name_page
 </p>
 <h1>@Model.Name_page</h1>
-<br />
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
-
+<hr />
 
 <div ng-controller="AdminContacts">
-    <div>
+    <div >
         <form asp-controller="Admin" asp-action="SaveContacts" method="post" id="SaveContactsForm" asp-antiforgery="true" enctype="multipart/form-data">
-
-        <table>
-            <thead class="thead-light">
-                <tr>
-                    <th>id</th>
-                    <th>Название</th>
-                    <th>Описание</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat="Contact in Contacts">
-                    <td class="center">{{$index+1}}</td>
-                    <td class="right"><input ng-model="Contact.Name" ng-true-value="Contact.Name.value" /></td>
-                    <td class="right"><input ng-model="Contact.Description" value="Contact.Description.value" /></td>
-                    <td><a href="#" ng-click="RowDelete($index)"><i class="fa fa-times"> - </i></a></td>
-                </tr>
-                <tr>
-                    <td>
-                        
-                        <a href="#" ng-click="AddNewRow()"><i class="fa fa-plus">+</i></a>
-                            
-                            @*<input class="btn btn-primary" type="submit" value="Сохранить" ng-click="loadfiles()" />*@
-                        
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-            <div class="btn btn-primary">
-                <label for="LoadNewAddress">Загрузить новое расположение</label>
-       </div>            
-            <input type="file" name="ImageUrl" accept="image/*" class="LoadNewAddress"
-                   id="LoadNewAddress" file-on-change="OnAddressChange" />
+            <div class="contacts-content">
+                <div>
+                    <table class ="table-contacts">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>id</th>
+                                <th>Название</th>
+                                <th>Описание</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="Contact in Contacts">
+                                <td >{{$index+1}}</td>
+                                <td ><input ng-model="Contact.Name" ng-true-value="Contact.Name.value" /></td>
+                                <td ><input ng-model="Contact.Description" value="Contact.Description.value" /></td>
+                                <td><a href="#" ng-click="RowDelete($index)"><i class="fa fa-times"> - </i></a></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <a href="#" ng-click="AddNewRow()"><i class="fa fa-plus">+</i></a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div>
+                        @*переделать обязательно под <a>*@
+                        <a href="#" class="btn btn-primary"  id="openModalButton" ng-click="OpenMyModal()">Открыть окно с контактами</a>
+                    </div>
+                </div>
+                <div class="contact-address-change"> 
+                    <div id="image-address" class="image-address" style="background-image: url(@image_path)"> </div>
+                    <div class="btn btn-primary">
+                        <label for="LoadNewAddress">Загрузить новое расположение</label>
+                    </div>
+                    <input type="file" name="ImageUrl" accept="image/*" class="LoadNewAddress"
+                           id="LoadNewAddress" file-on-change="OnAddressChange" />
+                </div>
+            </div>
+         
+     
+           
    
             <input type="hidden" name="stringData" ng-value="data()" />
 
-            <div id="image-address" class="image-address" style="background-image: url(@image_path)"> </div>
+           
             <a class="btn btn-primary" href="#" onclick="document.getElementById('SaveContactsForm').submit()"
                ng-click="loadfiles()">Сохранить</a>
         </form>
     </div>
-    <button id="openModalButton" ng-click="OpenMyModal()">Открыть окно с контактами</button>
+   
     @* Начало модального окна*@
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Модальное окно</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Добавить/редактировать ссылки</h5>
                     <button type="button" class="close" ng-click="CloseMyModal()">
                         <span aria-hidden="true">×</span>
                     </button>
@@ -87,7 +95,7 @@
     </div>
 
 </div>
-
+</div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
 <script src="~/js/angular.min.js"></script>
