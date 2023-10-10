@@ -4,15 +4,7 @@
     ViewData["Title"] = "Admin Page";
 }
 <div class="pad-top">
-@*пока что кнопки навигации для панели админа тут, но их надо вынести отдельно в собственный layout*@
-@*<div class="butt-list">
-    <a asp-action="UserList" asp-controller="Account">Список пользователей</a> <br />
-    <a asp-action="MainAdmin">Ред. "Главная" </a><br />
-    <a asp-action="ProjectAdmin">Ред. "Проекты"</a><br />
-    <a asp-action="ServicesAdmin">Ред. "Услуги"</a><br />
-    <a asp-action="BlogsAdmin">Ред. "Блог"</a><br />
-    <a asp-action="ContactsAdmin">Ред. "Контакты"</a><br />
-</div>*@
+
 @{
     int lastDigit = Model.AllRequestsCount % 10;
     int lastTwoDigits = Model.AllRequestsCount % 100;
