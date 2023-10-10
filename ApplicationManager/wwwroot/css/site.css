@@ -122,6 +122,22 @@ body {
     border: 1px solid #757575;
     /*background-color: #dbdbdb;*/
 }
+.project-form {
+    display: flex;
+    flex-direction: row;
+}
+.project-form-inputs {
+    width: 60%;
+}
+.project-form-image {
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 200px;
+    margin: 0px 20px;
+    width: 40%;
+    object-fit: cover;
+}
 .boxes-blog {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -157,7 +173,8 @@ body {
     flex: 1;
 }
 .ImageProject {
-    background-size: cover;
+    background-size: contain;
+    background-repeat: no-repeat;
     background-position: center;
     height: 200px;
     margin-left: auto;
@@ -364,8 +381,6 @@ p {
 }
 .pad-top {
     padding: 60px 20px 0px;
-  /*  padding-left: 20px;
-    padding-right: 20px;*/
 }
 .main-admin {
     padding-top: 50px;

@@ -12,51 +12,57 @@
     }
 
 }
-<p>
-    <a asp-action="Index">Главная</a> -> <a asp-action="ProjectAdmin" asp-controller="Admin">@ViewBag.Name_page</a> ->@ViewBag.Title
-</p>
-<div>
-    @if (Model is null)
-    {
-        <form asp-action="AddProjectMethod" asp-controller="Admin" method="post" asp-antiforgery="true" enctype="multipart/form-data" id="AddProjectForm">
-            <p>Имя компании</p>
-            <input type="text" asp-for="NameCompany" />
-            <br />
-            <p>Название проекта</p>
-            <input type="text" asp-for="Title" />
-            <br />
-            <p>Описание проекта</p>
-            <input type="text" asp-for="Description" />
-            <br />
-            <div class="ImageProject" id="image-project" style="background-image: url(@image_path)" />
-            <input asp-for="Image" value="Добавить фото" id="NewProjectImage"/>
-            <br />
+<div class="pad-top">
+    <p>
+        <a asp-action="Index">Главная</a> -> <a asp-action="ProjectAdmin" asp-controller="Admin">@ViewBag.Name_page</a> -> @ViewBag.Title
+    </p>
+    <div class="project-form">
+        @if (Model is null)
+        {
+            <div class="project-form-inputs">
+                <form asp-action="AddProjectMethod" asp-controller="Admin" method="post" asp-antiforgery="true" enctype="multipart/form-data" id="AddProjectForm">
+                    <div class="form-group">
+                        <label for="name">Имя компании</label>
+                        <input type="text" id = "name" asp-for="NameCompany" />
+                    </div>
+                    <div class="form-group">
+                        <label for="title">Название проекта</label>
+                        <input type="text" id="title" asp-for="Title" />
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Описание проекта</label>
+                        <textarea id="description" asp-for="Description" class="description"></textarea>
+                    </div>
+                    <input asp-for="Image" value="Добавить фото" id="NewProjectImage"/>
+                    <a class="btn btn-primary" href="#" onclick="document.getElementById('AddProjectForm').submit()">Сохранить</a>
 
-            <a class="navbar-brand" href="#" onclick="document.getElementById('AddProjectForm').submit()">Сохранить</a>
-        </form>
-    }
-    else
-    {
-        <form asp-action="EditProjectMethod" asp-controller="Admin" method="post" asp-antiforgery="true" enctype="multipart/form-data" id="EditProjectForm">
-            <input asp-for="Id" value="@Model.Id" type="hidden">
-            <p>Имя компании</p>
-            <input type="text" asp-for="NameCompany" value="@Model.NameCompany"/>
-            <br />
-            <p>Название проекта</p>
-            <input type="text" asp-for="Title" value="@Model.Title"/>
-            <br />
-            <p>Описание проекта</p>
-            <input type="text" asp-for="Description" value="@Model.Description"/>
-            <br />
-            <div class="ImageProject" id="image-project" style="background-image: url(@image_path)" />
-            @*<img class="ImageMain" src="@image_path" asp-append-version="true" />*@
-            <input asp-for="Image" value="Изменить фото" id="NewProjectImage"/>
-            <br />
+                </form>
+            </div>
+            <div class="project-form-image" id="image-project"></div>
+        }
+        else
+        {
+            <form asp-action="EditProjectMethod" asp-controller="Admin" method="post" asp-antiforgery="true" enctype="multipart/form-data" id="EditProjectForm">
+                <input asp-for="Id" value="@Model.Id" type="hidden">
+                <p>Имя компании</p>
+                <input type="text" asp-for="NameCompany" value="@Model.NameCompany"/>
+                <br />
+                <p>Название проекта</p>
+                <input type="text" asp-for="Title" value="@Model.Title"/>
+                <br />
+                <p>Описание проекта</p>
+                <input type="text" asp-for="Description" value="@Model.Description"/>
+                <br />
+                <div class="ImageProject" id="image-project" style="background-image: url(@image_path)" />
+                @*<img class="ImageMain" src="@image_path" asp-append-version="true" />*@
+                <input asp-for="Image" value="Изменить фото" id="NewProjectImage"/>
+                <br />
 
-            <a class="navbar-brand" href="#" onclick="document.getElementById('EditProjectForm').submit()">Сохранить</a>
-        </form>
-    }
+                <a class="btn btn-primary" href="#" onclick="document.getElementById('EditProjectForm').submit()">Сохранить</a>
+            </form>
+        }
 
+    </div>
 </div>
 <script>
     document.getElementById("NewProjectImage").addEventListener("change", function (event) {
