@@ -6,7 +6,7 @@
     var image = ViewBag.Image;
     var image_path = "/Images/" + image;
 }
-<div class="pad-top">
+
     <form  method="post" asp-controller="Admin" asp-action="EditMainSave" 
     id="EditMainform" asp-antiforgery="true" enctype="multipart/form-data" class="main-form">
             <div class="text-center">
@@ -51,7 +51,7 @@
 
         <a class="btn-main btn btn-primary" href="#" onclick="document.getElementById('EditMainform').submit()">Сохранить</a>
     </form>
-</div>
+
 <script>    
     document.getElementById("NewMainImage").addEventListener("change", function (event) {
         var file = event.target.files[0];
