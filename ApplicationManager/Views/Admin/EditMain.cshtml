@@ -6,38 +6,57 @@
     var image = ViewBag.Image;
     var image_path = "/Images/" + image;
 }
+<div class="pad-top">
+    <form  method="post" asp-controller="Admin" asp-action="EditMainSave" 
+    id="EditMainform" asp-antiforgery="true" enctype="multipart/form-data" class="main-form">
+            <div class="text-center">
+            <div id="ImageMain-input" class="ImageMain-input" style="background-image: url(@image_path)">
+                    @*новый заголовок*@
+                    <input type="text" asp-for="Title" value="@Model.Title" class="main-title-input"/>
+                    @*новый текст кнопки*@
+                        <input type="text" asp-for="ButtonTitle" value="@Model.ButtonTitle" class="main-button-input" />
+                </div>
+            
+            </div>
+            @*загрузка картинки*@
+            <div class="btn btn-primary main-image-input">
+                <label for="NewMainImage">Изменить фото</label>
+            </div>
+        <input asp-for="Image" id="NewMainImage" class="input-for-label" />
 
-<form class="navbar-brand" method="post" asp-controller="Admin" asp-action="EditMainSave" id="EditMainform" asp-antiforgery="true" enctype="multipart/form-data">
-<div class="text-center">
+            <div class="text-center main-requestTitle">
+            <input type="text" asp-for="RequestTitle" value="@Model.RequestTitle" class="main-requestTitle-input" />
+            </div>
+            <div class="slide-in-down">
+                <form action="~/Home/AddNewRequest" method="post">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="name">Имя:</label>
+                            <input type="text" id="name" name="Name" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email:</label>
+                            <input type="text" id="email" name="Email" disabled>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Текст сообщения:</label>
+                        <textarea id="description" name="Description" class="description" disabled></textarea>
+                    </div>
+                    <div class="form-group-sub">
+                        <input type="submit" value="Отправить" class="btn btn-primary" disabled>
+                    </div>
+                </form>
+            </div>
 
-    <div class="ImageMain">
-            <div class="ImageMain" id="Image-main" style="background-image: url(@image_path)"/>
-        @*загрузка картинки*@
-            <input asp-for="Image" id="NewMainImage"/>
-            <input type="text" asp-for="Title" value="@Model.Title" />
-
-
-            <input type="text"  asp-for="ButtonTitle" value="@Model.ButtonTitle" />
-    </div>
-</div>
-<div class="text-center">
-        <input type="text" asp-for="RequestTitle" value="@Model.RequestTitle" />
-</div>
-<div>
-    <form action="~/Home/AddNewRequest" method="post">
-            <p>Имя: </p>          <input type="text" name="Name" disabled /><br />
-            <p>Email: </p>        <input type="text" name="Email" disabled /><br />
-            <p>Текст сообщения: </p>     <input type="text" name="Description" disabled /><br /><br />
-            <p><input type="submit" value="Отправить" disabled /></p>
+        <a class="btn-main btn btn-primary" href="#" onclick="document.getElementById('EditMainform').submit()">Сохранить</a>
     </form>
 </div>
-
-    <a class="navbar-brand" href="#" onclick="document.getElementById('EditMainform').submit()">Сохранить</a>
-</form>
 <script>    
     document.getElementById("NewMainImage").addEventListener("change", function (event) {
         var file = event.target.files[0];
         var url = URL.createObjectURL(file);
-        document.getElementById("Image-main").style.backgroundImage = "url(" + url + ")";
+        
+        document.getElementById("ImageMain-input").style.backgroundImage = "url(" + url + ")";
     });
 </script>

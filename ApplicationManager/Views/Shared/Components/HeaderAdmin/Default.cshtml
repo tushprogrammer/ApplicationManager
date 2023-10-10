@@ -5,20 +5,20 @@
    
     <a class="navbar-brand right" herf="#">@User.Identity.Name</a>
 </div>
-    <div class="nav-panel-admin">
- 
-   
-        <ul>
+<div class="left-panel">
+
+</div>
+<div class="nav-panel-admin">
+    <ul>
         <li> <a asp-action="UserList" asp-controller="Account">Список пользователей</a></li>
-        @*<li><a class="navbar-brand" asp-action="Index" asp-controller="Admin">Рабочий стол</a></li>*@
-            @foreach (MainPage item in Model.MainPages)
-            {
-                <li>
-                    <a class="navbar-brand" asp-action="@item.Name" asp-controller="Admin">@item.Value</a>
-                </li>
-            }
-        </ul>
-    </div>
+        @foreach (MainPage item in Model.MainPages)
+        {
+            <li>
+                <a class="navbar-brand" asp-action="@item.Name" asp-controller="Admin">@item.Value</a>
+            </li>
+        }
+    </ul>
+</div>
 
            
         
