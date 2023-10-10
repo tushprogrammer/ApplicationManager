@@ -2,32 +2,34 @@
 @{
     Layout = "_Layout-admin";
 }
-<h2>Список пользователей</h2>
-<table class="table">
-    <thead class="thead-light">
-        <tr>
-            <th>Имя</th>
-            <th>Адрес электронной почты</th>
-            <th>Дополнительно</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var user in Model)
-        {
+<div class="pad-top">
+    <h2>Список пользователей</h2>
+    <table class="table">
+        <thead class="thead-light">
             <tr>
-                <td>@user.UserName</td>
-                <td>@user.Email</td>
-                <td>
-                    @{
-                        if (User.Identity.Name != user.UserName)
-                        {
-                            <a class="btn btn-sm btn-primary" asp-action="DeleteUser" asp-route-userid="@user.Id">Удалить пользователя</a>
-                        }
-                    }
-                    
-                </td>
+                <th>Имя</th>
+                <th>Адрес электронной почты</th>
+                <th>Дополнительно</th>
             </tr>
-        }
-    </tbody>
-</table>
-<a class="btn btn-sm btn-primary" asp-action="Register">Добавить пользователя</a>
+        </thead>
+        <tbody>
+            @foreach (var user in Model)
+            {
+                <tr>
+                    <td>@user.UserName</td>
+                    <td>@user.Email</td>
+                    <td>
+                        @{
+                            if (User.Identity.Name != user.UserName)
+                            {
+                                <a class="btn btn-sm btn-primary" asp-action="DeleteUser" asp-route-userid="@user.Id">Удалить пользователя</a>
+                            }
+                        }
+                    
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<a class="btn btn-primary btn-main" asp-action="Register">Добавить пользователя</a>
