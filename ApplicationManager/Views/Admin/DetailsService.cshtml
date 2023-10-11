@@ -6,32 +6,56 @@
     else
         namepage = "Редактирование";
 }
-<p>
-    <a asp-action="Index">Главная</a> -> <a asp-action="ServicesAdmin" asp-controller="Admin">ViewBag.Name_page</a>  -> @namepage
-</p>
-<div>
-    @if (Model is null)
-    {
-        <form id="AddServiceForm" asp-action="AddNewServiceMethod" asp-controller="Admin" method="post" asp-antiforgery="true">
-            <p>Заголовок</p>
-            <input type="text" asp-for="Title" />
-            <p>Описание</p>
-            <input type="text" asp-for="Description" /><br />
-            <a class="navbar-brand" href="#" onclick="document.getElementById('AddServiceForm').submit()">Сохранить</a>
-        </form>
-    }
-    else
-    {
-        <form id="EditServiceForm" asp-action="EditServiceMethod" asp-controller="Admin" method="post" asp-antiforgery="true">
-            <input type="hidden" asp-for="Id" value="@Model.Id">
-            <p>Заголовок</p>
-            <input type="text" asp-for="Title" value="@Model.Title"/>
-            <p>Описание</p>
-            <input type="text" asp-for="Description" value="@Model.Description"/><br />
-            <a class="navbar-brand" href="#" onclick="document.getElementById('EditServiceForm').submit()">Сохранить</a>
-        </form>
-    }
+<div class="pad-top">
+    <p>
+        <a asp-action="Index">Рабочий стол</a> -> <a asp-action="ServicesAdmin" asp-controller="Admin">@ViewBag.Name_page</a>  -> @namepage
+    </p>
+    <div >
+        @if (Model is null)
+        {
+            <div class="service-form">
+                <div class="service-form-inputs">
+                    <form id="AddServiceForm" asp-action="AddNewServiceMethod" asp-controller="Admin" method="post" asp-antiforgery="true">
+                        <div class="form-group">
+                            <label for="title">Заголовок</label>
+                            <input type="text" id="title" asp-for="Title" />
+                        </div>
+                        <div class="form-group">
+                            <label for="description">Описание</label>
+                            <textarea id="description" asp-for="Description" class="description"></textarea>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+            <div class="form-submit">
+                <a class="btn btn-primary" href="#" onclick="document.getElementById('AddServiceForm').submit()">Сохранить</a>
+            </div>
+        }
+        else
+        {
+            <div class="service-form">
+                <div class="service-form-inputs">
+                    <form id="EditServiceForm" asp-action="EditServiceMethod" asp-controller="Admin" method="post" asp-antiforgery="true">
+                        <input type="hidden" asp-for="Id" value="@Model.Id">
+                        <div class="form-group">
+                            <label for="title">Заголовок</label>
+                            <input type="text" id="title" asp-for="Title" value="@Model.Title" />
+                        </div>
+                        <div class="form-group">
+                            <label for="description">Описание</label>
+                            <textarea id="description" asp-for="Description" class="description"></textarea>
+                        </div>
+                        
+                    </form>
+                </div>
+            </div>
+            <div class="form-submit">
+                <a class="btn btn-primary" href="#" onclick="document.getElementById('EditServiceForm').submit()">Сохранить</a>
+            </div>
+        }
 
    
     
+    </div>
 </div>

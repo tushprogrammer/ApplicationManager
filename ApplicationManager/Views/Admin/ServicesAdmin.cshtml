@@ -1,10 +1,10 @@
 ﻿@model ServicesModel
 <div class="pad-top">
     <p>
-        <a asp-action="Index">Главная</a> -> @Model.Name_page
+        <a asp-action="Index">Рабочий стол</a> -> @Model.Name_page
     </p>
     <h1>@Model.Name_page</h1>
-    <a asp-action="AddNewService">Добавить услугу</a>
+    
     <div>
         @foreach (Service item in Model.Services)
         {
@@ -23,8 +23,9 @@
                     </a>
                 </div>
             </div>
-        
-            
         }
+    </div>
+    <div class="form-submit">
+        <a asp-action="AddNewService" class="btn btn-primary ">Добавить услугу</a>
     </div>
 </div>
