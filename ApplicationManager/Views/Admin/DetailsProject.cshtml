@@ -37,8 +37,7 @@
                         <input asp-for="Image" value="Добавить фото" id="NewProjectImage" class="input-for-label" />
                     </form>
                 </div>
-            <div class="project-form-image" id="image-project" style="background-image: url(@image_path)">
-                        @*<label>Добавить фото</label>*@
+                <div class="project-form-image" id="image-project" style="background-image: url(@image_path)">
                 </div>
             </div>
             <div class="form-submit">
@@ -82,7 +81,7 @@
     document.getElementById("NewProjectImage").addEventListener("change", function (event) {
         var file = event.target.files[0];
         var url = URL.createObjectURL(file);
-        var imageProject = document.getElementById("image-project");
+        //var imageProject = document.getElementById("image-project");
         //для удаления label внутри выбранного div
         //var label = imageProject.querySelector("label");
         //if (label) {
