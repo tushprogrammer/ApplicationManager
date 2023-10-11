@@ -4,6 +4,7 @@
     if (Model is null)
     {
         ViewData["Title"] = "Добавить новый проект";
+        image_path = "/Images/default-project.png";
     }
     else
     {
@@ -33,14 +34,12 @@
                             <label for="description">Описание проекта</label>
                             <textarea id="description" asp-for="Description" class="description"></textarea>
                         </div>
-                        <div class="btn btn-primary">
-                            <label for="NewProjectImage">Добавить фото</label>
-                        </div>
                         <input asp-for="Image" value="Добавить фото" id="NewProjectImage" class="input-for-label" />
-
                     </form>
                 </div>
-                <div class="project-form-image" id="image-project"></div>
+            <div class="project-form-image" id="image-project" style="background-image: url(@image_path)">
+                        @*<label>Добавить фото</label>*@
+                </div>
             </div>
             <div class="form-submit">
                 <a class="btn btn-primary" href="#" onclick="document.getElementById('AddProjectForm').submit()">Сохранить</a>
@@ -83,6 +82,21 @@
     document.getElementById("NewProjectImage").addEventListener("change", function (event) {
         var file = event.target.files[0];
         var url = URL.createObjectURL(file);
+        var imageProject = document.getElementById("image-project");
+        //для удаления label внутри выбранного div
+        //var label = imageProject.querySelector("label");
+        //if (label) {
+        //    imageProject.removeChild(label);
+        //}
+        //сделать заливку прозрачной 
+        //imageProject.style.backgroundColor = "transparent";
+        //изменить фон блока на полученную картинку
         document.getElementById("image-project").style.backgroundImage = "url(" + url + ")";
     });
+    
+
+    document.getElementById("image-project").addEventListener("click", function () {
+        document.getElementById("NewProjectImage").click();
+    });
+
 </script>

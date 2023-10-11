@@ -141,16 +141,24 @@ body {
 .project-form-image {
     background-size: contain;
     background-repeat: no-repeat;
+    /*background-color: gainsboro;*/
     background-position: center;
     height: 200px;
     margin: 0px 20px;
     width: 40%;
     object-fit: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.5s;
+}
+.project-form-image:hover {
+    opacity: 0.8;
 }
 .form-submit {
     /*margin-left: 80%;*/
     /*float: right;*/
-    
+
     text-align: right;
 }
 .form-submit a {
