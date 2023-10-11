@@ -42,7 +42,9 @@
                 </div>
                 <div class="project-form-image" id="image-project"></div>
             </div>
-            <a class="btn btn-primary project-from-submit" href="#" onclick="document.getElementById('AddProjectForm').submit()">Сохранить</a>
+        <div class="form-submit">
+            <a class="btn btn-primary" href="#" onclick="document.getElementById('AddProjectForm').submit()">Сохранить</a>
+        </div>
         }
         else
         {
@@ -72,8 +74,9 @@
                 </div>
                 <div class="project-form-image" id="image-project" style="background-image: url(@image_path)"></div>
             </div>
-            <a class="btn btn-primary project-from-submit" href="#" onclick="document.getElementById('EditProjectForm').submit()">Сохранить</a>
-
+            <div class="form-submit">
+                <a class="btn btn-primary " href="#" onclick="document.getElementById('EditProjectForm').submit()">Сохранить</a>
+            </div>
         }
 </div>
 <script>
