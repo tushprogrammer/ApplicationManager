@@ -125,6 +125,7 @@ body {
 .project-form {
     display: flex;
     flex-direction: row;
+    align-items: center;
 }
 .project-form-inputs {
     width: 60%;
@@ -137,6 +138,10 @@ body {
     margin: 0px 20px;
     width: 40%;
     object-fit: cover;
+}
+.project-from-submit {
+    margin-left: 80%;
+    width: 200px;
 }
 .boxes-blog {
     display: grid;
@@ -490,7 +495,7 @@ p {
         width: 100%;
     }
 .description {
-    height: 80px;
+    height: 300px;
 }
 .form-group-sub {
     margin: 20px;
