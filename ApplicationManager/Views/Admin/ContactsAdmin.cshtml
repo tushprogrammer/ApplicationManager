@@ -12,12 +12,6 @@
         <div>
             <div>
                 <table class="table-contacts">
-                   @* <thead class="thead-light">
-                        <tr>
-                            <th>Название</th>
-                            <th>Описание</th>
-                        </tr>
-                    </thead>*@
                     <tbody>
                         @foreach (Contacts item in Model.Contacts)
                         {
@@ -53,7 +47,9 @@
         </div>
        
     </div>
-    <a class="btn btn-primary" asp-action="EditContact" asp-controller="Admin">Редактировать</a>
+    <div class="form-submit">
+        <a class="btn btn-primary" asp-action="EditContact" asp-controller="Admin">Редактировать</a>
+    </div>
 </div>
 
 

@@ -359,7 +359,6 @@ namespace ApplicationManager.Controllers
         [HttpGet]
         public IActionResult GetString()
         {
-            //string myString = "Привет из контроллера!";
             string json = JsonConvert.SerializeObject(data.GetContacts().Where(i => i.Id != 7));
             return new JsonResult(json);
         }
@@ -374,15 +373,11 @@ namespace ApplicationManager.Controllers
         {
             if (stringData is not null)
             {
-                ContactsNewModel model = new()
-                {
-                    Contacts = data.GetContacts().ToList(),
-                    SocialNets = data.GetSocialNet().ToList()
-                };
-                string json = JsonConvert.SerializeObject(model);
-                var info = JsonConvert.DeserializeObject<ContactsNewModel>(stringData);
+                
+                ContactsNewModel newcontacts = JsonConvert.DeserializeObject<ContactsNewModel>(stringData);
+                newcontacts.Image = ImageUrl;
                 //перед сохранением осталось загрузить в форму картинку, прислать сюда, и закинуть в таблицу Contacts
-                data.SaveContacts(info);
+                data.SaveContacts(newcontacts);
             }
 
 
@@ -395,7 +390,7 @@ namespace ApplicationManager.Controllers
         [HttpPost]
         public IActionResult SaveContactfiles(List<IFormFile> files)
         {
-            //загрузка на сервер
+            //загрузка на сервер картинок соц. сетей
             if (files is not null)
             {
                 data.SaveNewFiles(files);

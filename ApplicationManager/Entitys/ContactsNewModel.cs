@@ -4,5 +4,6 @@
     {
         public List<Contacts> Contacts { get; set; }
         public List<SocialNet> SocialNets { get; set; }
+        public IFormFile Image { get; set; }
     }
 }

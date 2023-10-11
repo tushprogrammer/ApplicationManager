@@ -280,6 +280,11 @@ justify-content: space-between;*/
     object-fit: cover;
     background-size: cover;
     margin: 5px;
+    /*background-image: url(/Images/SocialNet-default.png);*/ /*эта фигн€ не работает, так как еЄ перекрывает другое*/
+    /*background-color: gainsboro;*/
+}
+.image-socialnet:hover{
+    opacity: 0.8;
 }
 .image-address {
     width: 600px;
@@ -288,14 +293,29 @@ justify-content: space-between;*/
     float: right;
     margin: 20px;
 }
+.image-address-form {
+    width: 600px;
+    height: 350px;
+    background-size: cover;
+    float: right;
+    margin: 20px;
+}
+.image-address-form:hover {
+    opacity: 0.8;
+}
+   
 .input-for-label {
     visibility: hidden;
+    position: absolute;
 }
 
-.flex-container {
+.modal-container {
     display: flex;
     align-items: center;
-
+    justify-content: center;
+}
+.modal-container input {
+    width: 350px;
 }
 p {
     display: block;

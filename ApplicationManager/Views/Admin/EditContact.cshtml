@@ -6,105 +6,108 @@
     var image_path = "/Images/" + Model.ImageUrl;
 }
 <div class="pad-top">
-<p>
-    <a asp-action="Index">Главная</a> -> @Model.Name_page
-</p>
-<h1>@Model.Name_page</h1>
-<hr />
+    <p>
+        <a asp-action="Index">Главная</a> -> @Model.Name_page
+    </p>
+    <h1>@Model.Name_page</h1>
+    <hr />
 
-<div ng-controller="AdminContacts">
-    <div >
-        <form asp-controller="Admin" asp-action="SaveContacts" method="post" id="SaveContactsForm" asp-antiforgery="true" enctype="multipart/form-data">
-            <div class="contacts-content">
-                <div>
-                    <table class ="table-contacts">
-                        <thead class="thead-light">
-                            <tr>
-                                <th>id</th>
-                                <th>Название</th>
-                                <th>Описание</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr ng-repeat="Contact in Contacts">
-                                <td >{{$index+1}}</td>
-                                <td ><input ng-model="Contact.Name" ng-true-value="Contact.Name.value" /></td>
-                                <td ><input ng-model="Contact.Description" value="Contact.Description.value" /></td>
-                                <td><a href="#" ng-click="RowDelete($index)"><i class="fa fa-times"> - </i></a></td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <a href="#" ng-click="AddNewRow()"><i class="fa fa-plus">+</i></a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+    <div ng-controller="AdminContacts">
+        <div >
+            <form asp-controller="Admin" asp-action="SaveContacts" method="post" id="SaveContactsForm" asp-antiforgery="true" enctype="multipart/form-data">
+                <div class="contacts-content">
                     <div>
-                        @*переделать обязательно под <a>*@
-                        <a href="#" class="btn btn-primary"  id="openModalButton" ng-click="OpenMyModal()">Открыть окно с контактами</a>
-                    </div>
-                </div>
-                <div class="contact-address-change"> 
-                    <div id="image-address" class="image-address" style="background-image: url(@image_path)"> </div>
-                    <div class="btn btn-primary">
-                        <label for="LoadNewAddress">Загрузить новое расположение</label>
-                    </div>
-                        <input type="file" name="ImageUrl" accept="image/*" class="input-for-label"
-                           id="LoadNewAddress" file-on-change="OnAddressChange" />
-                </div>
-            </div>
-         
-     
-           
-   
-            <input type="hidden" name="stringData" ng-value="data()" />
-
-           
-            <a class="btn btn-primary" href="#" onclick="document.getElementById('SaveContactsForm').submit()"
-               ng-click="loadfiles()">Сохранить</a>
-        </form>
-    </div>
-   
-    @* Начало модального окна*@
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Добавить/редактировать ссылки</h5>
-                    <button type="button" class="close" ng-click="CloseMyModal()">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="social-nets">
-                        <div ng-repeat="SocialNet in SocialNets" class="flex-container">
-                            <div class="image-socialnet" ng-style="{'background-image': 'url(/Images/' + SocialNet.ImageUrl + ')'}"></div>
-                            <input ng-model="SocialNet.Url" ng-true-value="SocialNet.Url.value" />
-                            
-                                <a href="#" ng-click="RowDeleteNets($index)">
-                                    <div class="btn-close-image"></div>
-                                </a>
-                           
-                            <input type="file" id="file" name='file' ng-model="SocialNet.ImageUrl"
-                                   file-on-change="onFileChange" additional-param="$index"/>
+                        <table class ="table-contacts">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>id</th>
+                                    <th>Название</th>
+                                    <th>Описание</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="Contact in Contacts">
+                                    <td >{{$index+1}}</td>
+                                    <td ><input ng-model="Contact.Name" ng-true-value="Contact.Name.value" /></td>
+                                    <td ><input ng-model="Contact.Description" value="Contact.Description.value" /></td>
+                                    <td><a class="btn" href="#" ng-click="RowDelete($index)"><i class="fa fa-times"> - </i></a></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div>
+                                            <a class ="btn btn-primary" href="#" ng-click="AddNewRow()"><i class="fa fa-plus">+</i></a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div>
+                            <a href="#" class="btn btn-primary"  id="openModalButton" ng-click="OpenMyModal()">Открыть окно с контактами</a>
                         </div>
-                        <a class="btn btn-primary" href="#" ng-click="AddNewRowNets()"><i class="fa fa-plus">+</i></a>
+                    </div>
+                    <div class="contact-address-change"> 
+                        <div id="image-address" ng-click="onClickImageAddress()" class="image-address-form" style="background-image: url(@image_path)"> </div>
+                        @*<div class="btn btn-primary">
+                            <label for="LoadNewAddress">Загрузить новое расположение</label>
+                        </div>*@
+                            <input type="file" name="ImageUrl" accept="image/*" class="input-for-label"
+                               id="LoadNewAddress" file-on-change="OnAddressChange" />
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" ng-click="CloseMyModal()">Закрыть</button>
+   
+                <input type="hidden" name="stringData" ng-value="data()" />
+
+                <div class="form-submit">
+                <a class="btn btn-primary" href="#" onclick="document.getElementById('SaveContactsForm').submit()"
+                   ng-click="loadfiles()">Сохранить</a>
+               </div>
+            </form>
+        </div>
+   
+        @* Начало модального окна*@
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Добавить/редактировать ссылки</h5>
+                        <button type="button" class="close" ng-click="CloseMyModal()">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="social-nets">
+                            <div ng-repeat="SocialNet in SocialNets" class="modal-container">
+                                <div ng-click="onClickImageSocialNet($index)" class="image-socialnet" ng-style="{'background-image': 'url(/Images/' + SocialNet.ImageUrl + ')'}"></div>
+                                <input ng-model="SocialNet.Url" ng-true-value="SocialNet.Url.value" />
+                            
+                                    <a href="#" ng-click="RowDeleteNets($index)">
+                                        <div class="btn-close-image"></div>
+                                    </a>
+                           
+                                <input type="file" id="InputImage {{$index}}" name='file' ng-model="SocialNet.ImageUrl"
+                                      class="input-for-label" file-on-change="onFileChange" additional-param="$index"/>
+                            </div>
+                            <a class="btn btn-primary" href="#" ng-click="AddNewRowNets()"><i class="fa fa-plus">+</i></a>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" ng-click="CloseMyModal()">Закрыть</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-</div>
+    </div>
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
 <script src="~/js/angular.min.js"></script>
 <script src="~/js/site.js"></script>
 <script>
+    //document.getElementById("image-address").addEventListener("click", function () {
+    //    //alert("something"); 
+    //    document.getElementById("LoadNewAddress").click();
+    //});
     var MyApp = angular.module("MyApp", []);
     //для обработки изменения <input type = "file">
     MyApp.directive('fileOnChange', function () {
@@ -123,8 +126,16 @@
         };
     });
 
-    MyApp.controller('AdminContacts', function ($scope, $http) {
+    MyApp.controller('AdminContacts', function ($scope, $http, $document) {
 
+        $scope.onClickImageAddress = function () {
+            // Ваше действие по клику
+            // alert("something");
+            $document[0].getElementById("LoadNewAddress").click();
+        }
+        $scope.onClickImageSocialNet = function(index){
+            $document[0].getElementById("InputImage " + index).click();
+        }
         //временный массив новых загружаемых файлов
         $scope.files = [] 
         $scope.onFileChange = function (event, index) {
@@ -157,7 +168,7 @@
         }
 
         $scope.loadfiles = function(){
-            alert('вызов сохранения картинок');
+            //alert('вызов сохранения картинок');
             // Создаем объект FormData
             var formData = new FormData();
 
@@ -228,7 +239,7 @@
 
 
         $scope.AddNewRowNets = function () {
-            $scope.SocialNets.push({ Url: '', ImageUrl: '' });
+            $scope.SocialNets.push({ Url: '', ImageUrl: 'SocialNet-default.png' });
         };
         $scope.RowDeleteNets = function (index) {
             if (index > -1) {

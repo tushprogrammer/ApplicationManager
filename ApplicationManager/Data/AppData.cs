@@ -233,7 +233,7 @@ namespace ApplicationManager.Data
         {
             return Context.SocialNets;
         }
-        public void SaveContacts(ContactsNewModel info)
+        public void SaveContacts(ContactsNewModel model)
         {
             //чтоб выполнить сохранение изменений, надо:
             //найти все элементы, которые есть еще в контексте и поменять их значения, по id, если они были изменены
@@ -246,10 +246,24 @@ namespace ApplicationManager.Data
             //как показала практика, низя тупо заменить таблицы, хы
             //а если попробовать сначала полносью опустошить таблицы, а потом их заполнить новыми объектами?
             //сохранение идет с привязкой к именам новых файлов
+
+            if (model.Image != null)
+            {
+                string uploadPath =
+                Path.Combine(webHost.WebRootPath, "Images");
+                string UniqueName = Guid.NewGuid().ToString() + "_" + model.Image.FileName;
+                string FilePath = Path.Combine(uploadPath, UniqueName);
+                model.Image.CopyTo(new FileStream(FilePath, FileMode.Create));
+
+                var rowsModified = Context.Database.ExecuteSqlRaw(
+                   $"UPDATE [Contacts] SET Description = N'{UniqueName}' WHERE Id = 7");
+
+            }
             var oldSocialNets = Context.SocialNets;
             Context.SocialNets.RemoveRange(oldSocialNets);
 
-            Context.SocialNets.AddRange(info.SocialNets);
+            Context.SocialNets.AddRange(model.SocialNets);
+
             Context.SaveChanges();
 
             //перед сохранением осталось загрузить в форму картинку адреса, прислать сюда, и закинуть в таблицу Contacts
