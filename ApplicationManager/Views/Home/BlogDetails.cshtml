@@ -3,9 +3,11 @@
     Blog blognow = Model.Blogs.First(i => i.Id == Model.BlogId);
     var image_path = "/Images/" + blognow.ImageUrl;
 }
-<p>
-    <a asp-action="Index">Главная</a> -> <a asp-action="Blogs">@Model.Name_page</a> -> @blognow.Title
-</p>
+<div class="navigation-history">
+    <p>
+        <a asp-action="Index">Главная</a> -> <a asp-action="Blogs">@Model.Name_page</a> -> @blognow.Title
+    </p>
+</div>
 
 <div class="article-container-blog">
     <h2>@blognow.Title</h2>

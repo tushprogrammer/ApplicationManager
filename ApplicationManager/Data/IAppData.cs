@@ -7,6 +7,9 @@ namespace ApplicationManager.Data
     public interface IAppData
     {
         public IQueryable<MainPage> GetMains();
+        public IQueryable<MainPage> GetMainsIndexpage();
+        public IQueryable<MainPage> GetMainsAdmin();
+        public IQueryable<MainPage> GetMainsHeader();
         public IQueryable<Project> GetProjects();
         public IQueryable<Service> GetServices();
         public IQueryable<Blog> GetBlogs();
@@ -42,6 +45,5 @@ namespace ApplicationManager.Data
         public void DeleteBlog(int id);
         public void SaveContacts(ContactsNewModel info);
         public void SaveNewFiles(List<IFormFile> files);
-        public IQueryable<MainPage> GetMainsAdmin();
     }
 }

@@ -67,23 +67,23 @@
 
     if (lastTwoDigits >= 11 && lastTwoDigits <= 19)
     {
-        <h3>За указанный период поступило @Model.Requests.Count()  заявок</h3>
+        <h3>За указанный период поступило: @Model.Requests.Count()  заявок</h3>
     }
     else
     {
         if (lastDigit == 1)
         {
-            <h3>За указанный период поступило @Model.Requests.Count()  заявка</h3>
+            <h3>За указанный период поступило: @Model.Requests.Count()  заявка</h3>
         }
         else
         {
             if (lastDigit >= 2 && lastDigit <= 4)
             {
-                <h3>За указанный период поступило @Model.Requests.Count()  заявки</h3>
+                <h3>За указанный период поступило: @Model.Requests.Count()  заявки</h3>
             }
             else
             {
-                <h3>За указанный период поступило @Model.Requests.Count()  заявок</h3>
+                <h3>За указанный период поступило: @Model.Requests.Count()  заявок</h3>
             }
 
         }

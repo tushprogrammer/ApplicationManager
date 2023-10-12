@@ -10,11 +10,11 @@
     <form  method="post" asp-controller="Admin" asp-action="EditMainSave" 
     id="EditMainform" asp-antiforgery="true" enctype="multipart/form-data" class="main-form">
             <div class="text-center">
-            <div id="ImageMain-input" class="ImageMain-input" style="background-image: url(@image_path)">
+                <div id="ImageMain-input" class="ImageMain-input" style="background-image: url(@image_path)">
                     @*новый заголовок*@
                     <input type="text" asp-for="Title" value="@Model.Title" class="main-title-input"/>
                     @*новый текст кнопки*@
-                        <input type="text" asp-for="ButtonTitle" value="@Model.ButtonTitle" class="main-button-input" />
+                    <input type="text" asp-for="ButtonTitle" value="@Model.ButtonTitle" class="main-button-input" />
                 </div>
             
             </div>
@@ -36,7 +36,7 @@
                         </div>
                         <div class="form-group">
                             <label for="email">Email:</label>
-                            <input type="text" id="email" name="Email" disabled>
+                    <input type="email" id="email" name="Email" disabled>
                         </div>
                     </div>
                     <div class="form-group">

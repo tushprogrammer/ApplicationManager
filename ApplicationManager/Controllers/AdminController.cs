@@ -20,8 +20,10 @@ namespace ApplicationManager.Controllers
     {
         private readonly IAppData data;
         private readonly IWebHostEnvironment webHost;
-        public AdminController(IAppData Data, IWebHostEnvironment WebHost)
+        private readonly ILogger<AdminController> _logger;
+        public AdminController(ILogger<AdminController> logger, IAppData Data, IWebHostEnvironment WebHost)
         {
+            _logger = logger;
             webHost = WebHost;
             data = Data;
         }
@@ -40,7 +42,6 @@ namespace ApplicationManager.Controllers
 
             //пока что все, но тут должна быть сортировка в зависимтости от нажатия на кнопки (перегрузка метода вызова страницы)
             //+сортировка заявок по выбранному статусу
-            //List<Request> requests = data.GetRequests().ToList(); 
             AdminModel model = new AdminModel()
             {
                 Requests = data.GetRequests(), //все заявки
@@ -49,47 +50,47 @@ namespace ApplicationManager.Controllers
             };
             return View("Index", model);
         }
-
+        //заявки сегодня
         public IActionResult TodayRequests()
         {
-            //вопрос по реализации: как будет лучше организовать запросы к бд по поводу заявок в сортированном виде,
             //на экран надо выводить отсортированные заявки и общее количество в бд
-            //либо: сделать два запроса, на общее количество и конкретные заявки
-            //либо сделать один запрос на все заявки, и полученную коллекцию посчитать и отбросить лишние 
             int count = data.CountRequests(); 
             AdminModel model = new AdminModel()
             {
-                Requests = data.GetRequestsToday(), //заявки сегодня
+                Requests = data.GetRequestsToday(), 
                 Statuses = GetNameStatuses(),
                 AllRequestsCount = count,
             };
             return View("Index", model);
         }
+        //заявки вчера
         public IActionResult YesterdayRequests()
         {
             AdminModel model = new AdminModel()
             {
-                Requests = data.GetRequestsYesterday(), //заявки вчера
+                Requests = data.GetRequestsYesterday(), 
                 Statuses = GetNameStatuses(),
                 AllRequestsCount = data.CountRequests(),
             };
             return View("Index", model);
         }
+        //заявки на этой неделе
         public IActionResult WeekRequests()
         {
             AdminModel model = new AdminModel()
             {
-                Requests = data.GetRequestsWeek(), //заявки на этой неделе
+                Requests = data.GetRequestsWeek(), 
                 Statuses = GetNameStatuses(),
                 AllRequestsCount = data.CountRequests(),
             };
             return View("Index", model);
         }
+        //заявки в этом месяце
         public IActionResult MonthRequests()
         {
             AdminModel model = new AdminModel()
             {
-                Requests = data.GetRequestsMonth(), //заявки в этом месяце
+                Requests = data.GetRequestsMonth(), 
                 Statuses = GetNameStatuses(),
                 AllRequestsCount = data.CountRequests(),
             };
@@ -106,9 +107,9 @@ namespace ApplicationManager.Controllers
             };
             return View("Index", model);
         }
-
+        //заявки по статусам
         [HttpGet]
-        public IActionResult StatusRequests(string statusName) //заявки по статусам
+        public IActionResult StatusRequests(string statusName) 
         {
             AdminModel model = new AdminModel()
             {
@@ -118,7 +119,7 @@ namespace ApplicationManager.Controllers
             };
             return View("Index", model);
         }
-        #endregion
+       
 
         //выдача заявкам элемент статуса в дополнение к id
         private IQueryable<string> GetNameStatuses()
@@ -146,13 +147,18 @@ namespace ApplicationManager.Controllers
             };
             var r = Request.Headers["Referer"].ToString();
             return Redirect(r);
-            //обновленме всего рабочего стола, а все настройки сортировки остаются
+            //обновление всего рабочего стола, а все настройки сортировки остаются
         }
+        #endregion
 
-        //вызов страницы просмотра перед редактированием
+        #region стр. "Главная"
+
+        
+        //вызов страницы просмотра "главная" перед редактированием
         public IActionResult MainAdmin()
         {
-            IQueryable<MainPage> mainPages = data.GetMains().Where(item => item.Id >= 6 && item.Id <= 9);
+            
+            IQueryable<MainPage> mainPages = data.GetMainsIndexpage();
             MainPageModel model = new()
             {
                 Image_path = mainPages.First(i => i.Id == 8).Value,
@@ -164,25 +170,23 @@ namespace ApplicationManager.Controllers
             return View(model);
         }
 
-        //вызов страницы редактирования
+        //вызов страницы редактирования "Главная"
         public IActionResult EditMain()
         {
-            //сюда должны перебрасываться те же данные, что и выше
-            //может все таки модель полноценную сделать ?
-            //и в модели разбить по состовляющим
-            //а то херня какая то получается, если еще на фронте искать через LINQ нужный элемент
-            IQueryable<MainPage> mainPages = data.GetMains().Where(item => item.Id >= 6 && item.Id <= 9);
+            IQueryable<MainPage> mainPages = data.GetMainsIndexpage();
             MainPageUploadModel model = new()
             {
                 Title = mainPages.First(i => i.Id == 7).Value,
                 ButtonTitle = mainPages.First(i => i.Id == 6).Value,
                 RequestTitle = mainPages.First(i => i.Id == 9).Value,
             };
+            //image идет отдельно, так как тут image это путь к файлу, а в модели это целый файл для загрузки
+            //возможно при написании api все таки придется в таблице хранить целый файл, и сюда грузить массив байтов
             ViewBag.Image = mainPages.First(i => i.Id == 8).Value;
             return View(model);
         }
 
-        //вызов метода редактирования 
+        //вызов метода редактирования страницы "Главная"
         [HttpPost]
         public IActionResult EditMainSave(MainPageUploadModel model)
         {
@@ -191,15 +195,18 @@ namespace ApplicationManager.Controllers
             
             return Redirect("~/Admin/MainAdmin");
         }
+        #endregion
 
-        //вывод страницы для редактирования
+        #region стр. "Проекты"
+
+        //вывод страницы для просмотра "Проекты" перед редактированием
         public IActionResult ProjectAdmin()
         {
             //все проекты
             ProjectsModel model = new()
             {
                 Projects = data.GetProjects(),
-                Name_page = data.GetMains().First(i => i.Id == 1).Value
+                Name_page = data.GetMains().First(i => i.Id == 3).Value
             };
             //имя странциы проектов из тб mainpage
             return View(model);
@@ -208,7 +215,7 @@ namespace ApplicationManager.Controllers
         public IActionResult AddNewProject() 
         {
             //заголовок для шапки
-            ViewBag.Name_page = data.GetMains().First(i => i.Id == 1).Value;
+            ViewBag.Name_page = data.GetMains().First(i => i.Id == 3).Value;
             return View("DetailsProject");
         }
         //метод добавления нового проекта
@@ -222,7 +229,7 @@ namespace ApplicationManager.Controllers
         {
             Project temp = data.GetProject(id);
             ViewBag.ImageUrl = temp.ImageUrl;
-            ViewBag.Name_page = data.GetMains().First(i => i.Id == 1).Value;
+            ViewBag.Name_page = data.GetMains().First(i => i.Id == 3).Value;
             DetailsProjectModel model = new()
             {
                 Id = id,
@@ -244,7 +251,10 @@ namespace ApplicationManager.Controllers
             data.DeleteProject(id);
             return Redirect("~/Admin/ProjectAdmin");
         }
-        //вызов страницы для редактирования страницы улсуг
+        #endregion
+
+        #region стр. "Услуги"
+        //вызов страницы для редактирования страницы "Услуги"
         public IActionResult ServicesAdmin()
         {
             ServicesModel model = new()
@@ -254,7 +264,7 @@ namespace ApplicationManager.Controllers
             };
             return View(model);
         }
-        //изменение услуги
+        //страница изменения услуги
         public IActionResult EditService(int id)
         {
             Service model = data.GetService(id);
@@ -262,28 +272,34 @@ namespace ApplicationManager.Controllers
             return View("DetailsService", model);
             
         }
-        //добавление услуги
+        //страница добавления услуги
         public IActionResult AddNewService() 
         {
             ViewBag.Name_page = data.GetMains().First(i => i.Id == 2).Value;
             return View("DetailsService");
         }
-        public IActionResult AddNewServiceMethod(Service newService)
+        //метод добавления услуги
+        public IActionResult AddNewServiceMethod(Service New_Service)
         {
-            data.AddService(newService);
+            data.AddService(New_Service);
             return Redirect("~/Admin/ServicesAdmin");
         }
-        public IActionResult DeleteServiceMethod(int id)
+        //метод удаления услуги
+        public IActionResult DeleteServiceMethod(int id_Service)
         {
-            data.DeleteService(id);
+            data.DeleteService(id_Service);
             return Redirect("~/Admin/ServicesAdmin");
         }
-        public IActionResult EditServiceMethod(Service Service)
+        //метод изменения услуги
+        public IActionResult EditServiceMethod(Service Changed_Service)
         {
-            data.EditService(Service);
+            data.EditService(Changed_Service);
             return Redirect("~/Admin/ServicesAdmin");
         }
-        //вызов страницы для редактирования страницы блога
+        #endregion
+
+        #region стр. "Блог"
+        //вызов страницы для редактирования страницы "Блог"
         public IActionResult BlogsAdmin()
         {
             BlogsModel model = new()
@@ -299,11 +315,13 @@ namespace ApplicationManager.Controllers
             ViewBag.Name_page = data.GetMains().First(i => i.Id == 4).Value;
             return View("DetailsBlog");
         }
+        //метод добавления блога
         public IActionResult AddNewBlogMethod(DetailsBlogModel newBlog)
         {
             data.AddBlog(newBlog);
             return Redirect("~/Admin/BlogsAdmin");
         }
+        //вызов страницы изменения блога
         public IActionResult EditBlog(int id)
         {
             ViewBag.Name_page = data.GetMains().First(i => i.Id == 4).Value;
@@ -318,17 +336,24 @@ namespace ApplicationManager.Controllers
             };
             return View("DetailsBlog", model);
         }
+        //метод изменения блога
         public IActionResult EditBlogMethod(DetailsBlogModel model)
         {
             data.EditBlog(model);
             return Redirect("~/Admin/BlogsAdmin");
         }
+        //метод удаления блога
         public IActionResult DeleteBlogMEthod(int id)
         {
             data.DeleteBlog(id);
             return Redirect("~/Admin/BlogsAdmin");
         }
-        //вызов страницы для предпросмотра страницы контактов
+        #endregion
+
+        #region стр. "Контакты"
+
+        
+        //вызов страницы просмотра "Контакты" перед редактированием
         public IActionResult ContactsAdmin()
         {
             ContactsModel model = new()
@@ -340,12 +365,9 @@ namespace ApplicationManager.Controllers
             };
             return View(model);
         }
-        //вызов страницы для редактирования страницы контактов
+        //вызов страницы для редактирования "Контакты"
         public IActionResult EditContact()
         {
-            //что сюда будет передаваться ?
-            //модель ?
-            //на страницу должны передаваться данные, которые в начале будут закидываться во внутренний js массив
             ContactsModel model = new()
             {
                 //Contacts = data.GetContacts().Where(i => i.Id != 7),//это подгружает AngularJS
@@ -355,20 +377,21 @@ namespace ApplicationManager.Controllers
             };
             return View(model);
         }
-
+        //вызов информации от angular о контактах на стр. "Контакты"
         [HttpGet]
         public IActionResult GetString()
         {
             string json = JsonConvert.SerializeObject(data.GetContacts().Where(i => i.Id != 7));
             return new JsonResult(json);
         }
+        //вызов информации от angular о социальных сетях на стр. "Контакты"
         [HttpGet]
         public IActionResult GetStringSocialNet() 
         {
             string json = JsonConvert.SerializeObject(data.GetSocialNet());
             return new JsonResult(json);
         }
-        
+        //сохранение информации о контактах и соц сетях
         public IActionResult SaveContacts(string stringData, IFormFile ImageUrl) 
         {
             if (stringData is not null)
@@ -379,14 +402,11 @@ namespace ApplicationManager.Controllers
                 //перед сохранением осталось загрузить в форму картинку, прислать сюда, и закинуть в таблицу Contacts
                 data.SaveContacts(newcontacts);
             }
-
-
-
-
             //return new JsonResult("все ок");
             return Redirect("~/Admin/ContactsAdmin");
 
         }
+        //сохранение изображений соц. сетей от angular
         [HttpPost]
         public IActionResult SaveContactfiles(List<IFormFile> files)
         {
@@ -402,10 +422,10 @@ namespace ApplicationManager.Controllers
         //вызов верстки модального окна (надо на случай, если данные динамические)
         public IActionResult ModalViewContactsSocialNets()
         {
-            //а так ли мне надо вызывать отдельно верстку если оно у меня одинаковое, а данные подгружаются за счёт angular?
+            //данные подгружаются за счёт angular?
             return View();
         }
-
+        #endregion
     }
 }
 

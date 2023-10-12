@@ -2,9 +2,11 @@
 @{
     var image_address = "/Images/" + Model.ImageUrl;
 }
-<p>
-    <a asp-action="Index">Главная</a> -> @Model.Name_page
-</p>
+<div class="navigation-history">
+    <p>
+        <a asp-action="Index">Главная</a> -> @Model.Name_page
+    </p>
+</div>
 <h1>@Model.Name_page</h1>
 <hr />
 <div class="contacts-content">

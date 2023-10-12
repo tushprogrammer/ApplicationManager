@@ -31,19 +31,19 @@
         <div class="form-row">
             <div class="form-group">
                 <label for="name">Имя:</label>
-                <input type="text" id="name" name="Name">
+                <input type="text" id="name" name="Name" disabled>
             </div>
             <div class="form-group">
                 <label for="email">Email:</label>
-                <input type="text" id="email" name="Email">
+                <input type="email" id="email" name="Email" disabled>
             </div>
         </div>
         <div class="form-group">
             <label for="description">Текст сообщения:</label>
-            <textarea id="description" name="Description" class="description"></textarea>
+            <textarea id="description" name="Description" class="description" disabled></textarea>
         </div>
         <div class="form-group-sub">
-            <input type="submit" value="Отправить" class="btn btn-primary">
+            <input type="submit" value="Отправить" class="btn btn-primary" disabled>
         </div>
         @*<form action="~/Home/AddNewRequest" method="post">
             <p>Имя: </p>          <input type="text" name="Name" /><br />

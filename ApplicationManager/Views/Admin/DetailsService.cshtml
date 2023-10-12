@@ -7,9 +7,11 @@
         namepage = "Редактирование";
 }
 <div class="pad-top">
-    <p>
-        <a asp-action="Index">Рабочий стол</a> -> <a asp-action="ServicesAdmin" asp-controller="Admin">@ViewBag.Name_page</a>  -> @namepage
-    </p>
+    <div class="navigation-history">
+        <p>
+            <a asp-action="Index">Рабочий стол</a> -> <a asp-action="ServicesAdmin" asp-controller="Admin">@ViewBag.Name_page</a>  -> @namepage
+        </p>
+    </div>
     <div >
         @if (Model is null)
         {

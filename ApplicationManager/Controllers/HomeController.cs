@@ -17,46 +17,41 @@ namespace ApplicationManager.Controllers
             data = Data;
         }
 
+        #region стр. "Главная"
+
+        //Вызов страницы "Главная"
         public IActionResult Index()
         {
-            //что мне надо вывести на страницу индекс:
-            //3 элемента - картинка, кнопка и заголовок поверх картинки
-            //все это хранится в таблице MainPage, то есть надо в интерфейсе IAppData реализовать получение этих трех товарищей, без лишнего
-            IQueryable<MainPage> mainPages = data.GetMains().Where(item => item.Id >= 6 && item.Id <= 9);
+
+            IQueryable<MainPage> mainPages = data.GetMainsIndexpage();
             return View(mainPages);
         }
+        //вызов верстки "Отправить заявку"
         public IActionResult AddRequest()
         {
-            //на страницу добавление надо вывести заголовок id == 9
             MainPage Title = data.GetMainRequest();
             return PartialView(Title);
         }
-        //public IActionResult AddRequest() 
-        //{
-        //    //на страницу добавление надо вывести заголовок id == 9
-        //    MainPage Title = data.GetMainRequest();
-        //    return View(Title);
-        //}
-        public IActionResult AddNewRequest(string Name, string Email, string Description) 
+        //метод добавления заявки
+        public IActionResult AddNewRequest(string Name, string Email, string Description)
         {
-            //тут же создать статус по умолчанию
-            //StatusRequest status = new StatusRequest()
-            //{
-            //    Id = 1,
-            //    StatusName = "Получена"
-            //};
             Request newRequest = new Request()
             {
                 DateCreated = DateTime.Now,
                 Email = Email,
                 Fullname = Name,
                 Textrequest = Description,
-                StatusId = 1
+                StatusId = 1 //по умолчанию - id статуса "Получена"
 
             };
             data.AddRequest(newRequest);
             return Redirect("~/"); //возврат к первой странице
         }
+        #endregion
+
+        #region стр. "Проекты"
+
+        //вызов страницы "Проекты"
         public IActionResult Project()
         {
             //подгрузка данных из бд: 
@@ -64,21 +59,27 @@ namespace ApplicationManager.Controllers
             ProjectsModel model = new()
             {
                 Projects = data.GetProjects(),
-                Name_page = data.GetMains().First(i => i.Id == 1).Value
+                Name_page = data.GetMains().First(i => i.Id == 3).Value
             };
             //имя странциы проектов из тб mainpage
             return View(model);
         }
+        //вызов страницы об конкретном проекте
         public IActionResult ProjectDetails(int id) 
         {
             ProjectsModel model = new()
             {
                 Projects = data.GetProjects(),
-                Name_page = data.GetMains().First(i => i.Id == 1).Value,
+                Name_page = data.GetMains().First(i => i.Id == 3).Value,
                 IdProject = id
             };
             return View(model);
         }
+        #endregion
+
+        #region стр. "Блог"
+
+        //вызов страницы "Блог"
         public IActionResult Blogs() 
         {
             BlogsModel model = new()
@@ -88,6 +89,7 @@ namespace ApplicationManager.Controllers
             };
             return View(model);
         }
+        //вызов страницы об конкретном блоге
         public IActionResult BlogDetails(int id)
         {
             BlogsModel model = new()
@@ -98,6 +100,11 @@ namespace ApplicationManager.Controllers
             };
             return View(model);
         }
+        #endregion
+
+        #region стр. "Услуги"
+
+        //вызов страницы "Услуги"
         public IActionResult Services() 
         {
             ServicesModel model = new()
@@ -107,6 +114,11 @@ namespace ApplicationManager.Controllers
             };
             return View(model);
         }
+        #endregion
+
+        #region стр. "Контакты"
+
+        //вызов страницы "Контакты"
         public IActionResult Contacts()
         {
             ContactsModel model = new()
@@ -118,16 +130,6 @@ namespace ApplicationManager.Controllers
             };
             return View(model);
         }
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
+        #endregion
     }
 }

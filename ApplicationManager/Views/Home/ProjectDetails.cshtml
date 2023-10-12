@@ -3,9 +3,11 @@
     Project projectnow = Model.Projects.First(i => i.Id == Model.IdProject);
     var image_path = "~/Images/" + projectnow.ImageUrl;
 }
-<p>
-    <a asp-action="Index">Главная</a> -> <a asp-action="project">@Model.Name_page</a> -> @projectnow.NameCompany
-</p>
+<div class="navigation-history">
+    <p>
+        <a asp-action="Index">Главная</a> -> <a asp-action="project">@Model.Name_page</a> -> @projectnow.NameCompany
+    </p>
+</div>
 <div class="article-container">
    
     <div class="article-content">

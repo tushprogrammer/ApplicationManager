@@ -1,8 +1,10 @@
 ﻿@model BlogsModel
 <div class="pad-top">
-    <p>
-        <a asp-action="Index">Главная</a> -> @Model.Name_page
-    </p>
+    <div class="navigation-history">
+        <p>
+            <a asp-action="Index">Главная</a> -> @Model.Name_page
+        </p>
+    </div>
     <h1>@Model.Name_page</h1>
     <hr />
     
@@ -57,6 +59,6 @@
         }
     </div>
     <div class="form-submit">
-        <a class="btn btn-primary " asp-action="AddNewBlog">Добавить элемент блога</a>
+        <a class="btn btn-primary " asp-action="AddNewBlog">Добавить пост</a>
     </div>
 </div>

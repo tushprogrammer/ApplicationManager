@@ -22,20 +22,32 @@ namespace ApplicationManager.Data
         }
         public IQueryable<MainPage> GetMains()
         {
+            //all
             return Context.MainPage;
+        }
+        public IQueryable<MainPage> GetMainsIndexpage()
+        {
+            // Butt_main, Title, Image_main, Main_request
+            return Context.MainPage.Where(item => item.Id >= 6 && item.Id <= 9);
+        }
+        public IQueryable<MainPage> GetMainsHeader()
+        {
+            //Services, Project, Blogs, Contacts
+            return Context.MainPage.Where(item => item.Id >= 2 && item.Id <= 5);
         }
         public IQueryable<MainPage> GetMainsAdmin()
         {
-            //цифры временные, из-за сбитого порядка, при инициализации проекта будут другие, надо будет перенастроить
-            return Context.MainPage.Where(i => i.Id >= 21 && i.Id <= 26);
+            //MainAdmin, ProjectAdmin, ServicesAdmin, BlogsAdmin, ContactsAdmin, Index
+
+            return Context.MainPage.Where(i => i.Id >= 13 && i.Id <= 18);
         }
         public void EditMain(MainPageUploadModel model)
         {
-            // путь к папке images 
             
             //если картинку в этот раз не захотели поменять
             if (model.Image != null)
             {
+                //путь к папке images на сервере
                 string uploadPath =
                 Path.Combine(webHost.WebRootPath, "Images");
                 string UniqueName = Guid.NewGuid().ToString() + "_" + model.Image.FileName;

@@ -1,10 +1,12 @@
 ﻿@model ServicesModel
 <div class="pad-top">
-    <p>
-        <a asp-action="Index">Рабочий стол</a> -> @Model.Name_page
-    </p>
+    <div class="navigation-history">
+        <p>
+            <a asp-action="Index">Рабочий стол</a> -> @Model.Name_page
+        </p>
+    </div>
     <h1>@Model.Name_page</h1>
-    
+    <hr />
     <div>
         @foreach (Service item in Model.Services)
         {

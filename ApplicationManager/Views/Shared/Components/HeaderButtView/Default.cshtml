@@ -11,13 +11,11 @@
         @*    кнопки для админа, если авторизован и текущий пользователь админ, то ему кнопки выхода и кнопка на панель админа*@
         @if (User.Identity.IsAuthenticated)
         {
-            @* <a class="navbar-brand" href="~/">В начало</a>*@
-            <a class="navbar-brand" herf="#">@User.Identity.Name</a>
+            @*<a class="navbar-brand" herf="#">@User.Identity.Name</a>*@
             @if (User.IsInRole("Admin"))
             {
                 <a class="navbar-brand" asp-action="Index" asp-controller="Admin">Панель админа</a>
             }
-            @*<a asp-action="Logout" asp-controller="Account">Выход</a>*@
             <form class="navbar-brand" method="post" asp-controller="Account" asp-action="Logout" id="logoutform" asp-antiforgery="true">
                 <a class="navbar-brand" href="#" onclick="document.getElementById('logoutform').submit()">Выход</a>
             </form>
@@ -26,11 +24,7 @@
         }
         else
         {
-            @*    если не авторизован то кнопка на вход*@
-            @*<div class="btn-group pull-right">*@
             <a class="navbar-brand" href="/Account/Login">Вход</a>
-            @* <a class="navbar-brand" href="/Account/Register">Регистрация </a>*@
-            @*</div>*@
         }
     </div>
  
@@ -44,4 +38,3 @@
 
 </div>
 
-@* <input type="submit" value="Выход"/>*@

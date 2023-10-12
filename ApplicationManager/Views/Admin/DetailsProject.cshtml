@@ -14,9 +14,11 @@
 
 }
 <div class="pad-top">
-    <p>
-        <a asp-action="Index">Рабочий стол</a> -> <a asp-action="ProjectAdmin" asp-controller="Admin">@ViewBag.Name_page</a> -> @ViewBag.Title
-    </p>
+    <div class="navigation-history">
+        <p>
+            <a asp-action="Index">Рабочий стол</a> -> <a asp-action="ProjectAdmin" asp-controller="Admin">@ViewBag.Name_page</a> -> @ViewBag.Title
+        </p>
+    </div>
         @if (Model is null)
         {
             <div class="project-form">
@@ -63,9 +65,9 @@
                             <label for="description">Описание проекта</label>
                             <textarea id="description" asp-for="Description" class="description" value="@Model.Description"></textarea>
                         </div>
-                        <div class="btn btn-primary">
+                        @*<div class="btn btn-primary">
                             <label for="NewProjectImage">Изменить фото</label>
-                        </div>
+                        </div>*@
                         <input asp-for="Image" value="Изменить фото" id="NewProjectImage" class="input-for-label"/>
 
                     </form>
