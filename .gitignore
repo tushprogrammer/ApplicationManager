@@ -361,3 +361,7 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/MainPageSQL.sql
+*.jpeg
+*.jpg
+/ApplicationManager/wwwroot/Images/f5a9d115-61d6-42dd-9d4d-c472f490f65d_840px-Снимок-экрана-2023-07-04-в-14.22.43.png
