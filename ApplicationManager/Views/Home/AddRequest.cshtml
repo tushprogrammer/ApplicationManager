@@ -4,7 +4,7 @@
     <h1 class="display-4">@Model.Value</h1>
 </div>
 <div>
-    <form action="~/Home/AddNewRequest" method="post">
+    <form asp-action="AddNewRequest" asp-controller="home"  method="post">
         <div class="form-row">
             <div class="form-group">
                 <label for="name">Имя:</label>
@@ -24,10 +24,4 @@
         </div> 
     </form>
     
-@*    <form action="~/Home/AddNewRequest" method="post">
-        <p>Имя: </p>          <input type="text" name="Name" /><br />
-        <p>Email: </p>        <input type="text" name="Email" /><br />
-        <p>Текст сообщения: </p>     <textarea name="Description"></textarea><br /><br />
-        <p><input type="submit" value="Отправить" /></p>
-    </form>*@
 </div>

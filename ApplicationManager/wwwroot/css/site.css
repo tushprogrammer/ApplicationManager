@@ -349,18 +349,18 @@ details[open] summary {
 
 
 summary::before {
-    content: "+"; /* Изменяемый символ/
+    content: "+"; /* Изменяемый символ/*/
     position: absolute;
     left: 5px; /* Расположение символа относительно summary */
     margin-left: 5px;
 }
 
 details[open] summary::before {
-    content: "-"; /* Замена на другой символ при раскрытии/
+    content: "-"; /* Замена на другой символ при раскрытии/*/
 }
 
 details p {
-    word-wrap: break-word; /* Перенос по словам */
+    word-wrap: break-word; /*/* Перенос по словам */
     padding: 10px 30px;
 }
 

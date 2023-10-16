@@ -298,7 +298,6 @@ namespace ApplicationManager.Controllers
             Service model = data.GetService(id);
             ViewBag.Name_page = data.GetMains().First(i => i.Id == 2).Value;
             return View("DetailsService", model);
-            
         }
         //страница добавления услуги
         public IActionResult AddNewService() 
@@ -307,10 +306,21 @@ namespace ApplicationManager.Controllers
             return View("DetailsService");
         }
         //метод добавления услуги
+        [HttpPost, ValidateAntiForgeryToken]
         public IActionResult AddNewServiceMethod(Service New_Service)
         {
-            data.AddService(New_Service);
-            return Redirect("~/Admin/ServicesAdmin");
+            if (ModelState.IsValid)
+            {
+                data.AddService(New_Service);
+                return Redirect("~/Admin/ServicesAdmin");
+            }
+            else
+            {
+                //красная надпись сверху и подсвеченные поля, которые не заполнили
+                ModelState.AddModelError("", "Заполните все обязательные поля");
+                ViewBag.Name_page = data.GetMains().First(i => i.Id == 2).Value;
+                return View("DetailsService"); //повторная попытка
+            }
         }
         //метод удаления услуги
         public IActionResult DeleteServiceMethod(int id_Service)
@@ -319,10 +329,20 @@ namespace ApplicationManager.Controllers
             return Redirect("~/Admin/ServicesAdmin");
         }
         //метод изменения услуги
+        [HttpPost, ValidateAntiForgeryToken]
         public IActionResult EditServiceMethod(Service Changed_Service)
         {
-            data.EditService(Changed_Service);
-            return Redirect("~/Admin/ServicesAdmin");
+            if (ModelState.IsValid)
+            {
+                data.EditService(Changed_Service);
+                return Redirect("~/Admin/ServicesAdmin");
+            }
+            else
+            {
+                ModelState.AddModelError("", "Заполните все обязательные поля");
+                ViewBag.Name_page = data.GetMains().First(i => i.Id == 2).Value;
+                return View("DetailsService", Changed_Service);
+            }
         }
         #endregion
 
