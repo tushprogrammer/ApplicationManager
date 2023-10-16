@@ -426,6 +426,26 @@ namespace ApplicationManager.Controllers
             return View();
         }
         #endregion
+
+        #region стр. "редактирование имен страниц"
+
+        public IActionResult EditNamePages()
+        {
+            NamePagesModel model = new()
+            {
+                Name_page = "Изменение имен страниц",
+                Names = data.GetMainsHeader().ToList(),
+                Names_admin = data.GetMainsAdmin().ToList(),
+            };
+            return View(model);
+        }
+        public IActionResult EditNameMethod(List<MainPage> Names, List<MainPage> NamesAdmin)
+        {
+            //сохранение новых имен
+            data.SaveNamePages(Names, NamesAdmin);
+            return Redirect("/Admin/EditNamePages");
+        }
+        #endregion
     }
 }
 

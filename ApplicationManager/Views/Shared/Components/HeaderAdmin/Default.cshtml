@@ -11,6 +11,7 @@
 <div class="nav-panel-admin">
     <ul>
         <li> <a asp-action="UserList" asp-controller="Account">Список пользователей</a></li>
+        <li> <a asp-action="EditNamePages" asp-controller="Admin">Изм. названий</a></li>
         @foreach (MainPage item in Model.MainPages)
         {
             <li>

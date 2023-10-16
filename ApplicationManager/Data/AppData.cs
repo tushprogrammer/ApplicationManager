@@ -5,8 +5,10 @@ using Microsoft.AspNetCore;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.VisualBasic;
 using Newtonsoft.Json.Linq;
+using System.Linq;
 using System.Text;
 
 namespace ApplicationManager.Data
@@ -41,6 +43,32 @@ namespace ApplicationManager.Data
 
             return Context.MainPage.Where(i => i.Id >= 13 && i.Id <= 18);
         }
+        public void SaveNamePages(List<MainPage> names, List<MainPage> NamesAdmin)
+        {
+            if (names.Count > 0 && NamesAdmin.Count > 0)
+            {
+                for (int i = 0; i < names.Count; i++)
+                {
+                    MainPage name_admin = NamesAdmin.Find(item => item.Name.Contains(names[i].Name));
+                    name_admin.Value = $"Ред. \"{names[i].Value}\"";
+                }
+                StringBuilder queryBuilder = new StringBuilder();
+
+                for (int i = 0; i < names.Count; i++)
+                {
+                    queryBuilder.Append($"UPDATE MainPage SET Value = CASE Id WHEN {names[i].Id} THEN N'{names[i].Value}' ELSE Value END;");
+                }
+                for (int i = 0; i < NamesAdmin.Count; i++)
+                {
+                    queryBuilder.Append($"UPDATE MainPage SET Value = CASE Id WHEN {NamesAdmin[i].Id} THEN N'{NamesAdmin[i].Value}' ELSE Value END;");
+                }
+
+
+                var query = queryBuilder.ToString();
+                var rowsModified = Context.Database.ExecuteSqlRaw(query);
+            }
+        }
+    
         public void EditMain(MainPageUploadModel model)
         {
             
@@ -146,6 +174,7 @@ namespace ApplicationManager.Data
             }
             else
             {
+                //установить картинку по умолчанию, если своей не дали
                 var rowsModified = Context.Database.ExecuteSqlRaw(
                    $"UPDATE [Projects] SET Title = N'{model.Title}', NameCompany = N'{model.NameCompany}', " +
                    $" Description = N'{model.Description}' WHERE Id = {model.Id}");

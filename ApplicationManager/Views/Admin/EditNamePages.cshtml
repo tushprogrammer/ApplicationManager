@@ -1,0 +1,52 @@
+﻿@model NamePagesModel
+@{
+
+}
+<div class="pad-top">
+    <div class="navigation-history">
+        <p>
+            <a asp-action="Index">Главная</a> -> @Model.Name_page
+        </p>
+    </div>
+    <h1>@Model.Name_page</h1>
+    <hr />
+    <div>
+        
+            <table class="table" style="width: 60%;">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Тех. название</th>
+                        <th>Отображение</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <form asp-action="EditNameMethod" method="post" id="SaveEditNameForm">
+                        
+                    @for (int i = 0; i < Model.Names.Count; i++)
+                    {
+                        <tr>
+                            <input type="hidden" value="@Model.Names[i].Id" name="Names[@i].Id">
+                            <input type="hidden" value="@Model.Names[i].Name" name="Names[@i].Name"> @*для передачи в контроллер*@
+                            <td>@Model.Names[i].Name</td> @*для отображения*@
+                            <td><input type="text" name="Names[@i].Value" value="@Model.Names[i].Value" /></td>
+                        </tr>
+                    }
+                    @for (int j = 0; j < Model.Names_admin.Count; j++)
+                    {
+                        <input type="hidden" value="@Model.Names_admin[j].Id" name="NamesAdmin[@j].Id"/>
+                        <input type="hidden" value="@Model.Names_admin[j].Name" name="NamesAdmin[@j].Name" />
+                        <input type="hidden" value="@Model.Names_admin[j].Value" name="NamesAdmin[@j].Value" />
+
+                    }
+                      
+                        
+                    </form>
+                </tbody>
+            </table>
+    </div>
+    <div class="form-submit">
+        <a class="btn btn-primary" href="#" onclick="document.getElementById('SaveEditNameForm').submit()">
+            Сохранить
+        </a>
+    </div>
+</div>
