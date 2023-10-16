@@ -1,27 +1,41 @@
 ﻿@using ApplicationManager.Entitys
-@model MainPage
+@model Request
 <div class="text-center">
-    <h1 class="display-4">@Model.Value</h1>
+    <h1 class="display-4">@ViewBag.Title</h1>
 </div>
 <div>
     <form asp-action="AddNewRequest" asp-controller="home"  method="post">
         <div class="form-row">
             <div class="form-group">
                 <label for="name">Имя:</label>
-                <input type="text" id="name" name="Name">
+                <input type="text" id="name" asp-for="Fullname" oninput="validateForm()">
             </div>
             <div class="form-group">
                 <label for="email">Email:</label>
-                <input type="email" id="email" name="Email">
+                <input type="email" id="email" asp-for="Email" oninput="validateForm()">
             </div>
         </div>   
         <div class="form-group">
             <label for="description">Текст сообщения:</label>
-        <textarea id="description" name="Description" class="description"></textarea>
+            <textarea id="description" asp-for="Textrequest" class="description" oninput="validateForm()"></textarea>
         </div>   
         <div class="form-group-sub">
-            <input type="submit" value="Отправить" class="btn btn-primary">
+            <input type="submit" value="Отправить" class="btn btn-primary" id="submitBtn"  disabled>
         </div> 
     </form>
     
 </div>
+<script>
+    function validateForm() {
+        var name = document.getElementById("name").value;
+        var email = document.getElementById("email").value;
+        var description = document.getElementById("description").value;
+        //alert(name, email, description);
+        if (name === "" || email === "" || description === "") {
+            document.getElementById("submitBtn").disabled = true; // Делаем кнопку недоступной
+        } else {
+            document.getElementById("submitBtn").disabled = false; // Делаем кнопку доступной
+        }
+    }
+
+</script>

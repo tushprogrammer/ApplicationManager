@@ -22,30 +22,29 @@ namespace ApplicationManager.Controllers
         //Вызов страницы "Главная"
         public IActionResult Index()
         {
-
             IQueryable<MainPage> mainPages = data.GetMainsIndexpage();
             return View(mainPages);
         }
         //вызов верстки "Отправить заявку"
         public IActionResult AddRequest()
         {
-            MainPage Title = data.GetMainRequest();
-            return PartialView(Title);
+            ViewBag.Title = data.GetMainRequest().Value;
+            return PartialView();
         }
         //метод добавления заявки
-        public IActionResult AddNewRequest(string Name, string Email, string Description)
+        public IActionResult AddNewRequest(Request model)
         {
-            Request newRequest = new Request()
+            if (ModelState.IsValid)
             {
-                DateCreated = DateTime.Now,
-                Email = Email,
-                Fullname = Name,
-                Textrequest = Description,
-                StatusId = 1 //по умолчанию - id статуса "Получена"
-
-            };
-            data.AddRequest(newRequest);
-            return Redirect("~/"); //возврат к первой странице
+                model.DateCreated = DateTime.Now;
+                model.StatusId = 1;
+                data.AddRequest(model);
+                return Redirect("~/"); //возврат к первой странице
+            }
+            else
+            {
+                return Redirect("~/");
+            }
         }
         #endregion
 

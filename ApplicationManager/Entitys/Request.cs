@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ApplicationManager.Entitys
 {
@@ -12,12 +13,15 @@ namespace ApplicationManager.Entitys
         public DateTime DateCreated { get { return dateCreated; }  set { dateCreated = value; } }
 
         private string fullname;
+        [Required]
         public string Fullname { get { return fullname; } set {  fullname = value; } }
 
         private string email;
+        [Required]
         public string Email { get { return email; } set { email = value; } }
 
         private string textrequest;
+        [Required]
         public string Textrequest { get { return textrequest; } set { textrequest = value; } }
 
         [ForeignKey("StatusRequest")]
