@@ -310,16 +310,29 @@ namespace ApplicationManager.Controllers
             return View(model);
         }
         //страница добавления блога
+        
         public IActionResult AddNewBlog()
         {
+            
             ViewBag.Name_page = data.GetMains().First(i => i.Id == 4).Value;
             return View("DetailsBlog");
         }
         //метод добавления блога
+        [HttpPost, ValidateAntiForgeryToken]
         public IActionResult AddNewBlogMethod(DetailsBlogModel newBlog)
         {
-            data.AddBlog(newBlog);
-            return Redirect("~/Admin/BlogsAdmin");
+            if (ModelState.IsValid)
+            {
+                data.AddBlog(newBlog);
+                return Redirect("~/Admin/BlogsAdmin"); //успех
+            }
+            else
+            {
+                //красная надпись сверху и подсвеченные поля, которые не заполнили
+                ModelState.AddModelError("", "Заполните все обязательные поля");
+                return View("DetailsBlog"); //повторная попытка
+            }
+            
         }
         //вызов страницы изменения блога
         public IActionResult EditBlog(int id)

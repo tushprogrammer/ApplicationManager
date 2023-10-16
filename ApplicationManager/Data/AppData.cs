@@ -220,20 +220,36 @@ namespace ApplicationManager.Data
         }
         public void AddBlog(DetailsBlogModel model)
         {
-            if (model.Image != null)
+            if (model != null)
             {
-                string uploadPath =
-                Path.Combine(webHost.WebRootPath, "Images");
-                string UniqueName = Guid.NewGuid().ToString() + "_" + model.Image.FileName;
-                string FilePath = Path.Combine(uploadPath, UniqueName);
-                model.Image.CopyTo(new FileStream(FilePath, FileMode.Create));
-                Blog newBlog = new()
+                Blog newBlog;
+                if (model.Image != null)
                 {
-                    Title = model.Title,
-                    Description = model.Description,
-                    ImageUrl = UniqueName,
-                    Created = DateTime.Now,
-                };
+                    string uploadPath =
+                    Path.Combine(webHost.WebRootPath, "Images");
+                    string UniqueName = Guid.NewGuid().ToString() + "_" + model.Image.FileName;
+                    string FilePath = Path.Combine(uploadPath, UniqueName);
+                    model.Image.CopyTo(new FileStream(FilePath, FileMode.Create));
+                    newBlog = new()
+                    {
+                        Title = model.Title,
+                        Description = model.Description,
+                        ImageUrl = UniqueName,
+                        Created = DateTime.Now,
+                    };
+
+                }
+                else
+                {
+
+                    newBlog = new()
+                    {
+                        Title = model.Title,
+                        Description = model.Description,
+                        ImageUrl = "/Default/default.png", //имя по умолчанию
+                        Created = DateTime.Now,
+                    };
+                }
                 Context.Blogs.Add(newBlog);
                 Context.SaveChanges();
             }
