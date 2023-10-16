@@ -216,7 +216,7 @@ namespace ApplicationManager.Data
         }
         public Blog GetBlog(int id)
         {
-            return Context.Blogs.First(i => i.Id == id);
+            return Context.Blogs.FirstOrDefault(i => i.Id == id);
         }
         public void AddBlog(DetailsBlogModel model)
         {

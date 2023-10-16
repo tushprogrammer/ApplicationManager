@@ -9,6 +9,9 @@
     else
     {
         ViewData["Title"] = "Изменить элемент блога";
+    }
+    if (ViewBag.ImageUrl != null)
+    {
         image_path = "/Images/" + ViewBag.ImageUrl;
     }
 
@@ -53,13 +56,16 @@
             <div class="blog-form">
                 <div class="blog-form-inputs">
                     <form asp-action="EditBlogMethod" asp-controller="Admin" method="post" asp-antiforgery="true" enctype="multipart/form-data" id="EditBlogForm">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                         <input type="hidden" value="@Model.Id" asp-for="Id">
                         <div class="form-group">
                             <label for="title">Заголовок</label>
+                            <span asp-validation-for="Title" class="text-danger"></span>
                             <input type="text" id="title" asp-for="Title" value="@Model.Title" />
                         </div>
                         <div class="form-group">
                             <label for="description">Содержание поста</label>
+                            <span asp-validation-for="Description" class="text-danger"></span>
                             <textarea id="description" asp-for="Description" class="description" value="@Model.Description"></textarea>
                         </div>
                         <input asp-for="Image" value="Добавить фото" id="NewBlogImage" class="input-for-label" />

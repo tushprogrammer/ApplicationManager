@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 using System.IO;
 using System.Text;
 using System.Web.Helpers;
+using static System.Net.Mime.MediaTypeNames;
 //using System.Web.HttpPostedFileWrapper;
 
 namespace ApplicationManager.Controllers
@@ -330,6 +331,7 @@ namespace ApplicationManager.Controllers
             {
                 //красная надпись сверху и подсвеченные поля, которые не заполнили
                 ModelState.AddModelError("", "Заполните все обязательные поля");
+                ViewBag.Name_page = data.GetMains().First(i => i.Id == 4).Value;
                 return View("DetailsBlog"); //повторная попытка
             }
             
@@ -344,7 +346,6 @@ namespace ApplicationManager.Controllers
             {
                 Id = id,
                 Title = blogNow.Title,
-                //Created = blogNow.Created,
                 Description = blogNow.Description,
             };
             return View("DetailsBlog", model);
@@ -352,8 +353,23 @@ namespace ApplicationManager.Controllers
         //метод изменения блога
         public IActionResult EditBlogMethod(DetailsBlogModel model)
         {
-            data.EditBlog(model);
-            return Redirect("~/Admin/BlogsAdmin");
+            if (ModelState.IsValid)
+            {
+                data.EditBlog(model);
+                return Redirect("~/Admin/BlogsAdmin"); //успех
+            }
+            else
+            {
+                ModelState.AddModelError("", "Заполните все обязательные поля");
+                ViewBag.Name_page = data.GetMains().First(i => i.Id == 4).Value;
+                Blog blog = data.GetBlog(model.Id);
+                if (blog != null)
+                {
+                    ViewBag.ImageUrl = data.GetBlog(model.Id).ImageUrl;
+                }
+                
+                return View("DetailsBlog", model); //повторная попытка
+            }
         }
         //метод удаления блога
         public IActionResult DeleteBlogMEthod(int id)
