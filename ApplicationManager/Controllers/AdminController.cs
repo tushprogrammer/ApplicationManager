@@ -220,10 +220,21 @@ namespace ApplicationManager.Controllers
             return View("DetailsProject");
         }
         //метод добавления нового проекта
+        [HttpPost, ValidateAntiForgeryToken]
         public IActionResult AddProjectMethod(DetailsProjectModel model)
         {
-            data.AddProject(model);
-            return Redirect("~/Admin/ProjectAdmin");
+            if (ModelState.IsValid)
+            {
+                data.AddProject(model);
+                return Redirect("~/Admin/ProjectAdmin"); //успех
+            }
+            else
+            {
+                //красная надпись сверху и подсвеченные поля, которые не заполнили
+                ModelState.AddModelError("", "Заполните все обязательные поля");
+                ViewBag.Name_page = data.GetMains().First(i => i.Id == 3).Value;
+                return View("DetailsProject"); //повторная попытка
+            }
         }
         //страница изменения проекта
         public IActionResult DetailsProject(int id)
@@ -241,10 +252,26 @@ namespace ApplicationManager.Controllers
             return View(model);
         }
         //метод изменения проекта
+        [HttpPost, ValidateAntiForgeryToken]
         public IActionResult EditProjectMethod(DetailsProjectModel model)
         {
-            data.EditProject(model);
-            return Redirect("~/Admin/ProjectAdmin");
+            if (ModelState.IsValid)
+            {
+                data.EditProject(model);
+                return Redirect("~/Admin/ProjectAdmin");
+            }
+            else
+            {
+                ModelState.AddModelError("", "Заполните все обязательные поля");
+                Project temp = data.GetProject(model.Id);
+                ViewBag.Name_page = data.GetMains().First(i => i.Id == 3).Value;
+                if (temp != null)
+                {
+                    ViewBag.ImageUrl = temp.ImageUrl;
+                }
+
+                return View("DetailsProject", model); //повторная попытка
+            }
         }
         //метод удаления проекта
         public IActionResult DeleteProjectMethod(int id)
@@ -351,6 +378,7 @@ namespace ApplicationManager.Controllers
             return View("DetailsBlog", model);
         }
         //метод изменения блога
+        [HttpPost, ValidateAntiForgeryToken]
         public IActionResult EditBlogMethod(DetailsBlogModel model)
         {
             if (ModelState.IsValid)

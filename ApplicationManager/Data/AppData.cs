@@ -131,54 +131,66 @@ namespace ApplicationManager.Data
         }
         public Project GetProject(int id)
         {
-            return Context.Projects.First(i => i.Id == id);
+            return Context.Projects.FirstOrDefault(i => i.Id == id);
         }
         public void AddProject(DetailsProjectModel model)
         {
-            //проверка на валидацию
-            //сохранение нового проекта в бд
-            if (model.Image != null)
+            if (model != null)
             {
-                string uploadPath =
-                Path.Combine(webHost.WebRootPath, "Images");
-                string UniqueName = Guid.NewGuid().ToString() + "_" + model.Image.FileName;
-                string FilePath = Path.Combine(uploadPath, UniqueName);
-                model.Image.CopyTo(new FileStream(FilePath, FileMode.Create));
-                Project newproject = new()
+                Project newproject;
+                //сохранение нового проекта в бд
+                if (model.Image != null)
                 {
-                    Title = model.Title,
-                    NameCompany = model.NameCompany,
-                    Description = model.Description,
-                    ImageUrl = UniqueName
-                };
+                    string uploadPath =
+                    Path.Combine(webHost.WebRootPath, "Images");
+                    string UniqueName = Guid.NewGuid().ToString() + "_" + model.Image.FileName;
+                    string FilePath = Path.Combine(uploadPath, UniqueName);
+                    model.Image.CopyTo(new FileStream(FilePath, FileMode.Create));
+                    newproject = new()
+                    {
+                        Title = model.Title,
+                        NameCompany = model.NameCompany,
+                        Description = model.Description,
+                        ImageUrl = UniqueName
+                    };
+                    
+                }
+                else
+                {
+                    newproject = new()
+                    {
+                        Title = model.Title,
+                        NameCompany = model.NameCompany,
+                        Description = model.Description,
+                        ImageUrl = "/Default/default.png", //имя по умолчанию
+                    };
+                }
                 Context.Projects.Add(newproject);
                 Context.SaveChanges();
             }
         }
         public void EditProject(DetailsProjectModel model)
         {
-            
-            if (model.Image != null)
+            if (model != null)
             {
-                string uploadPath =
-                Path.Combine(webHost.WebRootPath, "Images");
-                string UniqueName = Guid.NewGuid().ToString() + "_" + model.Image.FileName;
-                string FilePath = Path.Combine(uploadPath, UniqueName);
-                model.Image.CopyTo(new FileStream(FilePath, FileMode.Create));
-                //сохранение новых заголовков
-
-                var rowsModified = Context.Database.ExecuteSqlRaw(
-                   $"UPDATE [Projects] SET Title = N'{model.Title}', NameCompany = N'{model.NameCompany}', " +
-                   $" Description = N'{model.Description}', ImageUrl = N'{UniqueName}' WHERE Id = {model.Id}");
-       
-            }
-            else
-            {
-                //установить картинку по умолчанию, если своей не дали
-                var rowsModified = Context.Database.ExecuteSqlRaw(
-                   $"UPDATE [Projects] SET Title = N'{model.Title}', NameCompany = N'{model.NameCompany}', " +
-                   $" Description = N'{model.Description}' WHERE Id = {model.Id}");
-
+                if (model.Image != null)
+                {
+                    string uploadPath =
+                    Path.Combine(webHost.WebRootPath, "Images");
+                    string UniqueName = Guid.NewGuid().ToString() + "_" + model.Image.FileName;
+                    string FilePath = Path.Combine(uploadPath, UniqueName);
+                    model.Image.CopyTo(new FileStream(FilePath, FileMode.Create));
+                    //сохранение новых заголовков
+                    var rowsModified = Context.Database.ExecuteSqlRaw(
+                       $"UPDATE [Projects] SET Title = N'{model.Title}', NameCompany = N'{model.NameCompany}', " +
+                       $" Description = N'{model.Description}', ImageUrl = N'{UniqueName}' WHERE Id = {model.Id}");
+                }
+                else
+                {
+                    var rowsModified = Context.Database.ExecuteSqlRaw(
+                       $"UPDATE [Projects] SET Title = N'{model.Title}', NameCompany = N'{model.NameCompany}', " +
+                       $" Description = N'{model.Description}' WHERE Id = {model.Id}");
+                }
             }
         }
         public void DeleteProject(int id)
@@ -256,25 +268,28 @@ namespace ApplicationManager.Data
         }
         public void EditBlog(DetailsBlogModel model)
         {
-            if (model.Image != null)
+            if (model != null)
             {
-                string uploadPath =
-                Path.Combine(webHost.WebRootPath, "Images");
-                string UniqueName = Guid.NewGuid().ToString() + "_" + model.Image.FileName;
-                string FilePath = Path.Combine(uploadPath, UniqueName);
-                model.Image.CopyTo(new FileStream(FilePath, FileMode.Create));
+                if (model.Image != null)
+                {
+                    string uploadPath =
+                    Path.Combine(webHost.WebRootPath, "Images");
+                    string UniqueName = Guid.NewGuid().ToString() + "_" + model.Image.FileName;
+                    string FilePath = Path.Combine(uploadPath, UniqueName);
+                    model.Image.CopyTo(new FileStream(FilePath, FileMode.Create));
 
-                var rowsModified = Context.Database.ExecuteSqlRaw(
-                   $"UPDATE [Blogs] SET Title = N'{model.Title}', " +
-                   $" Description = N'{model.Description}', ImageUrl = N'{UniqueName}' WHERE Id = {model.Id}");
+                    var rowsModified = Context.Database.ExecuteSqlRaw(
+                       $"UPDATE [Blogs] SET Title = N'{model.Title}', " +
+                       $" Description = N'{model.Description}', ImageUrl = N'{UniqueName}' WHERE Id = {model.Id}");
 
-            }
-            else
-            {
-                var rowsModified = Context.Database.ExecuteSqlRaw(
-                   $"UPDATE [Blogs] SET Title = N'{model.Title}', " +
-                   $" Description = N'{model.Description}' WHERE Id = {model.Id}");
+                }
+                else
+                {
+                    var rowsModified = Context.Database.ExecuteSqlRaw(
+                       $"UPDATE [Blogs] SET Title = N'{model.Title}', " +
+                       $" Description = N'{model.Description}' WHERE Id = {model.Id}");
 
+                }
             }
         }
         public void DeleteBlog(int id)
