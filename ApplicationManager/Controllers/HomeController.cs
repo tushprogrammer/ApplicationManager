@@ -122,8 +122,8 @@ namespace ApplicationManager.Controllers
         {
             ContactsModel model = new()
             {               
-                Contacts = data.GetContacts().Where(i => i.Id != 7),
-                ImageUrl = data.GetContacts().First(i => i.Id == 7).Description,
+                Contacts = data.GetContacts().Where(i => i.Id != 1),
+                ImageUrl = data.GetContacts().First(i => i.Id == 1).Description,
                 Nets = data.GetSocialNet(),
                 Name_page = data.GetMains().First(i => i.Id == 5).Value,
             };

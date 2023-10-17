@@ -1,4 +1,7 @@
 ﻿@model ServicesModel;
+@{
+    ViewData["Title"] = $"Страница {Model.Name_page}";
+}
 <div class="navigation-history">
     <p>
         <a asp-action="Index">Главная</a> -> @Model.Name_page

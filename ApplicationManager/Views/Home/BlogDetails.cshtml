@@ -2,6 +2,7 @@
 @{
     Blog blognow = Model.Blogs.First(i => i.Id == Model.BlogId);
     var image_path = "/Images/" + blognow.ImageUrl;
+    ViewData["Title"] = $"Страница {Model.Name_page}";
 }
 <div class="navigation-history">
     <p>

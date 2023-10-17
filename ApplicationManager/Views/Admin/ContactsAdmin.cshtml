@@ -1,6 +1,7 @@
 ﻿@model ContactsModel
 @{
     var image_address = "/Images/" + Model.ImageUrl;
+    ViewData["Title"] = $"Просмотр страницы \"{Model.Name_page}\"";
 }
 <div class="pad-top">
     <div class="navigation-history">

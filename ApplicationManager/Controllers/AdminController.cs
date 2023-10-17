@@ -435,8 +435,8 @@ namespace ApplicationManager.Controllers
         {
             ContactsModel model = new()
             {
-                Contacts = data.GetContacts().Where(i => i.Id != 7),
-                ImageUrl = data.GetContacts().First(i => i.Id == 7).Description,
+                Contacts = data.GetContacts().Where(i => i.Id != 1),
+                ImageUrl = data.GetContacts().First(i => i.Id == 1).Description,
                 Nets = data.GetSocialNet(),
                 Name_page = data.GetMains().First(i => i.Id == 5).Value,
             };
@@ -448,7 +448,7 @@ namespace ApplicationManager.Controllers
             ContactsModel model = new()
             {
                 //Contacts = data.GetContacts().Where(i => i.Id != 7),//это подгружает AngularJS
-                ImageUrl = data.GetContacts().First(i => i.Id == 7).Description,
+                ImageUrl = data.GetContacts().First(i => i.Id == 1).Description,
                 //Nets = data.GetSocialNet(), //это подгружает AngularJS
                 Name_page = "Изменить контакты",
             };
@@ -456,14 +456,14 @@ namespace ApplicationManager.Controllers
         }
         //вызов информации от angular о контактах на стр. "Контакты"
         [HttpGet]
-        public IActionResult GetString()
+        public IActionResult GetContactsDate()
         {
-            string json = JsonConvert.SerializeObject(data.GetContacts().Where(i => i.Id != 7));
+            string json = JsonConvert.SerializeObject(data.GetContacts().Where(i => i.Id != 1));
             return new JsonResult(json);
         }
         //вызов информации от angular о социальных сетях на стр. "Контакты"
         [HttpGet]
-        public IActionResult GetStringSocialNet() 
+        public IActionResult GetSocialNetsDate() 
         {
             string json = JsonConvert.SerializeObject(data.GetSocialNet());
             return new JsonResult(json);
@@ -475,6 +475,7 @@ namespace ApplicationManager.Controllers
             {
                 
                 ContactsNewModel newcontacts = JsonConvert.DeserializeObject<ContactsNewModel>(stringData);
+                newcontacts.Contacts.RemoveAll(i => i.Description == string.Empty || i.Name == string.Empty );
                 newcontacts.Image = ImageUrl;
                 //перед сохранением осталось загрузить в форму картинку, прислать сюда, и закинуть в таблицу Contacts
                 data.SaveContacts(newcontacts);

@@ -3,6 +3,7 @@
 @inject IJSRuntime JS
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
 @{
+    ViewData["Title"] = $"\"{Model.Name_page}\"";
     var image_path = "/Images/" + Model.ImageUrl;
 }
 <div class="pad-top">
@@ -214,15 +215,15 @@
         };
 
 
-        $scope.getString = function () {
-            $http.get('/Admin/GetString')
+        $scope.getContactsDate = function () {
+            $http.get('/Admin/GetContactsDate')
                 .then(function (response) {
                     $scope.Contacts = JSON.parse(response.data);
                 }, function (error) {
                     alert(error)
                 });
         };
-        $scope.getString();
+        $scope.getContactsDate();
 
         $scope.RowDelete = function (index) {
             if (index > -1) {
@@ -241,7 +242,7 @@
 
 
         $scope.AddNewRowNets = function () {
-            $scope.SocialNets.push({ Url: '', ImageUrl: 'SocialNet-default.png' });
+            $scope.SocialNets.push({ Url: '', ImageUrl: 'Default/SocialNet-default.png' });
         };
         $scope.RowDeleteNets = function (index) {
             if (index > -1) {
@@ -249,16 +250,15 @@
             }
         };
 
-        $scope.GetStringNets = function () {
-            $http.get('/Admin/GetStringSocialNet')
+        $scope.getSocialNetsDate = function () {
+            $http.get('/Admin/GetSocialNetsDate')
                 .then(function (response) {
                     $scope.SocialNets = JSON.parse(response.data);
-                    /*alert(response.data);*/ //по прежнему работает, и корректно срабатывает, но в самой верствке не выводятся блять ебанный нахуй рот элементы
                 }, function (error) {
                     alert(error)
                 });
         };
-        $scope.GetStringNets();
+        $scope.getSocialNetsDate();
         
     });
 

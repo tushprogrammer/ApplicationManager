@@ -663,14 +663,14 @@ details p {
 
 
 .btn-close-image {
-    background-image: url(/Images/delete.png);
+    background-image: url(/Images/Default/delete.png);
     width: 32px;
     height: 32px;
     background-size: cover;
     margin: 5px;
 }
 .btn-edit-image {
-    background-image: url(/Images/edit.png);
+    background-image: url(/Images/Default/edit.png);
     width: 32px;
     height: 32px;
     background-size: cover;

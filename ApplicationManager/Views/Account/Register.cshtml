@@ -13,6 +13,7 @@
         Layout = "_Layout";
         button_text = "Зарегистрироваться";
     }
+        ViewData["Title"] = button_text;
 }
 
 <div class="pad-top">
@@ -25,6 +26,11 @@
                 <div class="col-xs-12">
                     <div class="form-group">
                         <input asp-for="LoginProp" class="form-control" placeholder="Логин" />
+                    </div>
+                </div>
+                <div class="col-xs-12">
+                    <div class="form-group">
+                        <input asp-for="Email" class="form-control" type="email" placeholder="Адрес электронной почты" />
                     </div>
                 </div>
 

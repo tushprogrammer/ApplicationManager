@@ -28,6 +28,6 @@ namespace ApplicationManager.Entitys
         public int StatusId { get; set; }
 
         private StatusRequest status;
-        public StatusRequest Status { get { return status; } set { status = value; } }
+        public StatusRequest? Status { get { return status; } set { status = value; } }
     }
 }

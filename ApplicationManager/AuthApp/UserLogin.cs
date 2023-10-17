@@ -9,6 +9,7 @@ namespace ApplicationManager.AuthApp
 
         [Required, DataType(DataType.Password)]
         public string Password { get; set; } //пароль
+        
 
         public string ReturnUrl { get; set; } //возвратная ссылка после авторизации
     }

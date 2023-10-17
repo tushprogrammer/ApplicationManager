@@ -2,9 +2,15 @@
 @{
     var namepage = string.Empty;
     if (Model is null)
+    {
         namepage = "Добавление";
+        ViewData["Title"] = "Добавить новую услугу";
+    }
     else
+    {
         namepage = "Редактирование";
+        ViewData["Title"] = "Редактировать услугу";
+    }
 }
 <div class="pad-top">
     <div class="navigation-history">

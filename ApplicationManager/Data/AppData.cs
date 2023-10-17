@@ -318,7 +318,7 @@ namespace ApplicationManager.Data
             //как показала практика, низя тупо заменить таблицы, хы
             //а если попробовать сначала полносью опустошить таблицы, а потом их заполнить новыми объектами?
             //сохранение идет с привязкой к именам новых файлов
-
+            
             if (model.Image != null)
             {
                 string uploadPath =
@@ -328,13 +328,17 @@ namespace ApplicationManager.Data
                 model.Image.CopyTo(new FileStream(FilePath, FileMode.Create));
 
                 var rowsModified = Context.Database.ExecuteSqlRaw(
-                   $"UPDATE [Contacts] SET Description = N'{UniqueName}' WHERE Id = 7");
+                   $"UPDATE [Contacts] SET Description = N'{UniqueName}' WHERE Id = 1");
 
             }
+            var oldContacts = Context.Contacts;
             var oldSocialNets = Context.SocialNets;
             Context.SocialNets.RemoveRange(oldSocialNets);
+            Context.Contacts.RemoveRange(oldContacts.Where(i => i.Id != 1 )); //удалить все элементы в таблице кроме первой картинки
+            
 
             Context.SocialNets.AddRange(model.SocialNets);
+            Context.Contacts.AddRange(model.Contacts);
 
             Context.SaveChanges();
 

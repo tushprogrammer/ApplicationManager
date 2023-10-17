@@ -73,7 +73,7 @@ namespace ApplicationManager.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new User { UserName = model.LoginProp };
+                var user = new User { UserName = model.LoginProp, Email = model.Email };
                 var createResult = await _userManager.CreateAsync(user, model.Password);
 
                 //добавление нового пользователя гарантированно идет от админа,
@@ -108,6 +108,7 @@ namespace ApplicationManager.Controllers
         [Authorize(Roles = "Admin")]
         public IActionResult UserList() //список пользователей
         {
+            //var r = _userManager.UpdateAsync().Result;
             return View("Users", _userManager.Users.ToList());
         }
 
@@ -119,9 +120,11 @@ namespace ApplicationManager.Controllers
             User user = await _userManager.FindByIdAsync(userid);
             if (user != null)
             {
-                _userManager.DeleteAsync(user);
+                //работает как задержка, ожидает удаления пользователя, так как если не дожидаться
+                //то на повторно открывающейся странице по прежнему будет виден удаляемый пользователь
+                var r = _userManager.DeleteAsync(user).Result;
             }
-            return RedirectToAction("UserList");
+            return Redirect("UserList");
         }
         #endregion
     }

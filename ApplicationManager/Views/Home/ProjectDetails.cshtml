@@ -1,5 +1,6 @@
 ﻿@model ProjectsModel
 @{
+    ViewData["Title"] = $"Страница {Model.Name_page}";
     Project projectnow = Model.Projects.First(i => i.Id == Model.IdProject);
     var image_path = "~/Images/" + projectnow.ImageUrl;
 }

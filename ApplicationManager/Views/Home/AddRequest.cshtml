@@ -20,6 +20,7 @@
             <textarea id="description" asp-for="Textrequest" class="description" oninput="validateForm()"></textarea>
         </div>   
         <div class="form-group-sub">
+            <input type="hidden" asp-for="StatusId" value="1" />
             <input type="submit" value="Отправить" class="btn btn-primary" id="submitBtn"  disabled>
         </div> 
     </form>
