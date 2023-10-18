@@ -24,4 +24,10 @@
     <Folder Include="wwwroot\Images\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="ApplicationManager_ClassLibrary">
+      <HintPath>wwwroot\ApplicationManager_ClassLibrary.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

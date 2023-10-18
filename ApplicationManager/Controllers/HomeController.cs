@@ -1,5 +1,5 @@
 ﻿using ApplicationManager.Data;
-using ApplicationManager.Entitys;
+using ApplicationManager_ClassLibrary.Entitys;
 using ApplicationManager.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;

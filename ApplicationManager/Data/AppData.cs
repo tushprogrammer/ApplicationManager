@@ -1,5 +1,5 @@
 ﻿using ApplicationManager.ContextFolder;
-using ApplicationManager.Entitys;
+using ApplicationManager_ClassLibrary.Entitys;
 using ApplicationManager.Models;
 using Microsoft.AspNetCore;
 using Microsoft.Data.SqlClient;

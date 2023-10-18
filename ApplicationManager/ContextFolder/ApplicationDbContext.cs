@@ -1,5 +1,5 @@
 ﻿using ApplicationManager.AuthApp;
-using ApplicationManager.Entitys;
+using ApplicationManager_ClassLibrary.Entitys;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 

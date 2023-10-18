@@ -1,5 +1,4 @@
 ﻿using ApplicationManager.Data;
-using ApplicationManager.Entitys;
 using ApplicationManager.Models;
 using Microsoft.AspNetCore.Mvc;
 

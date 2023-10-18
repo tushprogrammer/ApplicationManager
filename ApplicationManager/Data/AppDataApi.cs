@@ -1,6 +1,6 @@
-﻿using ApplicationManager.Entitys;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
+using ApplicationManager_ClassLibrary.Entitys;
 
 namespace ApplicationManager.Data
 {

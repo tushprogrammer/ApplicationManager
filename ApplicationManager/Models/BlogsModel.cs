@@ -1,4 +1,4 @@
-﻿using ApplicationManager.Entitys;
+﻿using ApplicationManager_ClassLibrary.Entitys;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace ApplicationManager.Models

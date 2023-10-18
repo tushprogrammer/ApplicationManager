@@ -1,4 +1,4 @@
-﻿using ApplicationManager.Entitys;
+﻿using ApplicationManager_ClassLibrary.Entitys;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 

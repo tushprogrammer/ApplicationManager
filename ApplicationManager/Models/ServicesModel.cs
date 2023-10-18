@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
-using ApplicationManager.Entitys;
+using ApplicationManager_ClassLibrary.Entitys;
 
 namespace ApplicationManager.Models
 {

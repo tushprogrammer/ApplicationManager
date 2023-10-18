@@ -1,4 +1,4 @@
-﻿using ApplicationManager.Entitys;
+﻿using ApplicationManager_ClassLibrary.Entitys;
 
 namespace ApplicationManager.Models
 {

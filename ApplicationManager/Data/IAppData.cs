@@ -1,6 +1,6 @@
-﻿using ApplicationManager.Entitys;
-using ApplicationManager.Models;
+﻿using ApplicationManager.Models;
 using Microsoft.EntityFrameworkCore.Query;
+using ApplicationManager_ClassLibrary.Entitys;
 
 namespace ApplicationManager.Data
 {

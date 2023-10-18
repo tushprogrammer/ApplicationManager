@@ -1,6 +1,6 @@
 ﻿using AjaxControlToolkit;
 using ApplicationManager.Data;
-using ApplicationManager.Entitys;
+using ApplicationManager_ClassLibrary.Entitys;
 using ApplicationManager.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting.Server;
@@ -13,6 +13,7 @@ using System.IO;
 using System.Text;
 using System.Web.Helpers;
 using static System.Net.Mime.MediaTypeNames;
+using ApplicationManager_ClassLibrary;
 //using System.Web.HttpPostedFileWrapper;
 
 namespace ApplicationManager.Controllers
