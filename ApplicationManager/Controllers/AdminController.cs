@@ -139,7 +139,7 @@ namespace ApplicationManager.Controllers
             Request reqNow = data.GetRequestsNow(RequestId);
             StatusRequest Status = data.GetStatuses().First(s => s.StatusName == StatusName);
             reqNow.StatusId = Status.Id;
-            data.SaveNewRequest(reqNow);
+            data.SaveNewStatusRequest(reqNow);
             AdminModel model = new()
             {
                 Requests = data.GetRequests(), //все заявки
@@ -158,32 +158,32 @@ namespace ApplicationManager.Controllers
         //вызов страницы просмотра "главная" перед редактированием
         public IActionResult MainAdmin()
         {
+
+            MainForm mainForm = data.GetMainsIndexPage();
+            //MainPageModel model = new()
+            //{
+            //    Image_path = mainForm.UrlImage,
+            //    Title = mainForm.Title,
+            //    ButtonTitle = mainForm.ButtonTitle,
+            //    RequestTitle = mainForm.RequestTitle,
+            //};
             
-            IQueryable<MainPage> mainPages = data.GetMainsIndexpage();
-            MainPageModel model = new()
-            {
-                Image_path = mainPages.First(i => i.Id == 8).Value,
-                Title = mainPages.First(i => i.Id == 7).Value,
-                ButtonTitle = mainPages.First(i => i.Id == 6).Value,
-                RequestTitle = mainPages.First(i => i.Id == 9).Value,
-            };
-            
-            return View(model);
+            return View(mainForm);
         }
 
         //вызов страницы редактирования "Главная"
         public IActionResult EditMain()
         {
-            IQueryable<MainPage> mainPages = data.GetMainsIndexpage();
+            MainForm mainForm = data.GetMainsIndexPage();
             MainPageUploadModel model = new()
             {
-                Title = mainPages.First(i => i.Id == 7).Value,
-                ButtonTitle = mainPages.First(i => i.Id == 6).Value,
-                RequestTitle = mainPages.First(i => i.Id == 9).Value,
+                Title = mainForm.Title,
+                ButtonTitle = mainForm.ButtonTitle,
+                RequestTitle = mainForm.RequestTitle,
             };
             //image идет отдельно, так как тут image это путь к файлу, а в модели это целый файл для загрузки
             //возможно при написании api все таки придется в таблице хранить целый файл, и сюда грузить массив байтов
-            ViewBag.Image = mainPages.First(i => i.Id == 8).Value;
+            ViewBag.Image = mainForm.UrlImage;
             return View(model);
         }
 
@@ -192,7 +192,16 @@ namespace ApplicationManager.Controllers
         public IActionResult EditMainSave(MainPageUploadModel model)
         {
             //всякое сохранение
-            data.EditMain(model);            
+            //тут разобрать модель на составляющие, потому что модель нужна только для копановки воедино инфы
+            //и отправить на страницу, а потом тут её принять. то есть не надо эту модель дальше в appdata отправлять
+            IFormFile Image = model.Image;
+            MainForm mainForm = new()
+            {
+                Title = model.Title,
+                ButtonTitle = model.ButtonTitle,
+                RequestTitle = model.RequestTitle,
+            };
+            data.EditMain(mainForm, Image);            
             
             return Redirect("~/Admin/MainAdmin");
         }
@@ -225,7 +234,21 @@ namespace ApplicationManager.Controllers
         {
             if (ModelState.IsValid)
             {
-                data.AddProject(model);
+                Project new_project = new()
+                {
+                    Title = model.Title,
+                    Description = model.Description,
+                    NameCompany = model.NameCompany,
+                   
+                };
+                if (model.Image != null)
+                {
+                    data.AddProject(new_project, model.Image);
+                }
+                else
+                {
+                    data.AddProject(new_project);
+                }
                 return Redirect("~/Admin/ProjectAdmin"); //успех
             }
             else
@@ -257,7 +280,21 @@ namespace ApplicationManager.Controllers
         {
             if (ModelState.IsValid)
             {
-                data.EditProject(model);
+                Project Edit_project = new()
+                {
+                    Id = model.Id,
+                    Title = model.Title,
+                    NameCompany = model.NameCompany,
+                    Description = model.Description,
+                };
+                if (model.Image != null)
+                {
+                    data.EditProject(Edit_project, model.Image);
+                }
+                else
+                {
+                    data.EditProject(Edit_project);
+                }
                 return Redirect("~/Admin/ProjectAdmin");
             }
             else
@@ -307,11 +344,16 @@ namespace ApplicationManager.Controllers
         }
         //метод добавления услуги
         [HttpPost, ValidateAntiForgeryToken]
-        public IActionResult AddNewServiceMethod(Service New_Service)
+        public IActionResult AddNewServiceMethod(DetailsServiceModel model)
         {
             if (ModelState.IsValid)
             {
-                data.AddService(New_Service);
+                Service new_service = new()
+                {
+                    Title = model.Title,
+                    Description = model.Description,
+                };
+                data.AddService(new_service);
                 return Redirect("~/Admin/ServicesAdmin");
             }
             else
@@ -330,18 +372,23 @@ namespace ApplicationManager.Controllers
         }
         //метод изменения услуги
         [HttpPost, ValidateAntiForgeryToken]
-        public IActionResult EditServiceMethod(Service Changed_Service)
+        public IActionResult EditServiceMethod(DetailsServiceModel model)
         {
             if (ModelState.IsValid)
             {
-                data.EditService(Changed_Service);
+                Service edit_service = new()
+                {
+                    Title = model.Title,
+                    Description = model.Description,
+                };
+                data.EditService(edit_service);
                 return Redirect("~/Admin/ServicesAdmin");
             }
             else
             {
                 ModelState.AddModelError("", "Заполните все обязательные поля");
                 ViewBag.Name_page = data.GetMains().First(i => i.Id == 2).Value;
-                return View("DetailsService", Changed_Service);
+                return View("DetailsService", model);
             }
         }
         #endregion
@@ -367,11 +414,24 @@ namespace ApplicationManager.Controllers
         }
         //метод добавления блога
         [HttpPost, ValidateAntiForgeryToken]
-        public IActionResult AddNewBlogMethod(DetailsBlogModel newBlog)
+        public IActionResult AddNewBlogMethod(DetailsBlogModel model)
         {
             if (ModelState.IsValid)
             {
-                data.AddBlog(newBlog);
+                Blog new_blog = new()
+                {
+                    Title = model.Title,
+                    Description = model.Description,
+                    Created = DateTime.Now,
+                };
+                if (model.Image != null)
+                {
+                    data.AddBlog(new_blog, model.Image);
+                }
+                else
+                {
+                    data.AddBlog(new_blog);
+                }
                 return Redirect("~/Admin/BlogsAdmin"); //успех
             }
             else
@@ -403,7 +463,17 @@ namespace ApplicationManager.Controllers
         {
             if (ModelState.IsValid)
             {
-                data.EditBlog(model);
+                Blog edit_blog = new()
+                {
+                    Id = model.Id,
+                    Title = model.Title,
+                    Description = model.Description,
+                };
+                if (model.Image != null)
+                {
+                    data.EditBlog(edit_blog, model.Image);
+                }
+                data.EditBlog(edit_blog);
                 return Redirect("~/Admin/BlogsAdmin"); //успех
             }
             else
@@ -473,12 +543,9 @@ namespace ApplicationManager.Controllers
         {
             if (stringData is not null)
             {
-                
-                ContactsNewModel newcontacts = JsonConvert.DeserializeObject<ContactsNewModel>(stringData);
-                newcontacts.Contacts.RemoveAll(i => i.Description == string.Empty || i.Name == string.Empty );
-                newcontacts.Image = ImageUrl;
-                //перед сохранением осталось загрузить в форму картинку, прислать сюда, и закинуть в таблицу Contacts
-                data.SaveContacts(newcontacts);
+                ContactsUploadModel model = JsonConvert.DeserializeObject<ContactsUploadModel>(stringData);
+                model.Contacts.RemoveAll(i => i.Description == string.Empty || i.Name == string.Empty );
+                data.SaveContacts(model.Contacts, model.SocialNets, ImageUrl);
             }
             //return new JsonResult("все ок");
             return Redirect("~/Admin/ContactsAdmin");

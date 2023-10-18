@@ -1,9 +1,10 @@
-﻿namespace ApplicationManager.Entitys
+﻿using ApplicationManager.Entitys;
+
+namespace ApplicationManager.Models
 {
-    public class ContactsNewModel
+    public class ContactsUploadModel
     {
         public List<Contacts> Contacts { get; set; }
         public List<SocialNet> SocialNets { get; set; }
-        public IFormFile Image { get; set; }
     }
 }

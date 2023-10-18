@@ -7,7 +7,7 @@ namespace ApplicationManager.Data
     public interface IAppData
     {
         public IQueryable<MainPage> GetMains();
-        public IQueryable<MainPage> GetMainsIndexpage();
+        public MainForm GetMainsIndexPage();
         public IQueryable<MainPage> GetMainsAdmin();
         public IQueryable<MainPage> GetMainsHeader();
         public IQueryable<Project> GetProjects();
@@ -29,21 +29,25 @@ namespace ApplicationManager.Data
         public void AddRequest(Request request);
         public int CountRequests();
         public Request GetRequestsNow(string requestId);
-        public void SaveNewRequest(Request reqNow);
-        public void EditMain(MainPageUploadModel model);
-        public void AddProject(DetailsProjectModel model);
+        public void SaveNewStatusRequest(Request reqNow);
+        public void EditMain(MainForm form, IFormFile image);
+        public void AddProject(Project new_project, IFormFile image); 
+        public void AddProject(Project new_project);
         public Project GetProject(int id);
-        public void EditProject(DetailsProjectModel model);
+        public void EditProject(Project edit_project, IFormFile image);
+        public void EditProject(Project edit_project);
         public void DeleteProject(int id);
         public Service GetService(int id);
         public void AddService(Service newService);
         public void DeleteService(int id);
         public void EditService(Service service);
         public Blog GetBlog(int id);
-        public void AddBlog(DetailsBlogModel newBlog);
-        public void EditBlog(DetailsBlogModel blog);
+        public void AddBlog(Blog newBlog);
+        public void AddBlog(Blog new_blog, IFormFile image);
+        public void EditBlog(Blog edit_blog);
+        public void EditBlog(Blog edit_blog, IFormFile image);
         public void DeleteBlog(int id);
-        public void SaveContacts(ContactsNewModel info);
+        public void SaveContacts(List<Contacts> contacts, List<SocialNet> socialNets, IFormFile Image);
         public void SaveNewFiles(List<IFormFile> files);
         public void SaveNamePages(List<MainPage> names, List<MainPage> NamesAdmin);
     }

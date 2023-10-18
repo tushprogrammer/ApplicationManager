@@ -1,10 +1,10 @@
-﻿@model IQueryable<MainPage>
+﻿@model MainForm
 @{
     ViewData["Title"] = "Главная страница";
     Layout = "_Layout-main";
 }
 @{
-    var image = Model.First(item => item.Id == 8).Value;
+    var image = Model.UrlImage;
     var image_path = "/Images/" + image;
 }
 
@@ -12,10 +12,10 @@
    
     <div class="ImageMain" style="background-image: url(@image_path)">
         <h2>
-            @Model.First(item => item.Id == 7).Value
+            @Model.Title
         </h2>
         <input type="button" class="navbar-brand btn btn-primary butt-main"
-               value="@Model.First(item => item.Id == 6).Value" 
+               value="@Model.ButtonTitle" 
         onclick="LoadAddRequestform()" /> 
 
     </div>

@@ -17,7 +17,5 @@
 
         private string description;
         public string Description { get { return description; } set { description = value; } }
-        ////краткое описание: первое предложение до точки
-        //public string ShortDesc => description.Substring(0, description.IndexOf('.'));
     }
 }

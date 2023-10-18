@@ -1,9 +1,10 @@
 ﻿
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 
 namespace ApplicationManager.Models
 {
-    public class DetailsProjectModel 
+    public class DetailsProjectModel : PageModel
     {
         public int Id { get; set; }
         [Required]

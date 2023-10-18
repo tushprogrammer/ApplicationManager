@@ -22,8 +22,8 @@ namespace ApplicationManager.Controllers
         //Вызов страницы "Главная"
         public IActionResult Index()
         {
-            IQueryable<MainPage> mainPages = data.GetMainsIndexpage();
-            return View(mainPages);
+            MainForm mainForm = data.GetMainsIndexPage();
+            return View(mainForm);
         }
         //вызов верстки "Отправить заявку"
         public IActionResult AddRequest()
@@ -32,13 +32,19 @@ namespace ApplicationManager.Controllers
             return PartialView();
         }
         //метод добавления заявки
-        public IActionResult AddNewRequest(Request model)
+        public IActionResult AddNewRequest(RequestModel model)
         {
             if (ModelState.IsValid)
             {
-                model.DateCreated = DateTime.Now;
-                model.StatusId = 1;
-                data.AddRequest(model);
+                Request new_req = new Request()
+                {
+                    DateCreated = DateTime.Now,
+                    StatusId = 1,
+                    Email = model.Email,
+                    Fullname = model.Fullname,
+                    Textrequest = model.Textrequest,
+                };
+                data.AddRequest(new_req);
                 return Redirect("~/"); //возврат к первой странице
             }
             else
