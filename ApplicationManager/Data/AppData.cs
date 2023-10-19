@@ -96,28 +96,32 @@ namespace ApplicationManager.Data
                 string FilePath = Path.Combine(uploadPath, UniqueName);
                 Image.CopyTo(new FileStream(FilePath, FileMode.Create));
                 //сохранение новых заголовков
-                //(изначально хотел чтоб делался через 1 запрос, во избежании многократного обращения к бд)
-                //так как update не работает с union,
-                //а так как у меня постоянно разные источники данных,
-                //то и запросы придется делать несколько раз
+
                 //буква N перед данными - это позволение сохранять русский текст
-                var rowsModified = Context.Database.ExecuteSqlRaw(
-                   $"UPDATE MainPage SET Value = N'{data.ButtonTitle}' WHERE Id = 6");
-                rowsModified = Context.Database.ExecuteSqlRaw(
-                    $"UPDATE MainPage SET Value = N'{data.Title}' WHERE Id = 7");
-                rowsModified = Context.Database.ExecuteSqlRaw(
-                    $"UPDATE MainPage SET Value = N'{UniqueName}' WHERE Id = 8");
-                rowsModified = Context.Database.ExecuteSqlRaw(
-                    $"UPDATE MainPage SET Value = N'{data.RequestTitle}' WHERE Id = 9");
+                var sql = $@"
+                            UPDATE MainPage SET Value = CASE
+                                WHEN Id = 6 THEN N'{data.ButtonTitle}'
+                                WHEN Id = 7 THEN N'{data.Title}'
+                                WHEN Id = 8 THEN N'{UniqueName}'
+                                WHEN Id = 9 THEN N'{data.RequestTitle}'
+                                ELSE Value
+                            END
+                            WHERE Id IN (6, 7, 8, 9)";
+
+                var rowsModified = Context.Database.ExecuteSqlRaw(sql);
             }
             else
             {
-                var rowsModified = Context.Database.ExecuteSqlRaw(
-                    $"UPDATE MainPage SET Value = N'{data.ButtonTitle}' WHERE Id = 6");
-                rowsModified = Context.Database.ExecuteSqlRaw(
-                    $"UPDATE MainPage SET Value = N'{data.Title}' WHERE Id = 7");
-                rowsModified = Context.Database.ExecuteSqlRaw(
-                    $"UPDATE MainPage SET Value = N'{data.RequestTitle}' WHERE Id = 9");
+                var sql = $@"
+                            UPDATE MainPage SET Value = CASE
+                                WHEN Id = 6 THEN N'{data.ButtonTitle}'
+                                WHEN Id = 7 THEN N'{data.Title}'
+                                WHEN Id = 9 THEN N'{data.RequestTitle}'
+                                ELSE Value
+                            END
+                            WHERE Id IN (6, 7, 9)";
+
+                var rowsModified = Context.Database.ExecuteSqlRaw(sql);
             }
             /*Context.SaveChanges();*/ //эта штука нужна, если идет изменение через сам контекст, а тут sql
                 
@@ -160,31 +164,32 @@ namespace ApplicationManager.Data
             if (new_project != null)
             {
                 //сохранение нового проекта в бд
-                
-                string uploadPath =
-                Path.Combine(webHost.WebRootPath, "Images");
-                string UniqueName = Guid.NewGuid().ToString() + "_" + Image.FileName;
-                string FilePath = Path.Combine(uploadPath, UniqueName);
-                Image.CopyTo(new FileStream(FilePath, FileMode.Create));
-                new_project.ImageUrl = UniqueName;
+                if (Image != null && Image.Length > 0)
+                {
+                    string uploadPath =
+                    Path.Combine(webHost.WebRootPath, "Images");
+                    string UniqueName = Guid.NewGuid().ToString() + "_" + Image.FileName;
+                    string FilePath = Path.Combine(uploadPath, UniqueName);
+                    Image.CopyTo(new FileStream(FilePath, FileMode.Create));
+                    new_project.ImageUrl = UniqueName;
+                }
+                else
+                {
+                    new_project.ImageUrl = "/Default/default.png"; //имя по умолчанию
+                }
                 
                 Context.Projects.Add(new_project);
                 Context.SaveChanges();
             }
         }
-        public void AddProject(Project new_project)
-        {
-            if (new_project != null)
-            {
-                new_project.ImageUrl = "/Default/default.png"; //имя по умолчанию
-                Context.Projects.Add(new_project);
-                Context.SaveChanges();
-            }
-        }
+        
         public void EditProject(Project edit_project, IFormFile Image)
         {
             if (edit_project != null)
             {
+                if (Image != null && Image.Length > 0)
+                {
+
                 string uploadPath =
                 Path.Combine(webHost.WebRootPath, "Images");
                 string UniqueName = Guid.NewGuid().ToString() + "_" + Image.FileName;
@@ -194,17 +199,16 @@ namespace ApplicationManager.Data
                 var rowsModified = Context.Database.ExecuteSqlRaw(
                     $"UPDATE [Projects] SET Title = N'{edit_project.Title}', NameCompany = N'{edit_project.NameCompany}', " +
                     $" Description = N'{edit_project.Description}', ImageUrl = N'{UniqueName}' WHERE Id = {edit_project.Id}");
-            }
-        }
-        public void EditProject(Project edit_project)
-        {
-            if (edit_project != null)
-            {
-                var rowsModified = Context.Database.ExecuteSqlRaw(
+                }
+                else
+                {
+                    var rowsModified = Context.Database.ExecuteSqlRaw(
                        $"UPDATE [Projects] SET Title = N'{edit_project.Title}', NameCompany = N'{edit_project.NameCompany}', " +
                        $" Description = N'{edit_project.Description}' WHERE Id = {edit_project.Id}");
+                }
             }
         }
+  
         public void DeleteProject(int id)
         {
             Context.Projects.Remove(GetProject(id));
@@ -265,19 +269,13 @@ namespace ApplicationManager.Data
                 Context.SaveChanges();
             }
         }
-        public void EditBlog(Blog edit_blog)
-        {
-            if (edit_blog != null)
-            {
-                var rowsModified = Context.Database.ExecuteSqlRaw(
-                    $"UPDATE [Blogs] SET Title = N'{edit_blog.Title}', " +
-                    $" Description = N'{edit_blog.Description}' WHERE Id = {edit_blog.Id}");
-            }
-        }
         public void EditBlog(Blog edit_blog, IFormFile Image)
         {
             if (edit_blog != null)
             {
+                if (Image != null && Image.Length > 0)
+                {
+
                 string uploadPath =
                     Path.Combine(webHost.WebRootPath, "Images");
                 string UniqueName = Guid.NewGuid().ToString() + "_" + Image.FileName;
@@ -287,6 +285,13 @@ namespace ApplicationManager.Data
                 var rowsModified = Context.Database.ExecuteSqlRaw(
                    $"UPDATE [Blogs] SET Title = N'{edit_blog.Title}', " +
                    $" Description = N'{edit_blog.Description}', ImageUrl = N'{UniqueName}' WHERE Id = {edit_blog.Id}");
+                }
+                else
+                {
+                    var rowsModified = Context.Database.ExecuteSqlRaw(
+                    $"UPDATE [Blogs] SET Title = N'{edit_blog.Title}', " +
+                    $" Description = N'{edit_blog.Description}' WHERE Id = {edit_blog.Id}");
+                }
             }
         }
 
@@ -339,11 +344,8 @@ namespace ApplicationManager.Data
             Context.Contacts.AddRange(edit_contacts);
 
             Context.SaveChanges();
-
-            //перед сохранением осталось загрузить в форму картинку адреса, прислать сюда, и закинуть в таблицу Contacts
-            //Context.SaveChanges();
         }
-        public void SaveNewFiles(List<IFormFile> files)
+        public void SaveNewImageSocialNets(List<IFormFile> files)
         {
             //загрузка всех новых файлов на сервер
             if (files != null)

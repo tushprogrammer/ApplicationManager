@@ -32,23 +32,19 @@ namespace ApplicationManager.Data
         public void SaveNewStatusRequest(Request reqNow);
         public void EditMain(MainForm form, IFormFile image);
         public void AddProject(Project new_project, IFormFile image); 
-        public void AddProject(Project new_project);
         public Project GetProject(int id);
         public void EditProject(Project edit_project, IFormFile image);
-        public void EditProject(Project edit_project);
         public void DeleteProject(int id);
         public Service GetService(int id);
         public void AddService(Service newService);
         public void DeleteService(int id);
         public void EditService(Service service);
         public Blog GetBlog(int id);
-        public void AddBlog(Blog newBlog);
         public void AddBlog(Blog new_blog, IFormFile image);
-        public void EditBlog(Blog edit_blog);
         public void EditBlog(Blog edit_blog, IFormFile image);
         public void DeleteBlog(int id);
         public void SaveContacts(List<Contacts> contacts, List<SocialNet> socialNets, IFormFile Image);
-        public void SaveNewFiles(List<IFormFile> files);
+        public void SaveNewImageSocialNets(List<IFormFile> files);
         public void SaveNamePages(List<MainPage> names, List<MainPage> NamesAdmin);
     }
 }

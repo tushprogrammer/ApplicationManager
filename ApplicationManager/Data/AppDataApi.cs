@@ -1,7 +1,9 @@
-﻿using Newtonsoft.Json;
-using System;
-using ApplicationManager_ClassLibrary.Entitys;
+﻿using System;
 using System.Text;
+using Newtonsoft.Json;
+using System.Reflection.Metadata;
+using ApplicationManager_ClassLibrary.Entitys;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace ApplicationManager.Data
 {
@@ -282,6 +284,251 @@ namespace ApplicationManager.Data
             var content = new StringContent(json, Encoding.UTF8, "application/json-patch+json");
             var response = httpClient.PatchAsync($"{url_main}/SaveNewStatusRequest", content).Result;
         }
+        public void EditMain(MainForm form, IFormFile image)
+        {
+            using (var content = new MultipartFormDataContent())
+            {
+                // Добавляем экземпляр класса в контент запроса как JSON
+                var jsonForm = JsonConvert.SerializeObject(form);
+                content.Add(new StringContent(jsonForm), "form");
 
+                // Добавляем изображение в контент запроса
+                using (var imageStream = new MemoryStream())
+                {
+                    image.CopyToAsync(imageStream);
+                    content.Add(new StreamContent(imageStream), "image", image.FileName);
+                }
+
+                // Отправляем запрос к API
+                var response = httpClient.PostAsync($"{url_main}/EditMain", content).Result;
+
+                //if (response.IsSuccessStatusCode)
+                //{
+
+                //}
+                //else
+                //{
+
+                //}
+            }
+        }
+        public void AddProject(Project new_project, IFormFile image)
+        {
+            using (var content = new MultipartFormDataContent())
+            {
+                var jsonForm = JsonConvert.SerializeObject(new_project);
+                content.Add(new StringContent(jsonForm), "new_project");
+
+                using (var imageStream = new MemoryStream())
+                {
+                    image.CopyToAsync(imageStream);
+                    content.Add(new StreamContent(imageStream), "image", image.FileName);
+                }
+
+                var response = httpClient.PostAsync($"{url_project}/AddProject", content).Result;
+            }
+        }
+        public Project GetProject(int id)
+        {
+            try
+            {
+                string urlWithParams = $"{url_project}/GetRequestsNow?id={id}";
+                string json = httpClient.GetStringAsync($"{urlWithParams}").Result;
+                return JsonConvert.DeserializeObject<Project>(json);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        public void EditProject(Project edit_project, IFormFile image)
+        {
+            using (var content = new MultipartFormDataContent())
+            {
+                // Добавляем экземпляр класса в контент запроса как JSON
+                var jsonForm = JsonConvert.SerializeObject(edit_project);
+                content.Add(new StringContent(jsonForm), "edit_project");
+
+                // Добавляем изображение в контент запроса
+                using (var imageStream = new MemoryStream())
+                {
+                    image.CopyToAsync(imageStream);
+                    content.Add(new StreamContent(imageStream), "image", image.FileName);
+                }
+
+                // Отправляем запрос к API
+                var response = httpClient.PostAsync($"{url_project}/EditProject", content).Result;
+                // в переменной response ответ от api, успешно или нет
+            }
+        }
+        public void DeleteProject(int id)
+        {
+            try
+            {
+                string urlWithParams = $"{url_project}/DeleteProject?id={id}";
+                var response = httpClient.DeleteAsync($"{urlWithParams}").Result;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        public Service GetService(int id)
+        {
+            try
+            {
+                string urlWithParams = $"{url_service}/GetService?id={id}";
+                string json = httpClient.GetStringAsync($"{urlWithParams}").Result;
+                return JsonConvert.DeserializeObject<Service>(json);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        public void AddService(Service newService)
+        {
+            var re = httpClient.PostAsJsonAsync($"{url_service}/AddService", newService).Result;
+        }
+        public void DeleteService(int id)
+        {
+            try
+            {
+                string urlWithParams = $"{url_service}/DeleteService?id={id}";
+                var response = httpClient.DeleteAsync($"{urlWithParams}").Result;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        public void EditService(Service service)
+        {
+            var re = httpClient.PostAsJsonAsync($"{url_service}/EditService", service).Result;
+        }
+        public Blog GetBlog(int id)
+        {
+            try
+            {
+                string urlWithParams = $"{url_blog}/GetBlog?id={id}";
+                string json = httpClient.GetStringAsync($"{urlWithParams}").Result;
+                return JsonConvert.DeserializeObject<Blog>(json);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        public void AddBlog(Blog new_blog, IFormFile image)
+        {
+            using (var content = new MultipartFormDataContent())
+            {
+                var jsonForm = JsonConvert.SerializeObject(new_blog);
+                content.Add(new StringContent(jsonForm), "new_blog");
+
+                using (var imageStream = new MemoryStream())
+                {
+                    image.CopyToAsync(imageStream);
+                    content.Add(new StreamContent(imageStream), "image", image.FileName);
+                }
+
+                var response = httpClient.PostAsync($"{url_blog}/AddBlog", content).Result;
+            }
+        }
+        public void EditBlog(Blog edit_blog, IFormFile image)
+        {
+            using (var content = new MultipartFormDataContent())
+            {
+                // Добавляем экземпляр класса в контент запроса как JSON
+                var jsonForm = JsonConvert.SerializeObject(edit_blog);
+                content.Add(new StringContent(jsonForm), "edit_blog");
+
+                // Добавляем изображение в контент запроса
+                using (var imageStream = new MemoryStream())
+                {
+                    image.CopyToAsync(imageStream);
+                    content.Add(new StreamContent(imageStream), "image", image.FileName);
+                }
+
+                // Отправляем запрос к API
+                var response = httpClient.PostAsync($"{url_blog}/EditBlog", content).Result;
+                // в переменной response ответ от api, успешно или нет
+            }
+        }
+        public void DeleteBlog(int id)
+        {
+            try
+            {
+                string urlWithParams = $"{url_blog}/DeleteBlog?id={id}";
+                var response = httpClient.DeleteAsync($"{urlWithParams}").Result;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        public void SaveContacts(List<Contacts> contacts, List<SocialNet> socialNets, IFormFile image)
+        {
+            using (var content = new MultipartFormDataContent())
+            {
+                // Добавляем экземпляр класса в контент запроса как JSON
+                var jsonForm = JsonConvert.SerializeObject(contacts);
+                content.Add(new StringContent(jsonForm), "contacts");
+                jsonForm = JsonConvert.SerializeObject(socialNets);
+                content.Add(new StringContent(jsonForm), "socialNets");
+
+                // Добавляем изображение в контент запроса
+                using (var imageStream = new MemoryStream())
+                {
+                    image.CopyToAsync(imageStream);
+                    content.Add(new StreamContent(imageStream), "image", image.FileName);
+                }
+
+                // Отправляем запрос к API
+                var response = httpClient.PostAsync($"{url_сontacts}/SaveContacts", content).Result;
+                // в переменной response ответ от api, успешно или нет
+            }
+        }
+        public void SaveNewImageSocialNets(List<IFormFile> files)
+        {
+            //вот тут вопросики
+            // Создаем объект MultipartFormDataContent
+            var content = new MultipartFormDataContent();
+
+            // Добавляем файлы в контент
+            foreach (var file in files)
+            {
+                // Читаем содержимое файла в байтовый массив
+                using (var stream = file.OpenReadStream())
+                using (var ms = new MemoryStream())
+                {
+                    stream.CopyTo(ms);
+                    var fileBytes = ms.ToArray();
+
+                    // Создаем объект ByteArrayContent для передачи файла
+                    var fileContent = new ByteArrayContent(fileBytes);
+
+                    // Добавляем файл в контент
+                    content.Add(fileContent, "files", file.FileName);
+                }
+            }
+            // Отправляем POST запрос на API
+            var response = httpClient.PostAsync($"{url_сontacts}/SaveNewImageSocialNets", content).Result;
+        }
+        public void SaveNamePages(List<MainPage> names, List<MainPage> NamesAdmin)
+        {
+            using (var content = new MultipartFormDataContent())
+            {
+                // Добавляем экземпляр класса в контент запроса как JSON
+                var jsonForm = JsonConvert.SerializeObject(names);
+                content.Add(new StringContent(jsonForm), "names");
+                jsonForm = JsonConvert.SerializeObject(NamesAdmin);
+                content.Add(new StringContent(jsonForm), "NamesAdmin");
+
+                // Отправляем запрос к API
+                var response = httpClient.PostAsync($"{url_main}/SaveNamePages", content).Result;
+                // в переменной response ответ от api, успешно или нет
+            }
+        }
     }
 }

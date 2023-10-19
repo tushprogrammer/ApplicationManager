@@ -242,14 +242,7 @@ namespace ApplicationManager.Controllers
                     NameCompany = model.NameCompany,
                    
                 };
-                if (model.Image != null)
-                {
-                    data.AddProject(new_project, model.Image);
-                }
-                else
-                {
-                    data.AddProject(new_project);
-                }
+                data.AddProject(new_project, model.Image);
                 return Redirect("~/Admin/ProjectAdmin"); //успех
             }
             else
@@ -288,14 +281,7 @@ namespace ApplicationManager.Controllers
                     NameCompany = model.NameCompany,
                     Description = model.Description,
                 };
-                if (model.Image != null)
-                {
-                    data.EditProject(Edit_project, model.Image);
-                }
-                else
-                {
-                    data.EditProject(Edit_project);
-                }
+                data.EditProject(Edit_project, model.Image);
                 return Redirect("~/Admin/ProjectAdmin");
             }
             else
@@ -425,14 +411,7 @@ namespace ApplicationManager.Controllers
                     Description = model.Description,
                     Created = DateTime.Now,
                 };
-                if (model.Image != null)
-                {
-                    data.AddBlog(new_blog, model.Image);
-                }
-                else
-                {
-                    data.AddBlog(new_blog);
-                }
+                data.AddBlog(new_blog, model.Image);
                 return Redirect("~/Admin/BlogsAdmin"); //успех
             }
             else
@@ -470,11 +449,7 @@ namespace ApplicationManager.Controllers
                     Title = model.Title,
                     Description = model.Description,
                 };
-                if (model.Image != null)
-                {
-                    data.EditBlog(edit_blog, model.Image);
-                }
-                data.EditBlog(edit_blog);
+                data.EditBlog(edit_blog, model.Image);
                 return Redirect("~/Admin/BlogsAdmin"); //успех
             }
             else
@@ -559,7 +534,7 @@ namespace ApplicationManager.Controllers
             //загрузка на сервер картинок соц. сетей
             if (files is not null)
             {
-                data.SaveNewFiles(files);
+                data.SaveNewImageSocialNets(files);
             }
             
             return Ok();
