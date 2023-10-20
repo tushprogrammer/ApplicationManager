@@ -7,7 +7,7 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace ApplicationManager.Data
 {
-    public class AppDataApi /*: IAppData*/
+    public class AppDataApi : IAppData
     {
         private HttpClient httpClient { get; set; }
         static readonly string url_main = $@"api/Main";
@@ -20,7 +20,7 @@ namespace ApplicationManager.Data
         {
             this.httpClient = new HttpClient();
             //тут настроить базовый адрес, но указать его не в коде, а в appsetting.json
-            //httpClient.BaseAddress = new Uri(@"https://localhost:7068/");
+            httpClient.BaseAddress = new Uri(@"https://localhost:7292/");
         }
         public IQueryable<MainPage> GetMains()
         {
@@ -44,9 +44,9 @@ namespace ApplicationManager.Data
                 string json = httpClient.GetStringAsync(url_main + "/GetMainsIndexPage").Result;
                 return JsonConvert.DeserializeObject<MainForm>(json);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                var r = ex.Message;
                 throw;
             }
         }
@@ -81,7 +81,7 @@ namespace ApplicationManager.Data
         {
             try
             {
-                string json = httpClient.GetStringAsync(url_project).Result;
+                string json = httpClient.GetStringAsync($"{url_project}/GetProjects").Result;
                 return JsonConvert.DeserializeObject<IEnumerable<Project>>(json).AsQueryable();
             }
             catch (Exception)
@@ -137,11 +137,23 @@ namespace ApplicationManager.Data
                 throw;
             }
         }
+        public IQueryable<Request> GetRequests()
+        {
+            try
+            {
+                string json = httpClient.GetStringAsync($"{url_main}/GetRequests").Result;
+                return JsonConvert.DeserializeObject<IEnumerable<Request>>(json).AsQueryable();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
         public IQueryable<Request> GetRequests(DateTime DateFor, DateTime DateTo)
         {
             try
             {
-                string urlWithParams = $"{url_main}?DateFor={DateFor:yyyy-MM-dd}&DateTo={DateTo:yyyy-MM-dd}";
+                string urlWithParams = $"{url_main}/GetRequestsDate?DateFor={DateFor:yyyy-MM-dd}&DateTo={DateTo:yyyy-MM-dd}";
 
                 string json = httpClient.GetStringAsync(urlWithParams).Result;
                 return JsonConvert.DeserializeObject<IEnumerable<Request>>(json).AsQueryable();
