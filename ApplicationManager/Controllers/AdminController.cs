@@ -256,16 +256,7 @@ namespace ApplicationManager.Controllers
         //страница изменения проекта
         public IActionResult DetailsProject(int id)
         {
-            Project temp = data.GetProject(id);
-            ViewBag.ImageUrl = temp.ImageUrl;
-            ViewBag.Name_page = data.GetMains().First(i => i.Id == 3).Value;
-            DetailsProjectModel model = new()
-            {
-                Id = id,
-                Description = temp.Description,
-                Title = temp.Title,
-                NameCompany = temp.NameCompany,
-            };
+            DetailsProjectModel model = data.GetProjectModel(id);
             return View(model);
         }
         //метод изменения проекта
@@ -286,12 +277,15 @@ namespace ApplicationManager.Controllers
             }
             else
             {
+                //можно в теории подумать о своих спрятанных инпутах, чтоб в них продолжалась хранится информация, а не скидывалась,
+                //чтоб заново её не искать, то есть картинка по умолчанию и имя странцы
+                //можно еще подумать о сохранении первой введенной картинки, но без фанатизма
                 ModelState.AddModelError("", "Заполните все обязательные поля");
-                Project temp = data.GetProject(model.Id);
-                ViewBag.Name_page = data.GetMains().First(i => i.Id == 3).Value;
+                DetailsProjectModel temp = data.GetProjectModel(model.Id);
+                model.Name_page = temp.Name_page;
                 if (temp != null)
                 {
-                    ViewBag.ImageUrl = temp.ImageUrl;
+                    model.ImgSrc = temp.ImgSrc;
                 }
 
                 return View("DetailsProject", model); //повторная попытка

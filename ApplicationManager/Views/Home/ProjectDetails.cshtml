@@ -1,22 +1,19 @@
-﻿@model ProjectsModel
+﻿@model DetailsProjectModel
 @{
     ViewData["Title"] = $"Страница {Model.Name_page}";
-    Project projectnow = Model.Projects.First(i => i.Id == Model.IdProject);
-    var image_path = "~/Images/" + projectnow.ImageUrl;
 }
+
 <div class="navigation-history">
     <p>
-        <a asp-action="Index">Главная</a> -> <a asp-action="project">@Model.Name_page</a> -> @projectnow.NameCompany
+        <a asp-action="Index">Главная</a> -> <a asp-action="project">@Model.Name_page</a> -> @Model.NameCompany
     </p>
 </div>
 <div class="article-container">
-   
     <div class="article-content">
-        <h2>@projectnow.Title</h2>
+        <h2>@Model.Title</h2>
         <hr />
-        <p>@projectnow.Description</p>
+        <p>@Model.Description</p>
     </div>
-    <img class="article-image" src="@image_path" asp-append-version="true" />
-    
-   
+    <div class="article-image" style="background-image: url(@Model.ImgSrc)">
+    </div>
 </div>

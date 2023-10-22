@@ -4,6 +4,9 @@ using Newtonsoft.Json;
 using System.Reflection.Metadata;
 using ApplicationManager_ClassLibrary.Entitys;
 using static System.Net.Mime.MediaTypeNames;
+using ApplicationManager.Models;
+using System.Collections;
+using Microsoft.Data.SqlClient.Server;
 
 namespace ApplicationManager.Data
 {
@@ -344,33 +347,57 @@ namespace ApplicationManager.Data
         {
             try
             {
-                string urlWithParams = $"{url_project}/GetRequestsNow?id={id}";
-                string json = httpClient.GetStringAsync($"{urlWithParams}").Result;
+                string urlWithParams = $"{url_project}/GetProject?id={id}";
+                string json = httpClient.GetStringAsync(urlWithParams).Result;
                 return JsonConvert.DeserializeObject<Project>(json);
+                
             }
             catch (Exception)
             {
                 throw;
             }
         }
-        public void EditProject(Project edit_project, IFormFile image)
+        public DetailsProjectModel GetProjectModel(int id)
+        {
+            try
+            {
+                string urlWithParams = $"{url_project}/GetProjectModel?id={id}";
+                HttpResponseMessage response = httpClient.GetAsync($"{urlWithParams}").Result;
+                if (response.IsSuccessStatusCode)
+                {
+                    string json = response.Content.ReadAsStringAsync().Result;
+                    ProjectModel model = JsonConvert.DeserializeObject<ProjectModel>(json);
+                    var base64 = Convert.ToBase64String(model.Image_byte);
+                    var imgSrc = String.Format("data:image/gif;base64,{0}", base64);
+                    DetailsProjectModel projectModel = new()
+                        {
+                            Id = model.Id,
+                            NameCompany = model.NameCompany,
+                            Title = model.Title,
+                            Description = model.Description,
+                            ImgSrc = imgSrc,
+                            Name_page = model.Name_page,
+                        };
+                    return projectModel;
+                }
+                else return null;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        public   void EditProject(Project edit_project, IFormFile image)
         {
             using (var content = new MultipartFormDataContent())
             {
-                // Добавляем экземпляр класса в контент запроса как JSON
                 var jsonForm = JsonConvert.SerializeObject(edit_project);
-                content.Add(new StringContent(jsonForm), "edit_project");
+                content.Add(new StringContent(jsonForm, Encoding.UTF8, "application/json"), "edit_project");
+                // Перед добавлением изображения в контент запроса, дождитесь завершения копирования данных из файла
+                var streamContent = new StreamContent(image.OpenReadStream());
+                content.Add(streamContent, "image", image.FileName);
 
-                // Добавляем изображение в контент запроса
-                using (var imageStream = new MemoryStream())
-                {
-                    image.CopyToAsync(imageStream);
-                    content.Add(new StreamContent(imageStream), "image", image.FileName);
-                }
-
-                // Отправляем запрос к API
                 var response = httpClient.PostAsync($"{url_project}/EditProject", content).Result;
-                // в переменной response ответ от api, успешно или нет
             }
         }
         public void DeleteProject(int id)

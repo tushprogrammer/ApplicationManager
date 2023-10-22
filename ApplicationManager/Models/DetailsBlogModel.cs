@@ -11,7 +11,6 @@ namespace ApplicationManager.Models
 
         [Required]
         public string Description { get; set; }
-        //public DateTime Created { get; set; } //не надо передавать, так как она не изменяется никогда
         public IFormFile? Image { get; set; }
     }
 }

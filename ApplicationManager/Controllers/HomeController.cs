@@ -72,12 +72,8 @@ namespace ApplicationManager.Controllers
         //вызов страницы об конкретном проекте
         public IActionResult ProjectDetails(int id) 
         {
-            ProjectsModel model = new()
-            {
-                Projects = data.GetProjects(),
-                Name_page = data.GetMains().First(i => i.Id == 3).Value,
-                IdProject = id
-            };
+            DetailsProjectModel model = data.GetProjectModel(id);
+            
             return View(model);
         }
         #endregion

@@ -654,9 +654,16 @@ details p {
 
 
 .article-image {
-    max-width: 200px; 
-    height: auto;
-    margin-left: 20px; /* Расстояние между изображением и текстом */
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 200px;
+    margin: 0px 20px;
+    width: 20%;
+    object-fit: cover;
+/*    display: flex;
+    justify-content: center;
+    align-items: center;*/
 }
 
 

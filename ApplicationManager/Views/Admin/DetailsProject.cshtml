@@ -10,10 +10,10 @@
     {
         ViewData["Title"] = "Изменить проект";
     }
-    if (ViewBag.ImageUrl != null)
-    {
-        image_path = "/Images/" + ViewBag.ImageUrl;
-    }
+    // if (ViewBag.ImageUrl != null)
+    // {
+    //     image_path = "/Images/" + ViewBag.ImageUrl;
+    // }
 
 }
 <div class="pad-top">
@@ -57,7 +57,7 @@
         {
             <div class="project-form">
                 <div class="project-form-inputs">
-                    <form asp-action="EditProjectMethod" asp-controller="Admin" method="post" asp-antiforgery="true" enctype="multipart/form-data" id="EditProjectForm">
+                    <form asp-action="EditProjectMethod" asp-controller="Admin" asp-antiforgery="true" enctype="multipart/form-data" id="EditProjectForm">
                         <input asp-for="Id" value="@Model.Id" type="hidden">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                         <div class="form-group">
@@ -79,7 +79,7 @@
 
                     </form>
                 </div>
-                <div class="project-form-image" id="image-project" style="background-image: url(@image_path)"></div>
+                <div class="project-form-image" id="image-project" style="background-image: url(@Model.ImgSrc)"></div>
             </div>
             <div class="form-submit">
                 <a class="btn btn-primary " href="#" onclick="document.getElementById('EditProjectForm').submit()">Сохранить</a>
