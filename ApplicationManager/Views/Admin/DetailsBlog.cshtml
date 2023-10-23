@@ -1,14 +1,17 @@
 ﻿@model DetailsBlogModel
 @{
-    var image_path = string.Empty; //можно переделать на дефолтную картинку
+    var image_path = string.Empty; 
+    string name_page;
     if (Model is null)
     {
         ViewData["Title"] = "Добавить новый элемент блога";
-        image_path = "/Images/default-project.png";
+        image_path = "/Images/Default/default.png";
+        name_page = @ViewBag.Name_page;
     }
     else
     {
         ViewData["Title"] = "Изменить элемент блога";
+        name_page = Model.Name_page;
     }
     if (ViewBag.ImageUrl != null)
     {
@@ -19,7 +22,7 @@
 <div class="pad-top">
     <div class="navigation-history">
         <p>
-            <a asp-action="Index">Главная</a> -> <a asp-action="BlogsAdmin" asp-controller="Admin">@ViewBag.Name_page</a> -> @ViewBag.Title
+            <a asp-action="Index">Главная</a> -> <a asp-action="BlogsAdmin" asp-controller="Admin">@name_page</a> -> @ViewBag.Title
         </p>
     </div>
     <div>
@@ -70,7 +73,7 @@
                         <input asp-for="Image" value="Добавить фото" id="NewBlogImage" class="input-for-label" />
                     </form>
                 </div>
-                <div class="blog-form-image" id="image-blog" style="background-image: url(@image_path)"></div>
+                <div class="blog-form-image" id="image-blog" style="background-image: url(@Model.ImgSrc)"></div>
             </div>
             <div class="form-submit">
                 <a class="btn btn-primary" href="#" onclick="document.getElementById('EditBlogForm').submit()">Сохранить</a>

@@ -12,7 +12,7 @@ namespace ApplicationManager.Data
         public IQueryable<MainPage> GetMainsHeader();
         public ProjectsModel GetProjects();
         public IQueryable<Service> GetServices();
-        public IQueryable<Blog> GetBlogs();
+        public BlogsModel GetBlogs();
         public IQueryable<Contacts> GetContacts();
         public IQueryable<SocialNet> GetSocialNet();
         public IQueryable<Request> GetRequests();
@@ -33,6 +33,7 @@ namespace ApplicationManager.Data
         public void EditMain(MainForm form, IFormFile image);
         public void AddProject(Project new_project, IFormFile image); 
         public DetailsProjectModel GetProjectModel(int id);
+        public DetailsBlogModel GetBlogModel(int id);
         public Project GetProject(int id);
         public void EditProject(Project edit_project, IFormFile image);
         public void DeleteProject(int id);

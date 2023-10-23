@@ -400,18 +400,14 @@ namespace ApplicationManager.Controllers
         //вызов страницы для редактирования страницы "Блог"
         public IActionResult BlogsAdmin()
         {
-            BlogsModel model = new()
-            {
-                Blogs = data.GetBlogs(),
-                Name_page = data.GetMains().First(i => i.Id == 4).Value,
-            };
+            //все элементы блога + имя страницы
+            BlogsModel model = data.GetBlogs();
             return View(model);
         }
+
         //страница добавления блога
-        
         public IActionResult AddNewBlog()
         {
-            
             ViewBag.Name_page = data.GetMains().First(i => i.Id == 4).Value;
             return View("DetailsBlog");
         }
@@ -442,15 +438,16 @@ namespace ApplicationManager.Controllers
         //вызов страницы изменения блога
         public IActionResult EditBlog(int id)
         {
-            ViewBag.Name_page = data.GetMains().First(i => i.Id == 4).Value;
-            Blog blogNow =  data.GetBlog(id);
-            ViewBag.ImageUrl = blogNow.ImageUrl;
-            DetailsBlogModel model = new()
-            {
-                Id = id,
-                Title = blogNow.Title,
-                Description = blogNow.Description,
-            };
+            DetailsBlogModel model = data.GetBlogModel(id);
+            //ViewBag.Name_page = data.GetMains().First(i => i.Id == 4).Value;
+            //Blog blogNow =  data.GetBlog(id);
+            //ViewBag.ImageUrl = blogNow.ImageUrl;
+            //DetailsBlogModel model = new()
+            //{
+            //    Id = id,
+            //    Title = blogNow.Title,
+            //    Description = blogNow.Description,
+            //};
             return View("DetailsBlog", model);
         }
         //метод изменения блога
@@ -471,13 +468,13 @@ namespace ApplicationManager.Controllers
             else
             {
                 ModelState.AddModelError("", "Заполните все обязательные поля");
-                ViewBag.Name_page = data.GetMains().First(i => i.Id == 4).Value;
-                Blog blog = data.GetBlog(model.Id);
-                if (blog != null)
+                DetailsBlogModel temp = data.GetBlogModel(model.Id);
+                model.Name_page = temp.Name_page;
+                if (temp != null)
                 {
-                    ViewBag.ImageUrl = data.GetBlog(model.Id).ImageUrl;
+                    model.ImgSrc = temp.ImgSrc;
                 }
-                
+
                 return View("DetailsBlog", model); //повторная попытка
             }
         }

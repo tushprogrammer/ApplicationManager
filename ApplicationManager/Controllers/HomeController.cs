@@ -77,22 +77,19 @@ namespace ApplicationManager.Controllers
         //вызов страницы "Блог"
         public IActionResult Blogs() 
         {
-            BlogsModel model = new()
-            {
-                Blogs = data.GetBlogs(),
-                Name_page = data.GetMains().First(i => i.Id == 4).Value,
-            };
+            BlogsModel model = data.GetBlogs();
             return View(model);
         }
         //вызов страницы об конкретном блоге
         public IActionResult BlogDetails(int id)
         {
-            BlogsModel model = new()
-            {
-                Blogs = data.GetBlogs(),
-                Name_page = data.GetMains().First(i => i.Id == 4).Value,
-                BlogId = id
-            };
+            DetailsBlogModel model = data.GetBlogModel(id);
+            //BlogsModel model = new()
+            //{
+            //    Blogs = data.GetBlogs(),
+            //    Name_page = data.GetMains().First(i => i.Id == 4).Value,
+            //    BlogId = id
+            //};
             return View(model);
         }
         #endregion
