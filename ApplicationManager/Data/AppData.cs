@@ -14,7 +14,7 @@ using System.Web.Mvc;
 
 namespace ApplicationManager.Data
 {
-    public class AppData : IAppData
+    public class AppData /*: IAppData*/
     {
         private readonly ApplicationDbContext Context;
         private readonly IWebHostEnvironment webHost;

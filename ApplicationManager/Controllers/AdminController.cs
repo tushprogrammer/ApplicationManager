@@ -14,6 +14,7 @@ using System.Text;
 using System.Web.Helpers;
 using static System.Net.Mime.MediaTypeNames;
 using ApplicationManager_ClassLibrary;
+using System.Text.RegularExpressions;
 //using System.Web.HttpPostedFileWrapper;
 
 namespace ApplicationManager.Controllers
@@ -213,13 +214,8 @@ namespace ApplicationManager.Controllers
         //вывод страницы для просмотра "Проекты" перед редактированием
         public IActionResult ProjectAdmin()
         {
-            //все проекты
-            ProjectsModel model = new()
-            {
-                Projects = data.GetProjects(),
-                Name_page = data.GetMains().First(i => i.Id == 3).Value
-            };
-            //имя странциы проектов из тб mainpage
+            //все проекты + имя страницы
+            ProjectsModel model = data.GetProjects();
             return View(model);
         }
         //страница добавления нового проекта
@@ -233,6 +229,7 @@ namespace ApplicationManager.Controllers
         [HttpPost, ValidateAntiForgeryToken]
         public IActionResult AddProjectMethod(DetailsProjectModel model)
         {
+            //валидация модели на заполненность всех обязательных полей
             if (ModelState.IsValid)
             {
                 Project new_project = new()
@@ -247,9 +244,34 @@ namespace ApplicationManager.Controllers
             }
             else
             {
-                //красная надпись сверху и подсвеченные поля, которые не заполнили
+                //предупреждение и подсвеченные поля, которые не заполнили
                 ModelState.AddModelError("", "Заполните все обязательные поля");
                 ViewBag.Name_page = data.GetMains().First(i => i.Id == 3).Value;
+                //при повторной попытке можно было б из модели достать iformfile, если он уже загружен
+                //и внести в ImgSrc, чтоб опять отобразить на странице, но это будет лишь заполнение
+                //div заливкой, а input останется пустым, и если пользователь при повторной попытке увидит,
+                //что картинка осталась, не будет её заполнять заного, и iformfile не передастся сюда, 
+                //и информация с ImgSrc не превратится в iformfile
+                //есть такая еще альтернатива:
+
+                // Определите тип изображения (в данном случае gif)
+                //var fileType = "image/gif";
+
+                //// Извлеките строку base64 из ImgSrc
+                //var base64Data = Regex.Match(imgSrc, @"data:image/(?<type>.+?),(?<data>.+)").Groups["data"].Value;
+
+                //// Преобразуйте строку base64 в массив байтов
+                //var bytes = Convert.FromBase64String(base64Data);
+
+                //// Создайте поток из массива байтов
+                //var stream = new MemoryStream(bytes);
+
+                //// Создайте IFormFile из потока
+                //IFormFile file = new FormFile(stream, 0, stream.Length, "image", fileName)
+                //{
+                //    ContentType = fileType
+                //};
+                //но для неё надо запоминать имя файла и сам imgSrc и через input type="hidden" передавать сюда
                 return View("DetailsProject"); //повторная попытка
             }
         }

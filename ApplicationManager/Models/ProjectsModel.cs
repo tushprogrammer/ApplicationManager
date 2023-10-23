@@ -3,11 +3,10 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace ApplicationManager.Models
 {
-    public class ProjectsModel : PageModel
+    public class ProjectsModel
     {
-        public IQueryable<Project> Projects { get; set; }
+        public List<Project_with_image> Projects { get; set; }
         public string Name_page { get; set; }
-        public int IdProject { get; set; }
 
     }
 }

@@ -10,7 +10,7 @@ namespace ApplicationManager.Data
         public MainForm GetMainsIndexPage();
         public IQueryable<MainPage> GetMainsAdmin();
         public IQueryable<MainPage> GetMainsHeader();
-        public IQueryable<Project> GetProjects();
+        public ProjectsModel GetProjects();
         public IQueryable<Service> GetServices();
         public IQueryable<Blog> GetBlogs();
         public IQueryable<Contacts> GetContacts();

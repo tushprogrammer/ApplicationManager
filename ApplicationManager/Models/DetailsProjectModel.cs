@@ -7,7 +7,6 @@ namespace ApplicationManager.Models
 {
     public class DetailsProjectModel 
     {
-
         public int Id { get; set; }
         [Required]
         public string Title { get; set; }

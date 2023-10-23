@@ -80,18 +80,7 @@ namespace ApplicationManager.Data
                 throw;
             }
         }
-        public IQueryable<Project> GetProjects()
-        {
-            try
-            {
-                string json = httpClient.GetStringAsync($"{url_project}/GetProjects").Result;
-                return JsonConvert.DeserializeObject<IEnumerable<Project>>(json).AsQueryable();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
+        
         public IQueryable<Service> GetServices()
         {
             try
@@ -317,14 +306,6 @@ namespace ApplicationManager.Data
                 // Отправляем запрос к API
                 var response = httpClient.PostAsync($"{url_main}/EditMain", content).Result;
 
-                //if (response.IsSuccessStatusCode)
-                //{
-
-                //}
-                //else
-                //{
-
-                //}
             }
         }
         public void AddProject(Project new_project, IFormFile image)
@@ -333,12 +314,8 @@ namespace ApplicationManager.Data
             {
                 var jsonForm = JsonConvert.SerializeObject(new_project);
                 content.Add(new StringContent(jsonForm), "new_project");
-
-                using (var imageStream = new MemoryStream())
-                {
-                    image.CopyToAsync(imageStream);
-                    content.Add(new StreamContent(imageStream), "image", image.FileName);
-                }
+                var streamContent = new StreamContent(image.OpenReadStream());
+                content.Add(streamContent, "image", image.FileName);
 
                 var response = httpClient.PostAsync($"{url_project}/AddProject", content).Result;
             }
@@ -357,6 +334,34 @@ namespace ApplicationManager.Data
                 throw;
             }
         }
+        public ProjectsModel GetProjects()
+        {
+            try
+            {
+                //запрос к api на получение проектов и имени страницы project
+                HttpResponseMessage response = httpClient.GetAsync($"{url_project}/GetProjects").Result;
+                //обработка запроса
+                if (response.IsSuccessStatusCode)
+                {
+                    //получение данных из запроса
+                    var data = response.Content.ReadAsStringAsync().Result;
+                    ProjectsModel model = JsonConvert.DeserializeObject<ProjectsModel>(data);
+                    //переделка массива байтов в картинку для отображения на странице
+                    foreach (Project_with_image item in model.Projects)
+                    {
+                        var base64 = Convert.ToBase64String(item.Image_byte);
+                        item.ImgSrc = String.Format("data:image/gif;base64,{0}", base64);
+                    }
+                    return model;
+                }
+                else return null;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
         public DetailsProjectModel GetProjectModel(int id)
         {
             try
@@ -365,16 +370,17 @@ namespace ApplicationManager.Data
                 HttpResponseMessage response = httpClient.GetAsync($"{urlWithParams}").Result;
                 if (response.IsSuccessStatusCode)
                 {
-                    string json = response.Content.ReadAsStringAsync().Result;
-                    ProjectModel model = JsonConvert.DeserializeObject<ProjectModel>(json);
-                    var base64 = Convert.ToBase64String(model.Image_byte);
+                    var data = response.Content.ReadAsStringAsync().Result;
+                    ProjectModel model = JsonConvert.DeserializeObject<ProjectModel>(data);
+
+                    var base64 = Convert.ToBase64String(model.Project_with_image.Image_byte);
                     var imgSrc = String.Format("data:image/gif;base64,{0}", base64);
                     DetailsProjectModel projectModel = new()
                         {
-                            Id = model.Id,
-                            NameCompany = model.NameCompany,
-                            Title = model.Title,
-                            Description = model.Description,
+                            Id = model.Project_with_image.Id,
+                            NameCompany = model.Project_with_image.NameCompany,
+                            Title = model.Project_with_image.Title,
+                            Description = model.Project_with_image.Description,
                             ImgSrc = imgSrc,
                             Name_page = model.Name_page,
                         };

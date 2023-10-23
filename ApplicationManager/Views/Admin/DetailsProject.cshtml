@@ -1,14 +1,17 @@
 ﻿@model DetailsProjectModel
 @{
     var image_path = string.Empty; //можно переделать на дефолтную картинку
+    string name_page;
     if (Model is null)
     {
         ViewData["Title"] = "Добавить новый проект";
         image_path = "/Images/default-project.png";
+        name_page = @ViewBag.Name_page;
     }
     else
     {
         ViewData["Title"] = "Изменить проект";
+        name_page = Model.Name_page;
     }
     // if (ViewBag.ImageUrl != null)
     // {
@@ -19,7 +22,7 @@
 <div class="pad-top">
     <div class="navigation-history">
         <p>
-            <a asp-action="Index">Рабочий стол</a> -> <a asp-action="ProjectAdmin" asp-controller="Admin">@ViewBag.Name_page</a> -> @ViewBag.Title
+            <a asp-action="Index">Рабочий стол</a> -> <a asp-action="ProjectAdmin" asp-controller="Admin">@name_page</a> -> @ViewBag.Title
         </p>
     </div>
         @if (Model is null)

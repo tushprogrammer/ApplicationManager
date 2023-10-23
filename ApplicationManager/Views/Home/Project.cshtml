@@ -10,13 +10,12 @@
 <h1>@Model.Name_page</h1>
 <hr />
 <div class="boxes-project">
-    @foreach (Project item in Model.Projects)
+    @foreach (Project_with_image item in Model.Projects)
     {
-        var image_path = "/Images/" + item.ImageUrl;
         <div class="box-project">
             <div class="box-project-border">
                 <a asp-action="ProjectDetails" asp-route-id="@item.Id">
-                    <div class="ImageProject" style="background-image: url(@image_path)"></div>
+                    <div class="ImageProject" style="background-image: url(@item.ImgSrc)"></div>
                     <div class="block-title">
                         <div>@item.Title</div>
                     </div>

@@ -60,13 +60,7 @@ namespace ApplicationManager.Controllers
         public IActionResult Project()
         {
             //подгрузка данных из бд: 
-            //все проекты
-            ProjectsModel model = new()
-            {
-                Projects = data.GetProjects(),
-                Name_page = data.GetMains().First(i => i.Id == 3).Value
-            };
-            //имя странциы проектов из тб mainpage
+            ProjectsModel model = data.GetProjects();
             return View(model);
         }
         //вызов страницы об конкретном проекте
