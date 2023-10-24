@@ -350,33 +350,7 @@ namespace ApplicationManager.Data
                 throw;
             }
         }
-        public BlogsModel GetBlogs()
-        {
-            //осталось это поменять
-            try
-            {
-                HttpResponseMessage response = httpClient.GetAsync($"{url_blog}/GetBlogs").Result;
-                if (response.IsSuccessStatusCode)
-                {
-                    //получение данных из запроса
-                    var data = response.Content.ReadAsStringAsync().Result;
-                    BlogsModel model = JsonConvert.DeserializeObject<BlogsModel>(data);
-                    //переделка массива байтов в картинку для отображения на странице
-                    foreach (Blog_with_image item in model.Blogs)
-                    {
-                        var base64 = Convert.ToBase64String(item.Image_byte);
-                        item.ImgSrc = String.Format("data:image/gif;base64,{0}", base64);
-                    }
-                    return model;
-                }
-                else return null;
-              
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
+     
 
         public DetailsProjectModel GetProjectModel(int id)
         {
@@ -391,6 +365,7 @@ namespace ApplicationManager.Data
 
                     var base64 = Convert.ToBase64String(model.Project_with_image.Image_byte);
                     var imgSrc = String.Format("data:image/gif;base64,{0}", base64);
+                    model.Project_with_image.ImgSrc = imgSrc;
                     DetailsProjectModel projectModel = new()
                         {
                             Id = model.Project_with_image.Id,
@@ -409,37 +384,7 @@ namespace ApplicationManager.Data
                 throw;
             }
         }
-        public DetailsBlogModel GetBlogModel(int id)
-        {
-            try
-            {
-                string urlWithParams = $"{url_blog}/GetBlogModel?id={id}";
-                HttpResponseMessage response = httpClient.GetAsync($"{urlWithParams}").Result;
-                if (response.IsSuccessStatusCode)
-                {
-                    var data = response.Content.ReadAsStringAsync().Result;
-                    BlogModel model = JsonConvert.DeserializeObject<BlogModel>(data);
-
-                    var base64 = Convert.ToBase64String(model.blog_With_Image.Image_byte);
-                    var imgSrc = String.Format("data:image/gif;base64,{0}", base64);
-                    DetailsBlogModel blogModel = new()
-                    {
-                        Id = model.blog_With_Image.Id,
-                        Title = model.blog_With_Image.Title,
-                        Description = model.blog_With_Image.Description,
-                        ImgSrc = imgSrc,
-                        Name_page = model.Name_page,
-                        Created = model.blog_With_Image.Created,
-                    };
-                    return blogModel;
-                }
-                else return null;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
+        
         public   void EditProject(Project edit_project, IFormFile image)
         {
             using (var content = new MultipartFormDataContent())
@@ -511,6 +456,64 @@ namespace ApplicationManager.Data
                 throw;
             }
         }
+        public BlogsModel GetBlogs()
+        {
+            try
+            {
+                HttpResponseMessage response = httpClient.GetAsync($"{url_blog}/GetBlogs").Result;
+                if (response.IsSuccessStatusCode)
+                {
+                    //получение данных из запроса
+                    var data = response.Content.ReadAsStringAsync().Result;
+                    BlogsModel model = JsonConvert.DeserializeObject<BlogsModel>(data);
+                    //переделка массива байтов в картинку для отображения на странице
+                    foreach (Blog_with_image item in model.Blogs)
+                    {
+                        var base64 = Convert.ToBase64String(item.Image_byte);
+                        item.ImgSrc = String.Format("data:image/gif;base64,{0}", base64);
+                    }
+                    return model;
+                }
+                else return null;
+
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        public BlogModel GetBlogModel(int id)
+        {
+            try
+            {
+                string urlWithParams = $"{url_blog}/GetBlogModel?id={id}";
+                HttpResponseMessage response = httpClient.GetAsync($"{urlWithParams}").Result;
+                if (response.IsSuccessStatusCode)
+                {
+                    var data = response.Content.ReadAsStringAsync().Result;
+                    BlogModel model = JsonConvert.DeserializeObject<BlogModel>(data);
+
+                    var base64 = Convert.ToBase64String(model.blog_With_Image.Image_byte);
+                    var imgSrc = String.Format("data:image/gif;base64,{0}", base64);
+                    model.blog_With_Image.ImgSrc = imgSrc;
+                    //DetailsBlogModel blogModel = new()
+                    //{
+                    //    Id = model.blog_With_Image.Id,
+                    //    Title = model.blog_With_Image.Title,
+                    //    Description = model.blog_With_Image.Description,
+                    //    ImgSrc = imgSrc,
+                    //    Name_page = model.Name_page,
+                    //    Created = model.blog_With_Image.Created,
+                    //};
+                    return model;
+                }
+                else return null;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
         public void AddBlog(Blog new_blog, IFormFile image)
         {
 
@@ -531,8 +534,11 @@ namespace ApplicationManager.Data
                 // Добавляем экземпляр класса в контент запроса как JSON
                 var jsonForm = JsonConvert.SerializeObject(edit_blog);
                 content.Add(new StringContent(jsonForm), "edit_blog");
-                var streamContent = new StreamContent(image.OpenReadStream());
-                content.Add(streamContent, "image", image.FileName);
+                if (image != null && image.Length > 0)
+                {
+                    var streamContent = new StreamContent(image.OpenReadStream());
+                    content.Add(streamContent, "image", image.FileName);
+                }
 
                 // Отправляем запрос к API
                 var response = httpClient.PostAsync($"{url_blog}/EditBlog", content).Result;

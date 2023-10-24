@@ -83,7 +83,8 @@ namespace ApplicationManager.Controllers
         //вызов страницы об конкретном блоге
         public IActionResult BlogDetails(int id)
         {
-            DetailsBlogModel model = data.GetBlogModel(id);
+            BlogModel model = data.GetBlogModel(id);
+            model.Is_edit = false;
             //BlogsModel model = new()
             //{
             //    Blogs = data.GetBlogs(),

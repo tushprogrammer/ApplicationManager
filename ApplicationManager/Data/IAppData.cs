@@ -33,7 +33,7 @@ namespace ApplicationManager.Data
         public void EditMain(MainForm form, IFormFile image);
         public void AddProject(Project new_project, IFormFile image); 
         public DetailsProjectModel GetProjectModel(int id);
-        public DetailsBlogModel GetBlogModel(int id);
+        public BlogModel GetBlogModel(int id);
         public Project GetProject(int id);
         public void EditProject(Project edit_project, IFormFile image);
         public void DeleteProject(int id);

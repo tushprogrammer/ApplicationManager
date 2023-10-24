@@ -15,6 +15,7 @@ using System.Web.Helpers;
 using static System.Net.Mime.MediaTypeNames;
 using ApplicationManager_ClassLibrary;
 using System.Text.RegularExpressions;
+using System.Net.Mime;
 //using System.Web.HttpPostedFileWrapper;
 
 namespace ApplicationManager.Controllers
@@ -401,7 +402,7 @@ namespace ApplicationManager.Controllers
         public IActionResult BlogsAdmin()
         {
             //все элементы блога + имя страницы
-            BlogsModel model = data.GetBlogs();
+            BlogsModel model = data.GetBlogs();            
             return View(model);
         }
 
@@ -413,32 +414,68 @@ namespace ApplicationManager.Controllers
         }
         //метод добавления блога
         [HttpPost, ValidateAntiForgeryToken]
-        public IActionResult AddNewBlogMethod(DetailsBlogModel model)
+        public IActionResult AddNewBlogMethod(BlogModel model)
         {
             if (ModelState.IsValid)
             {
                 Blog new_blog = new()
                 {
-                    Title = model.Title,
-                    Description = model.Description,
+                    Title = model.blog_With_Image.Title,
+                    Description = model.blog_With_Image.Description,
                     Created = DateTime.Now,
                 };
-                data.AddBlog(new_blog, model.Image);
+               
+                //если повторно вводили, и основная картинка скинулась, возможно остался её ImgSrc
+                if (model.blog_With_Image.Image == null  && model.blog_With_Image.ImgSrc != null)
+                {
+                    //var fileType = "image/gif";
+
+                    // преобразование из ImgSrc в iformfile
+                    var base64Data = Regex.Match(model.blog_With_Image.ImgSrc, @"data:image/(?<type>.+?),(?<data>.+)").Groups["data"].Value;
+                    var bytes = Convert.FromBase64String(base64Data);
+                    var stream = new MemoryStream(bytes);
+                    IFormFile image = new FormFile(stream, 0, stream.Length, "image", model.blog_With_Image.Image_name);
+                 
+                    //image.ContentType = fileType;
+
+                    data.AddBlog(new_blog, image);
+                }
+                else
+                {
+                    data.AddBlog(new_blog, model.blog_With_Image.Image);
+                }
                 return Redirect("~/Admin/BlogsAdmin"); //успех
             }
             else
             {
                 //красная надпись сверху и подсвеченные поля, которые не заполнили
                 ModelState.AddModelError("", "Заполните все обязательные поля");
-                ViewBag.Name_page = data.GetMains().First(i => i.Id == 4).Value;
-                return View("DetailsBlog"); //повторная попытка
+                model.Is_edit = false;
+                if (model.blog_With_Image.ImgSrc is null && model.blog_With_Image.Image != null)
+                {
+                    //то есть попытались ввести новый элемент блога, загрузили картинку, но где то в другом месте ошиблись
+                    //чтоб картинку заного не загружать, можно преобразовать её в ImgSrc и вывести снова
+                    byte[] Image_byte;
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        model.blog_With_Image.Image.CopyTo(memoryStream);
+                        Image_byte = memoryStream.ToArray();
+                    }
+
+                    var base64 = Convert.ToBase64String(Image_byte);
+                    model.blog_With_Image.ImgSrc = String.Format("data:image/gif;base64,{0}", base64);
+                    model.blog_With_Image.Image_name = model.blog_With_Image.Image.FileName;
+                }
+                //ViewBag.Name_page = data.GetMains().First(i => i.Id == 4).Value;
+                return View("DetailsBlog", model); //повторная попытка
             }
             
         }
         //вызов страницы изменения блога
         public IActionResult EditBlog(int id)
         {
-            DetailsBlogModel model = data.GetBlogModel(id);
+            BlogModel model = data.GetBlogModel(id);
+            model.Is_edit = true;
             //ViewBag.Name_page = data.GetMains().First(i => i.Id == 4).Value;
             //Blog blogNow =  data.GetBlog(id);
             //ViewBag.ImageUrl = blogNow.ImageUrl;
@@ -452,28 +489,62 @@ namespace ApplicationManager.Controllers
         }
         //метод изменения блога
         [HttpPost, ValidateAntiForgeryToken]
-        public IActionResult EditBlogMethod(DetailsBlogModel model)
+        public IActionResult EditBlogMethod(BlogModel model)
         {
             if (ModelState.IsValid)
             {
                 Blog edit_blog = new()
                 {
-                    Id = model.Id,
-                    Title = model.Title,
-                    Description = model.Description,
+                    Id = model.blog_With_Image.Id,
+                    Title = model.blog_With_Image.Title,
+                    Description = model.blog_With_Image.Description,
                 };
-                data.EditBlog(edit_blog, model.Image);
+                //если повторно вводили, и основная картинка скинулась, возможно остался её ImgSrc
+                if (model.blog_With_Image.Image == null && model.blog_With_Image.ImgSrc != null)
+                {
+                    //var fileType = "image/gif";
+
+                    // преобразование из ImgSrc в iformfile
+                    var base64Data = Regex.Match(model.blog_With_Image.ImgSrc, @"data:image/(?<type>.+?),(?<data>.+)").Groups["data"].Value;
+                    var bytes = Convert.FromBase64String(base64Data);
+                    var stream = new MemoryStream(bytes);
+                    IFormFile image = new FormFile(stream, 0, stream.Length, "image", model.blog_With_Image.Image_name);
+
+                    //image.ContentType = fileType;
+
+                    data.EditBlog(edit_blog, image);
+                }
+                else
+                {
+                    data.EditBlog(edit_blog, model.blog_With_Image.Image);
+                }
                 return Redirect("~/Admin/BlogsAdmin"); //успех
             }
             else
             {
                 ModelState.AddModelError("", "Заполните все обязательные поля");
-                DetailsBlogModel temp = data.GetBlogModel(model.Id);
-                model.Name_page = temp.Name_page;
-                if (temp != null)
+                if (model.blog_With_Image.Image != null)
                 {
-                    model.ImgSrc = temp.ImgSrc;
+                    //то есть попытались ввести новый элемент блога, загрузили картинку, но где то в другом месте ошиблись
+                    //чтоб картинку заного не загружать, можно преобразовать её в ImgSrc и вывести снова
+                    byte[] Image_byte;
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        model.blog_With_Image.Image.CopyTo(memoryStream);
+                        Image_byte = memoryStream.ToArray();
+                    }
+
+                    var base64 = Convert.ToBase64String(Image_byte);
+                    model.blog_With_Image.ImgSrc = String.Format("data:image/gif;base64,{0}", base64);
+                    model.blog_With_Image.Image_name = model.blog_With_Image.Image.FileName;
                 }
+                //BlogModel temp = data.GetBlogModel(model.blog_With_Image.Id);
+                //model.Name_page = temp.Name_page;
+                //if (temp != null)
+                //{
+                //    model.blog_With_Image.ImgSrc = model.blog_With_Image.ImgSrc;
+                //}
+
 
                 return View("DetailsBlog", model); //повторная попытка
             }

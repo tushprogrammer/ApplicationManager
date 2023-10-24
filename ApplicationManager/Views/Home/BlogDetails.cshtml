@@ -1,26 +1,24 @@
-﻿@model BlogsModel
+﻿@model BlogModel
 @{
-    Blog blognow = Model.Blogs.First(i => i.Id == Model.BlogId);
-    var image_path = "/Images/" + blognow.ImageUrl;
     ViewData["Title"] = $"Страница {Model.Name_page}";
 }
 <div class="navigation-history">
     <p>
-        <a asp-action="Index">Главная</a> -> <a asp-action="Blogs">@Model.Name_page</a> -> @blognow.Title
+        <a asp-action="Index">Главная</a> -> <a asp-action="Blogs">@Model.Name_page</a> -> @Model.blog_With_Image.Title
     </p>
 </div>
 
 <div class="article-container-blog">
-    <h2>@blognow.Title</h2>
+    <h2>@Model.blog_With_Image.Title</h2>
     <hr />
     <div class="date-blog">
-        <p>@blognow.Created.ToString("D")</p>
+        <p>@Model.blog_With_Image.Created.ToString("D")</p>
     </div>
     <div class="article-content-blog">
-        <div class="ImageBlog-details" style="background-image: url(@image_path)"></div>
+        <div class="ImageBlog-details" style="background-image: url(@Model.blog_With_Image.ImgSrc)"></div>
 
         <div class="description-blog-details">
-            <p>@blognow.Description</p>
+            <p>@Model.blog_With_Image.Description</p>
         </div>
     </div>
     

@@ -10,9 +10,8 @@
 <h1>@Model.Name_page</h1>
 <hr />
 <div class="boxes-blog">
-    @foreach (Blog item in Model.Blogs)
+    @foreach (Blog_with_image item in Model.Blogs)
     {
-        var image_path = "/Images/" + item.ImageUrl;
 
         string ShortDesc;
         if (item.Description.IndexOf('.') < 80 && item.Description.Contains('.'))
@@ -35,7 +34,7 @@
                     <p>@item.Created.ToString("D")</p>
                 </div>
                    
-                    <div class="ImageBlog" style="background-image: url(@image_path)"></div>
+                    <div class="ImageBlog" style="background-image: url(@item.ImgSrc)"></div>
 
                     <div class="title-blog">
                         <h6>@item.Title</h6>

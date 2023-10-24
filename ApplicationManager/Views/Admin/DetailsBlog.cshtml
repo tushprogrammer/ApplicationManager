@@ -1,24 +1,30 @@
-﻿@model DetailsBlogModel
+﻿@model BlogModel
 @{
     var image_path = string.Empty; 
     string name_page;
-    if (Model is null)
+    if (Model is null || !Model.Is_edit)
     {
         ViewData["Title"] = "Добавить новый элемент блога";
-        image_path = "/Images/Default/default.png";
-        name_page = @ViewBag.Name_page;
+
+        if (Model is not null && Model.blog_With_Image.ImgSrc != null)
+        {
+            image_path = Model.blog_With_Image.ImgSrc;
+        }
+        else
+        {
+            image_path = "/Images/Default/default.png";
+        }
+
+        name_page = Model?.Name_page ?? @ViewBag.Name_page;
     }
     else
     {
         ViewData["Title"] = "Изменить элемент блога";
-        name_page = Model.Name_page;
+        name_page = Model?.Name_page ?? @ViewBag.Name_page;
+        image_path = string.IsNullOrEmpty(Model?.blog_With_Image.ImgSrc) ? "/Images/Default/default.png" : Model.blog_With_Image.ImgSrc;
     }
-    if (ViewBag.ImageUrl != null)
-    {
-        image_path = "/Images/" + ViewBag.ImageUrl;
-    }
-
 }
+
 <div class="pad-top">
     <div class="navigation-history">
         <p>
@@ -26,24 +32,30 @@
         </p>
     </div>
     <div>
-        @if (Model is null)
+        @if (Model is null || Model.Is_edit == false)
         {
             <div class="blog-form">
                 <div class="blog-form-inputs">
                     <form asp-action="AddNewBlogMethod" asp-controller="Admin" method="post" asp-antiforgery="true" enctype="multipart/form-data" id="AddBlogForm">
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <input type="hidden" value="@name_page" asp-for="Name_page">
+                            @if (Model != null)
+                            {
+                                <input type="hidden" value="@Model.blog_With_Image.ImgSrc" asp-for="blog_With_Image.ImgSrc">
+                                <input type="hidden" value="@Model.blog_With_Image.Image_name" asp-for="blog_With_Image.Image_name">
+                            }
                         <div class="form-group">
                             <label for="title">Заголовок</label>
-                            <span asp-validation-for="Title" class="text-danger"></span>
-                            <input type="text" id="title" asp-for="Title" />
+                            <span asp-validation-for="blog_With_Image.Title" class="text-danger"></span>
+                            <input type="text" id="title" asp-for="blog_With_Image.Title" />
                         </div>
                         <div class="form-group">
                             <label for="description">Содержимое поста</label>
-                            <span asp-validation-for="Description" class="text-danger"></span>
-                            <textarea id="description" asp-for="Description" class="description"></textarea>
+                            <span asp-validation-for="blog_With_Image.Description" class="text-danger"></span>
+                            <textarea id="description" asp-for="blog_With_Image.Description" class="description"></textarea>
                         </div>
-                        <input asp-for="Image" value="Добавить фото" id="NewBlogImage" class="input-for-label" />
-                        <span asp-validation-for="Image" class="text-danger"></span>
+                        <input asp-for="blog_With_Image.Image" value="Добавить фото" id="NewBlogImage" class="input-for-label" />
+                        <span asp-validation-for="blog_With_Image.Image" class="text-danger"></span>
                     </form>
                 </div>
                 <div class="blog-form-image" id="image-blog" style="background-image: url(@image_path)"></div>
@@ -59,21 +71,24 @@
                 <div class="blog-form-inputs">
                     <form asp-action="EditBlogMethod" asp-controller="Admin" method="post" asp-antiforgery="true" enctype="multipart/form-data" id="EditBlogForm">
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                        <input type="hidden" value="@Model.Id" asp-for="Id">
+                        <input type="hidden" value="@Model.blog_With_Image.Id" asp-for="blog_With_Image.Id">
+                        <input type="hidden" value="@Model.Name_page" asp-for="Name_page">
+                        <input type="hidden" value="@Model.blog_With_Image.ImgSrc" asp-for="blog_With_Image.ImgSrc">
+                        <input type="hidden" value="@Model.blog_With_Image.Image_name" asp-for="blog_With_Image.Image_name">
                         <div class="form-group">
                             <label for="title">Заголовок</label>
-                            <span asp-validation-for="Title" class="text-danger"></span>
-                            <input type="text" id="title" asp-for="Title" value="@Model.Title" />
+                            <span asp-validation-for="blog_With_Image.Title" class="text-danger"></span>
+                            <input type="text" id="title" asp-for="blog_With_Image.Title" value="@Model.blog_With_Image.Title" />
                         </div>
                         <div class="form-group">
                             <label for="description">Содержание поста</label>
-                            <span asp-validation-for="Description" class="text-danger"></span>
-                            <textarea id="description" asp-for="Description" class="description" value="@Model.Description"></textarea>
+                            <span asp-validation-for="blog_With_Image.Description" class="text-danger"></span>
+                            <textarea id="description" asp-for="blog_With_Image.Description" class="description" value="@Model.blog_With_Image.Description"></textarea>
                         </div>
-                        <input asp-for="Image" value="Добавить фото" id="NewBlogImage" class="input-for-label" />
+                        <input asp-for="blog_With_Image.Image" value="Добавить фото" id="NewBlogImage" class="input-for-label" />
                     </form>
                 </div>
-                <div class="blog-form-image" id="image-blog" style="background-image: url(@Model.ImgSrc)"></div>
+                <div class="blog-form-image" id="image-blog" style="background-image: url(@image_path"></div>
             </div>
             <div class="form-submit">
                 <a class="btn btn-primary" href="#" onclick="document.getElementById('EditBlogForm').submit()">Сохранить</a>
