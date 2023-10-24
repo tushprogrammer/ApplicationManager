@@ -243,11 +243,8 @@ namespace ApplicationManager.Controllers
                 //если повторно вводили, и основная картинка скинулась, возможно остался её ImgSrc
                 if (model.Project_with_image.Image == null && model.Project_with_image.ImgSrc != null)
                 {
-                    // преобразование из ImgSrc в iformfile
-                    var base64Data = Regex.Match(model.Project_with_image.ImgSrc, @"data:image/(?<type>.+?),(?<data>.+)").Groups["data"].Value;
-                    var bytes = Convert.FromBase64String(base64Data);
-                    var stream = new MemoryStream(bytes);
-                    IFormFile image = new FormFile(stream, 0, stream.Length, "image", model.Project_with_image.Image_name);
+                    
+                    IFormFile image = ConvertImgSrcToFormFile(model.Project_with_image.ImgSrc, model.Project_with_image.Image_name);
                     data.AddProject(new_project, image);
                 }
                 else
@@ -266,15 +263,7 @@ namespace ApplicationManager.Controllers
                 {
                     //то есть попытались ввести новый элемент блога, загрузили картинку, но где то в другом месте ошиблись
                     //чтоб картинку заного не загружать, можно преобразовать её в ImgSrc и вывести снова
-                    byte[] Image_byte;
-                    using (var memoryStream = new MemoryStream())
-                    {
-                        model.Project_with_image.Image.CopyTo(memoryStream);
-                        Image_byte = memoryStream.ToArray();
-                    }
-
-                    var base64 = Convert.ToBase64String(Image_byte);
-                    model.Project_with_image.ImgSrc = String.Format("data:image/gif;base64,{0}", base64);
+                    model.Project_with_image.ImgSrc = ConvertFormFileToImgSrc(model.Project_with_image.Image);
                     model.Project_with_image.Image_name = model.Project_with_image.Image.FileName;
                 }
                 return View("DetailsProject", model); //повторная попытка
@@ -303,10 +292,7 @@ namespace ApplicationManager.Controllers
                 if (model.Project_with_image.Image == null && model.Project_with_image.ImgSrc != null)
                 {
                     // преобразование из ImgSrc в iformfile
-                    var base64Data = Regex.Match(model.Project_with_image.ImgSrc, @"data:image/(?<type>.+?),(?<data>.+)").Groups["data"].Value;
-                    var bytes = Convert.FromBase64String(base64Data);
-                    var stream = new MemoryStream(bytes);
-                    IFormFile image = new FormFile(stream, 0, stream.Length, "image", model.Project_with_image.Image_name);
+                    IFormFile image = ConvertImgSrcToFormFile(model.Project_with_image.ImgSrc, model.Project_with_image.Image_name);
 
                     data.EditProject(Edit_project, image);
                 }
@@ -324,15 +310,7 @@ namespace ApplicationManager.Controllers
                 {
                     //то есть попытались ввести новый элемент блога, загрузили картинку, но где то в другом месте ошиблись
                     //чтоб картинку заного не загружать, можно преобразовать её в ImgSrc и вывести снова
-                    byte[] Image_byte;
-                    using (var memoryStream = new MemoryStream())
-                    {
-                        model.Project_with_image.Image.CopyTo(memoryStream);
-                        Image_byte = memoryStream.ToArray();
-                    }
-
-                    var base64 = Convert.ToBase64String(Image_byte);
-                    model.Project_with_image.ImgSrc = String.Format("data:image/gif;base64,{0}", base64);
+                    model.Project_with_image.ImgSrc = ConvertFormFileToImgSrc(model.Project_with_image.Image);
                     model.Project_with_image.Image_name = model.Project_with_image.Image.FileName;
                 }
                 model.Is_edit = true;
@@ -453,16 +431,9 @@ namespace ApplicationManager.Controllers
                 //если повторно вводили, и основная картинка скинулась, возможно остался её ImgSrc
                 if (model.blog_With_Image.Image == null  && model.blog_With_Image.ImgSrc != null)
                 {
-                    //var fileType = "image/gif";
-
                     // преобразование из ImgSrc в iformfile
-                    var base64Data = Regex.Match(model.blog_With_Image.ImgSrc, @"data:image/(?<type>.+?),(?<data>.+)").Groups["data"].Value;
-                    var bytes = Convert.FromBase64String(base64Data);
-                    var stream = new MemoryStream(bytes);
-                    IFormFile image = new FormFile(stream, 0, stream.Length, "image", model.blog_With_Image.Image_name);
+                    IFormFile image = ConvertImgSrcToFormFile(model.blog_With_Image.ImgSrc, model.blog_With_Image.Image_name);
                  
-                    //image.ContentType = fileType;
-
                     data.AddBlog(new_blog, image);
                 }
                 else
@@ -480,15 +451,7 @@ namespace ApplicationManager.Controllers
                 {
                     //то есть попытались ввести новый элемент блога, загрузили картинку, но где то в другом месте ошиблись
                     //чтоб картинку заного не загружать, можно преобразовать её в ImgSrc и вывести снова
-                    byte[] Image_byte;
-                    using (var memoryStream = new MemoryStream())
-                    {
-                        model.blog_With_Image.Image.CopyTo(memoryStream);
-                        Image_byte = memoryStream.ToArray();
-                    }
-
-                    var base64 = Convert.ToBase64String(Image_byte);
-                    model.blog_With_Image.ImgSrc = String.Format("data:image/gif;base64,{0}", base64);
+                    model.blog_With_Image.ImgSrc = ConvertFormFileToImgSrc(model.blog_With_Image.Image);
                     model.blog_With_Image.Image_name = model.blog_With_Image.Image.FileName;
                 }
                 //ViewBag.Name_page = data.GetMains().First(i => i.Id == 4).Value;
@@ -518,15 +481,8 @@ namespace ApplicationManager.Controllers
                 //если повторно вводили, и основная картинка скинулась, возможно остался её ImgSrc
                 if (model.blog_With_Image.Image == null && model.blog_With_Image.ImgSrc != null)
                 {
-                    //var fileType = "image/gif";
-
                     // преобразование из ImgSrc в iformfile
-                    var base64Data = Regex.Match(model.blog_With_Image.ImgSrc, @"data:image/(?<type>.+?),(?<data>.+)").Groups["data"].Value;
-                    var bytes = Convert.FromBase64String(base64Data);
-                    var stream = new MemoryStream(bytes);
-                    IFormFile image = new FormFile(stream, 0, stream.Length, "image", model.blog_With_Image.Image_name);
-
-                    //image.ContentType = fileType;
+                    IFormFile image = ConvertImgSrcToFormFile(model.blog_With_Image.ImgSrc, model.blog_With_Image.Image_name);
 
                     data.EditBlog(edit_blog, image);
                 }
@@ -543,15 +499,7 @@ namespace ApplicationManager.Controllers
                 {
                     //то есть попытались ввести новый элемент блога, загрузили картинку, но где то в другом месте ошиблись
                     //чтоб картинку заного не загружать, можно преобразовать её в ImgSrc и вывести снова
-                    byte[] Image_byte;
-                    using (var memoryStream = new MemoryStream())
-                    {
-                        model.blog_With_Image.Image.CopyTo(memoryStream);
-                        Image_byte = memoryStream.ToArray();
-                    }
-
-                    var base64 = Convert.ToBase64String(Image_byte);
-                    model.blog_With_Image.ImgSrc = String.Format("data:image/gif;base64,{0}", base64);
+                    model.blog_With_Image.ImgSrc = ConvertFormFileToImgSrc(model.blog_With_Image.Image);
                     model.blog_With_Image.Image_name = model.blog_With_Image.Image.FileName;
                 }
 
@@ -616,7 +564,6 @@ namespace ApplicationManager.Controllers
                 model.Contacts.RemoveAll(i => i.Description == string.Empty || i.Name == string.Empty );
                 data.SaveContacts(model.Contacts, model.SocialNets, ImageUrl);
             }
-            //return new JsonResult("все ок");
             return Redirect("~/Admin/ContactsAdmin");
 
         }
@@ -660,6 +607,29 @@ namespace ApplicationManager.Controllers
             return Redirect("/Admin/EditNamePages");
         }
         #endregion
+        // преобразование из ImgSrc в iformfile
+        private IFormFile ConvertImgSrcToFormFile (string imgSrc, string image_name)
+        {
+            var base64Data = Regex.Match(imgSrc, @"data:image/(?<type>.+?),(?<data>.+)").Groups["data"].Value;
+            var bytes = Convert.FromBase64String(base64Data);
+            var stream = new MemoryStream(bytes);
+            return new FormFile(stream, 0, stream.Length, "image", image_name);
+        }
+        //преобразование из iformfile в ImgSrc
+        private string ConvertFormFileToImgSrc(IFormFile image)
+        {
+            byte[] Image_byte;
+            using (var memoryStream = new MemoryStream())
+            {
+                image.CopyTo(memoryStream);
+                Image_byte = memoryStream.ToArray();
+            }
+
+            var base64 = Convert.ToBase64String(Image_byte);
+            return String.Format("data:image/gif;base64,{0}", base64);
+        }
+
+
     }
 }
 
