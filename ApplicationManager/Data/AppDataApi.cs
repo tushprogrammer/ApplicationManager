@@ -303,8 +303,12 @@ namespace ApplicationManager.Data
             {
                 var jsonForm = JsonConvert.SerializeObject(new_project);
                 content.Add(new StringContent(jsonForm), "new_project");
-                var streamContent = new StreamContent(image.OpenReadStream());
-                content.Add(streamContent, "image", image.FileName);
+                if (image != null)
+                {
+                    var streamContent = new StreamContent(image.OpenReadStream());
+                    content.Add(streamContent, "image", image.FileName);
+                }
+                
 
                 var response = httpClient.PostAsync($"{url_project}/AddProject", content).Result;
             }
@@ -352,7 +356,7 @@ namespace ApplicationManager.Data
         }
      
 
-        public DetailsProjectModel GetProjectModel(int id)
+        public ProjectModel GetProjectModel(int id)
         {
             try
             {
@@ -366,16 +370,8 @@ namespace ApplicationManager.Data
                     var base64 = Convert.ToBase64String(model.Project_with_image.Image_byte);
                     var imgSrc = String.Format("data:image/gif;base64,{0}", base64);
                     model.Project_with_image.ImgSrc = imgSrc;
-                    DetailsProjectModel projectModel = new()
-                        {
-                            Id = model.Project_with_image.Id,
-                            NameCompany = model.Project_with_image.NameCompany,
-                            Title = model.Project_with_image.Title,
-                            Description = model.Project_with_image.Description,
-                            ImgSrc = imgSrc,
-                            Name_page = model.Name_page,
-                        };
-                    return projectModel;
+                   
+                    return model;
                 }
                 else return null;
             }
@@ -392,8 +388,12 @@ namespace ApplicationManager.Data
                 var jsonForm = JsonConvert.SerializeObject(edit_project);
                 content.Add(new StringContent(jsonForm, Encoding.UTF8, "application/json"), "edit_project");
                 // Перед добавлением изображения в контент запроса, дождитесь завершения копирования данных из файла
-                var streamContent = new StreamContent(image.OpenReadStream());
-                content.Add(streamContent, "image", image.FileName);
+                if (image != null)
+                {
+                    var streamContent = new StreamContent(image.OpenReadStream());
+                    content.Add(streamContent, "image", image.FileName);
+                }
+                
 
                 var response = httpClient.PostAsync($"{url_project}/EditProject", content).Result;
             }
@@ -496,15 +496,6 @@ namespace ApplicationManager.Data
                     var base64 = Convert.ToBase64String(model.blog_With_Image.Image_byte);
                     var imgSrc = String.Format("data:image/gif;base64,{0}", base64);
                     model.blog_With_Image.ImgSrc = imgSrc;
-                    //DetailsBlogModel blogModel = new()
-                    //{
-                    //    Id = model.blog_With_Image.Id,
-                    //    Title = model.blog_With_Image.Title,
-                    //    Description = model.blog_With_Image.Description,
-                    //    ImgSrc = imgSrc,
-                    //    Name_page = model.Name_page,
-                    //    Created = model.blog_With_Image.Created,
-                    //};
                     return model;
                 }
                 else return null;
@@ -521,8 +512,12 @@ namespace ApplicationManager.Data
             {
                 var jsonForm = JsonConvert.SerializeObject(new_blog);
                 content.Add(new StringContent(jsonForm), "new_blog");
-                var streamContent = new StreamContent(image.OpenReadStream());
-                content.Add(streamContent, "image", image.FileName);
+                if (image != null)
+                {
+                    var streamContent = new StreamContent(image.OpenReadStream());
+                    content.Add(streamContent, "image", image.FileName);
+                }
+                
 
                 var response = httpClient.PostAsync($"{url_blog}/AddBlog", content).Result;
             }

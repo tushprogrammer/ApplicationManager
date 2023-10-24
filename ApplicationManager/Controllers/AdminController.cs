@@ -228,89 +228,114 @@ namespace ApplicationManager.Controllers
         }
         //метод добавления нового проекта
         [HttpPost, ValidateAntiForgeryToken]
-        public IActionResult AddProjectMethod(DetailsProjectModel model)
+        public IActionResult AddProjectMethod(ProjectModel model)
         {
             //валидация модели на заполненность всех обязательных полей
             if (ModelState.IsValid)
             {
                 Project new_project = new()
                 {
-                    Title = model.Title,
-                    Description = model.Description,
-                    NameCompany = model.NameCompany,
+                    Title = model.Project_with_image.Title,
+                    Description = model.Project_with_image.Description,
+                    NameCompany = model.Project_with_image.NameCompany,
                    
                 };
-                data.AddProject(new_project, model.Image);
+                //если повторно вводили, и основная картинка скинулась, возможно остался её ImgSrc
+                if (model.Project_with_image.Image == null && model.Project_with_image.ImgSrc != null)
+                {
+                    // преобразование из ImgSrc в iformfile
+                    var base64Data = Regex.Match(model.Project_with_image.ImgSrc, @"data:image/(?<type>.+?),(?<data>.+)").Groups["data"].Value;
+                    var bytes = Convert.FromBase64String(base64Data);
+                    var stream = new MemoryStream(bytes);
+                    IFormFile image = new FormFile(stream, 0, stream.Length, "image", model.Project_with_image.Image_name);
+                    data.AddProject(new_project, image);
+                }
+                else
+                {
+                    data.AddProject(new_project, model.Project_with_image.Image);
+                }
+                
                 return Redirect("~/Admin/ProjectAdmin"); //успех
             }
             else
             {
                 //предупреждение и подсвеченные поля, которые не заполнили
                 ModelState.AddModelError("", "Заполните все обязательные поля");
-                ViewBag.Name_page = data.GetMains().First(i => i.Id == 3).Value;
-                //при повторной попытке можно было б из модели достать iformfile, если он уже загружен
-                //и внести в ImgSrc, чтоб опять отобразить на странице, но это будет лишь заполнение
-                //div заливкой, а input останется пустым, и если пользователь при повторной попытке увидит,
-                //что картинка осталась, не будет её заполнять заного, и iformfile не передастся сюда, 
-                //и информация с ImgSrc не превратится в iformfile
-                //есть такая еще альтернатива:
+                model.Is_edit = false;
+                if (model.Project_with_image.ImgSrc is null && model.Project_with_image.Image != null)
+                {
+                    //то есть попытались ввести новый элемент блога, загрузили картинку, но где то в другом месте ошиблись
+                    //чтоб картинку заного не загружать, можно преобразовать её в ImgSrc и вывести снова
+                    byte[] Image_byte;
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        model.Project_with_image.Image.CopyTo(memoryStream);
+                        Image_byte = memoryStream.ToArray();
+                    }
 
-                // Определите тип изображения (в данном случае gif)
-                //var fileType = "image/gif";
-
-                //// Извлеките строку base64 из ImgSrc
-                //var base64Data = Regex.Match(imgSrc, @"data:image/(?<type>.+?),(?<data>.+)").Groups["data"].Value;
-
-                //// Преобразуйте строку base64 в массив байтов
-                //var bytes = Convert.FromBase64String(base64Data);
-
-                //// Создайте поток из массива байтов
-                //var stream = new MemoryStream(bytes);
-
-                //// Создайте IFormFile из потока
-                //IFormFile file = new FormFile(stream, 0, stream.Length, "image", fileName)
-                //{
-                //    ContentType = fileType
-                //};
-                //но для неё надо запоминать имя файла и сам imgSrc и через input type="hidden" передавать сюда
-                return View("DetailsProject"); //повторная попытка
+                    var base64 = Convert.ToBase64String(Image_byte);
+                    model.Project_with_image.ImgSrc = String.Format("data:image/gif;base64,{0}", base64);
+                    model.Project_with_image.Image_name = model.Project_with_image.Image.FileName;
+                }
+                return View("DetailsProject", model); //повторная попытка
             }
         }
         //страница изменения проекта
         public IActionResult DetailsProject(int id)
         {
-            DetailsProjectModel model = data.GetProjectModel(id);
-            return View(model);
+            ProjectModel model = data.GetProjectModel(id);
+            model.Is_edit = true;
+            return View("DetailsProject", model);
         }
         //метод изменения проекта
         [HttpPost, ValidateAntiForgeryToken]
-        public IActionResult EditProjectMethod(DetailsProjectModel model)
+        public IActionResult EditProjectMethod(ProjectModel model)
         {
             if (ModelState.IsValid)
             {
                 Project Edit_project = new()
                 {
-                    Id = model.Id,
-                    Title = model.Title,
-                    NameCompany = model.NameCompany,
-                    Description = model.Description,
+                    Id = model.Project_with_image.Id,
+                    Title = model.Project_with_image.Title,
+                    NameCompany = model.Project_with_image.NameCompany,
+                    Description = model.Project_with_image.Description,
                 };
-                data.EditProject(Edit_project, model.Image);
+                if (model.Project_with_image.Image == null && model.Project_with_image.ImgSrc != null)
+                {
+                    // преобразование из ImgSrc в iformfile
+                    var base64Data = Regex.Match(model.Project_with_image.ImgSrc, @"data:image/(?<type>.+?),(?<data>.+)").Groups["data"].Value;
+                    var bytes = Convert.FromBase64String(base64Data);
+                    var stream = new MemoryStream(bytes);
+                    IFormFile image = new FormFile(stream, 0, stream.Length, "image", model.Project_with_image.Image_name);
+
+                    data.EditProject(Edit_project, image);
+                }
+                else
+                {
+                    data.EditProject(Edit_project, model.Project_with_image.Image);
+                }
                 return Redirect("~/Admin/ProjectAdmin");
             }
             else
             {
-                //можно в теории подумать о своих спрятанных инпутах, чтоб в них продолжалась хранится информация, а не скидывалась,
-                //чтоб заново её не искать, то есть картинка по умолчанию и имя странцы
-                //можно еще подумать о сохранении первой введенной картинки, но без фанатизма
+                
                 ModelState.AddModelError("", "Заполните все обязательные поля");
-                DetailsProjectModel temp = data.GetProjectModel(model.Id);
-                model.Name_page = temp.Name_page;
-                if (temp != null)
+                if (model.Project_with_image.Image != null)
                 {
-                    model.ImgSrc = temp.ImgSrc;
-                }
+                    //то есть попытались ввести новый элемент блога, загрузили картинку, но где то в другом месте ошиблись
+                    //чтоб картинку заного не загружать, можно преобразовать её в ImgSrc и вывести снова
+                    byte[] Image_byte;
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        model.Project_with_image.Image.CopyTo(memoryStream);
+                        Image_byte = memoryStream.ToArray();
+                    }
 
+                    var base64 = Convert.ToBase64String(Image_byte);
+                    model.Project_with_image.ImgSrc = String.Format("data:image/gif;base64,{0}", base64);
+                    model.Project_with_image.Image_name = model.Project_with_image.Image.FileName;
+                }
+                model.Is_edit = true;
                 return View("DetailsProject", model); //повторная попытка
             }
         }
@@ -476,15 +501,6 @@ namespace ApplicationManager.Controllers
         {
             BlogModel model = data.GetBlogModel(id);
             model.Is_edit = true;
-            //ViewBag.Name_page = data.GetMains().First(i => i.Id == 4).Value;
-            //Blog blogNow =  data.GetBlog(id);
-            //ViewBag.ImageUrl = blogNow.ImageUrl;
-            //DetailsBlogModel model = new()
-            //{
-            //    Id = id,
-            //    Title = blogNow.Title,
-            //    Description = blogNow.Description,
-            //};
             return View("DetailsBlog", model);
         }
         //метод изменения блога
@@ -538,13 +554,6 @@ namespace ApplicationManager.Controllers
                     model.blog_With_Image.ImgSrc = String.Format("data:image/gif;base64,{0}", base64);
                     model.blog_With_Image.Image_name = model.blog_With_Image.Image.FileName;
                 }
-                //BlogModel temp = data.GetBlogModel(model.blog_With_Image.Id);
-                //model.Name_page = temp.Name_page;
-                //if (temp != null)
-                //{
-                //    model.blog_With_Image.ImgSrc = model.blog_With_Image.ImgSrc;
-                //}
-
 
                 return View("DetailsBlog", model); //повторная попытка
             }

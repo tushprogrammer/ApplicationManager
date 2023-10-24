@@ -66,7 +66,7 @@ namespace ApplicationManager.Controllers
         //вызов страницы об конкретном проекте
         public IActionResult ProjectDetails(int id) 
         {
-            DetailsProjectModel model = data.GetProjectModel(id);
+            ProjectModel model = data.GetProjectModel(id);
             
             return View(model);
         }

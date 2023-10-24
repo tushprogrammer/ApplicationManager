@@ -1,52 +1,64 @@
-﻿@model DetailsProjectModel
+﻿@model ProjectModel
 @{
     var image_path = string.Empty; //можно переделать на дефолтную картинку
     string name_page;
-    if (Model is null)
+    if (Model is null || !Model.Is_edit)
     {
         ViewData["Title"] = "Добавить новый проект";
-        image_path = "/Images/default-project.png";
-        name_page = @ViewBag.Name_page;
+
+        if (Model is not null && Model.Project_with_image.ImgSrc != null)
+        {
+            image_path = Model.Project_with_image.ImgSrc;
+        }
+        else
+        {
+            image_path = "/Images/Default/default.png";
+        }
+
+        name_page = Model?.Name_page ?? @ViewBag.Name_page;
     }
     else
     {
         ViewData["Title"] = "Изменить проект";
-        name_page = Model.Name_page;
+        name_page = Model?.Name_page ?? @ViewBag.Name_page;
+        image_path = string.IsNullOrEmpty(Model?.Project_with_image.ImgSrc) ? "/Images/Default/default.png" : Model.Project_with_image.ImgSrc;
     }
-    // if (ViewBag.ImageUrl != null)
-    // {
-    //     image_path = "/Images/" + ViewBag.ImageUrl;
-    // }
-
 }
+
 <div class="pad-top">
     <div class="navigation-history">
         <p>
             <a asp-action="Index">Рабочий стол</a> -> <a asp-action="ProjectAdmin" asp-controller="Admin">@name_page</a> -> @ViewBag.Title
         </p>
     </div>
-        @if (Model is null)
+        @if (Model is null || Model.Is_edit == false)
         {
             <div class="project-form">
                 <div class="project-form-inputs">
                     <form asp-action="AddProjectMethod" asp-controller="Admin" method="post" asp-antiforgery="true" enctype="multipart/form-data" id="AddProjectForm">
+                        <input type="hidden" value="@name_page" asp-for="Name_page">
+                        @if (Model != null)
+                        {
+                            <input type="hidden" value="@Model.Project_with_image.ImgSrc" asp-for="Project_with_image.ImgSrc">
+                            <input type="hidden" value="@Model.Project_with_image.Image_name" asp-for="Project_with_image.Image_name">
+                        }
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                         <div class="form-group">
                             <label for="name">Имя компании</label>
-                            <span asp-validation-for="NameCompany" class="text-danger"></span>
-                            <input type="text" id = "name" asp-for="NameCompany" />
+                        <span asp-validation-for="Project_with_image.NameCompany" class="text-danger"></span>
+                            <input type="text" id = "name" asp-for="Project_with_image.NameCompany" />
                         </div>
                         <div class="form-group">
                             <label for="title">Название проекта</label>
-                            <span asp-validation-for="Title" class="text-danger"></span>
-                            <input type="text" id="title" asp-for="Title" />
+                            <span asp-validation-for="Project_with_image.Title" class="text-danger"></span>
+                            <input type="text" id="title" asp-for="Project_with_image.Title" />
                         </div>
                         <div class="form-group">
                             <label for="description">Описание проекта</label>
-                            <span asp-validation-for="Description" class="text-danger"></span>
-                            <textarea id="description" asp-for="Description" class="description"></textarea>
+                            <span asp-validation-for="Project_with_image.Description" class="text-danger"></span>
+                            <textarea id="description" asp-for="Project_with_image.Description" class="description"></textarea>
                         </div>
-                        <input asp-for="Image" value="Добавить фото" id="NewProjectImage" class="input-for-label" />
+                        <input asp-for="Project_with_image.Image" value="Добавить фото" id="NewProjectImage" class="input-for-label" />
                     </form>
                 </div>
                 <div class="project-form-image" id="image-project" style="background-image: url(@image_path)">
@@ -61,28 +73,31 @@
             <div class="project-form">
                 <div class="project-form-inputs">
                     <form asp-action="EditProjectMethod" asp-controller="Admin" asp-antiforgery="true" enctype="multipart/form-data" id="EditProjectForm">
-                        <input asp-for="Id" value="@Model.Id" type="hidden">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input asp-for="Project_with_image.Id" value="@Model.Project_with_image.Id" type="hidden">
+                        <input type="hidden" value="@Model.Name_page" asp-for="Name_page">
+                        <input type="hidden" value="@Model.Project_with_image.ImgSrc" asp-for="Project_with_image.ImgSrc">
+                        <input type="hidden" value="@Model.Project_with_image.Image_name" asp-for="Project_with_image.Image_name">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                         <div class="form-group">
                             <label for="name">Имя компании</label>
-                            <span asp-validation-for="NameCompany" class="text-danger"></span>
-                            <input type="text" id="name" asp-for="NameCompany" value="@Model.NameCompany" />
+                            <span asp-validation-for="Project_with_image.NameCompany" class="text-danger"></span>
+                        <input type="text" id="name" asp-for="Project_with_image.NameCompany" value="@Model.Project_with_image.NameCompany" />
                         </div>
                         <div class="form-group">
                             <label for="title">Название проекта</label>
-                            <span asp-validation-for="Title" class="text-danger"></span>
-                            <input type="text" id="title" asp-for="Title" value="@Model.Title" />
+                        <span asp-validation-for="Project_with_image.Title" class="text-danger"></span>
+                        <input type="text" id="title" asp-for="Project_with_image.Title" value="@Model.Project_with_image.Title" />
                         </div>
                         <div class="form-group">
                             <label for="description">Описание проекта</label>
-                            <span asp-validation-for="Description" class="text-danger"></span>
-                            <textarea id="description" asp-for="Description" class="description" value="@Model.Description"></textarea>
+                        <span asp-validation-for="Project_with_image.Description" class="text-danger"></span>
+                        <textarea id="description" asp-for="Project_with_image.Description" class="description" value="@Model.Project_with_image.Description"></textarea>
                         </div>
-                        <input asp-for="Image" value="Изменить фото" id="NewProjectImage" class="input-for-label"/>
+                    <input asp-for="Project_with_image.Image" value="Изменить фото" id="NewProjectImage" class="input-for-label" />
 
                     </form>
                 </div>
-                <div class="project-form-image" id="image-project" style="background-image: url(@Model.ImgSrc)"></div>
+            <div class="project-form-image" id="image-project" style="background-image: url(@image_path)"></div>
             </div>
             <div class="form-submit">
                 <a class="btn btn-primary " href="#" onclick="document.getElementById('EditProjectForm').submit()">Сохранить</a>
