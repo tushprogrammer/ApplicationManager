@@ -12,5 +12,7 @@ namespace ApplicationManager.Models
 
         [Required]
         public string Description { get; set; }
+        public string Name_page { get; set; }
+        public bool is_edit { get; set; }
     }
 }

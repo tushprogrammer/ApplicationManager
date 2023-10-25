@@ -434,13 +434,13 @@ namespace ApplicationManager.Data
                 throw;
             }
         }
-        public Service GetService(int id)
+        public DetailsServiceModel GetServiceModel(int id)
         {
             try
             {
-                string urlWithParams = $"{url_service}/GetService?id={id}";
+                string urlWithParams = $"{url_service}/GetServiceModel?id={id}";
                 string json = httpClient.GetStringAsync($"{urlWithParams}").Result;
-                return JsonConvert.DeserializeObject<Service>(json);
+                return JsonConvert.DeserializeObject<DetailsServiceModel>(json);
             }
             catch (Exception)
             {

@@ -1,29 +1,31 @@
 ﻿@model DetailsServiceModel
 @{
-    var namepage = string.Empty;
-    if (Model is null)
+    var name_page = string.Empty;
+    if (Model is null || !Model.is_edit)
     {
-        namepage = "Добавление";
+        name_page = "Добавление";
         ViewData["Title"] = "Добавить новую услугу";
+        name_page = Model?.Name_page ?? @ViewBag.Name_page;
     }
     else
     {
-        namepage = "Редактирование";
+        name_page = Model.Name_page;
         ViewData["Title"] = "Редактировать услугу";
     }
 }
 <div class="pad-top">
     <div class="navigation-history">
         <p>
-            <a asp-action="Index">Рабочий стол</a> -> <a asp-action="ServicesAdmin" asp-controller="Admin">@ViewBag.Name_page</a>  -> @namepage
+            <a asp-action="Index">Рабочий стол</a> -> <a asp-action="ServicesAdmin" asp-controller="Admin">@name_page</a>  -> @ViewBag.Title
         </p>
     </div>
     <div >
-        @if (Model is null)
+        @if (Model is null || !Model.is_edit)
         {
             <div class="service-form">
                 <div class="service-form-inputs">
                     <form id="AddServiceForm" asp-action="AddNewServiceMethod" asp-controller="Admin" method="post" asp-antiforgery="true">
+                        <input type="hidden" asp-for="Name_page" value="@name_page">
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                         <div class="form-group">
                             <label for="title">Заголовок</label>
@@ -50,6 +52,7 @@
                     <form id="EditServiceForm" asp-action="EditServiceMethod" asp-controller="Admin" method="post" asp-antiforgery="true">
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                         <input type="hidden" asp-for="Id" value="@Model.Id">
+                        <input type="hidden" asp-for="Name_page" value="@name_page">
                         <div class="form-group">
                             <label for="title">Заголовок</label>
                             <span asp-validation-for="Title" class="text-danger"></span>

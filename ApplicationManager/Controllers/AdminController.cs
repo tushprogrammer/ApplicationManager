@@ -321,8 +321,10 @@ namespace ApplicationManager.Controllers
         //страница изменения услуги
         public IActionResult EditService(int id)
         {
-            Service model = data.GetService(id);
-            ViewBag.Name_page = data.GetMains().First(i => i.Id == 2).Value;
+            DetailsServiceModel model = data.GetServiceModel(id);
+            model.is_edit = true;
+            //Service model = data.GetService(id);
+            //ViewBag.Name_page = data.GetMains().First(i => i.Id == 2).Value;
             return View("DetailsService", model);
         }
         //страница добавления услуги
@@ -349,14 +351,15 @@ namespace ApplicationManager.Controllers
             {
                 //красная надпись сверху и подсвеченные поля, которые не заполнили
                 ModelState.AddModelError("", "Заполните все обязательные поля");
-                ViewBag.Name_page = data.GetMains().First(i => i.Id == 2).Value;
-                return View("DetailsService"); //повторная попытка
+                //ViewBag.Name_page = data.GetMains().First(i => i.Id == 2).Value;
+                model.is_edit = false;
+                return View("DetailsService", model); //повторная попытка
             }
         }
         //метод удаления услуги
-        public IActionResult DeleteServiceMethod(int id_Service)
+        public IActionResult DeleteServiceMethod(int id)
         {
-            data.DeleteService(id_Service);
+            data.DeleteService(id);
             return Redirect("~/Admin/ServicesAdmin");
         }
         //метод изменения услуги
@@ -367,6 +370,7 @@ namespace ApplicationManager.Controllers
             {
                 Service edit_service = new()
                 {
+                    Id = model.Id,
                     Title = model.Title,
                     Description = model.Description,
                 };
@@ -376,7 +380,8 @@ namespace ApplicationManager.Controllers
             else
             {
                 ModelState.AddModelError("", "Заполните все обязательные поля");
-                ViewBag.Name_page = data.GetMains().First(i => i.Id == 2).Value;
+                //ViewBag.Name_page = data.GetMains().First(i => i.Id == 2).Value;
+                model.is_edit = true;
                 return View("DetailsService", model);
             }
         }

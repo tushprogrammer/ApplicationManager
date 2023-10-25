@@ -37,7 +37,7 @@ namespace ApplicationManager.Data
         public Project GetProject(int id);
         public void EditProject(Project edit_project, IFormFile image);
         public void DeleteProject(int id);
-        public Service GetService(int id);
+        public DetailsServiceModel GetServiceModel(int id);
         public void AddService(Service newService);
         public void DeleteService(int id);
         public void EditService(Service service);
