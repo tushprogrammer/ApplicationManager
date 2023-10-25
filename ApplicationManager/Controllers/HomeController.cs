@@ -114,13 +114,13 @@ namespace ApplicationManager.Controllers
         //вызов страницы "Контакты"
         public IActionResult Contacts()
         {
-            ContactsModel model = new()
-            {               
-                Contacts = data.GetContacts().Where(i => i.Id != 1),
-                ImageUrl = data.GetContacts().First(i => i.Id == 1).Description,
-                Nets = data.GetSocialNet(),
-                Name_page = data.GetMains().First(i => i.Id == 5).Value,
-            };
+            ContactsModel model = data.GetContactsModel();
+            //{               
+            //    Contacts = data.GetContacts().Where(i => i.Id != 1),
+            //    ImageUrl = data.GetContacts().First(i => i.Id == 1).Description,
+            //    Nets = data.GetSocialNet(),
+            //    Name_page = data.GetMains().First(i => i.Id == 5).Value,
+            //};
             return View(model);
         }
         #endregion

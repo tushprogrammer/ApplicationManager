@@ -1,7 +1,7 @@
 ﻿@model ContactsModel
 @{
     ViewData["Title"] = $"Страница {Model.Name_page}";
-    var image_address = "/Images/" + Model.ImageUrl;
+    var image_address = Model.ImgSrc;
 }
 <div class="navigation-history">
     <p>
@@ -34,9 +34,9 @@
         </div>
         <div>
             <div class="contacts-socialnets">
-                @foreach (SocialNet item in Model.Nets)
+                @foreach (SocialNet_with_image item in Model.Nets)
                 {
-                    var image_path = "/Images/" + item.ImageUrl;
+                    var image_path = item.ImgSrc;
                     <a href="@item.Url">
                         <div class="image-socialnet" style="background-image: url(@image_path)">
                         </div>

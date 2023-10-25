@@ -119,12 +119,48 @@ namespace ApplicationManager.Data
                 throw;
             }
         }
-        public IQueryable<SocialNet> GetSocialNet()
+        public ContactsModel GetContactsModel()
         {
             try
             {
-                string json = httpClient.GetStringAsync(url_сontacts + "GetSocialNet").Result;
-                return JsonConvert.DeserializeObject<IEnumerable<SocialNet>>(json).AsQueryable();
+                //запрос к api на получение модели 
+                HttpResponseMessage response = httpClient.GetAsync($"{url_сontacts}/GetContactsModel").Result;
+                //обработка запроса
+                if (response.IsSuccessStatusCode)
+                {
+                    //получение данных из запроса
+                    var data = response.Content.ReadAsStringAsync().Result;
+                    ContactsModel model = JsonConvert.DeserializeObject<ContactsModel>(data);
+                    //переделка массива байтов в картинку для отображения на странице
+                    foreach (SocialNet_with_image item in model.Nets)
+                    {
+                        var base64 = Convert.ToBase64String(item.Image_byte);
+                        item.ImgSrc = String.Format("data:image/gif;base64,{0}", base64);
+                    }
+                    var base64_m = Convert.ToBase64String(model.Image_byte);
+                    model.ImgSrc = String.Format("data:image/gif;base64,{0}", base64_m);
+                    
+                    return model;
+                }
+                else return null;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+        public IQueryable<SocialNet_with_image> GetSocialNet()
+        {
+            try
+            {
+                string json = httpClient.GetStringAsync($"{url_сontacts}/GetSocialNet").Result;
+                List<SocialNet_with_image> nets = JsonConvert.DeserializeObject<List<SocialNet_with_image>>(json);
+                foreach (SocialNet_with_image item in nets)
+                {
+                    var base64 = Convert.ToBase64String(item.Image_byte);
+                    item.ImgSrc = String.Format("data:image/gif;base64,{0}", base64);
+                }
+                return nets.AsQueryable();
             }
             catch (Exception)
             {
@@ -587,11 +623,16 @@ namespace ApplicationManager.Data
                 content.Add(new StringContent(jsonForm), "socialNets");
 
                 // Добавляем изображение в контент запроса
-                using (var imageStream = new MemoryStream())
+                if (image != null && image.Length > 0)
                 {
-                    image.CopyToAsync(imageStream);
-                    content.Add(new StreamContent(imageStream), "image", image.FileName);
+                    var streamContent = new StreamContent(image.OpenReadStream());
+                    content.Add(streamContent, "image", image.FileName);
                 }
+                //using (var imageStream = new MemoryStream())
+                //{
+                //    image.CopyToAsync(imageStream);
+                //    content.Add(new StreamContent(imageStream), "image", image.FileName);
+                //}
 
                 // Отправляем запрос к API
                 var response = httpClient.PostAsync($"{url_сontacts}/SaveContacts", content).Result;

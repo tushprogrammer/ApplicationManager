@@ -3,8 +3,8 @@
 @inject IJSRuntime JS
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
 @{
-    ViewData["Title"] = $"\"{Model.Name_page}\"";
-    var image_path = "/Images/" + Model.ImageUrl;
+    ViewData["Title"] = $"\"Изменить контакты\"";
+    var image_path = Model.ImgSrc;
 }
 <div class="pad-top">
     <div class="navigation-history">
@@ -80,14 +80,14 @@
                     <div class="modal-body">
                         <div class="social-nets">
                             <div ng-repeat="SocialNet in SocialNets" class="modal-container">
-                                <div ng-click="onClickImageSocialNet($index)" class="image-socialnet" ng-style="{'background-image': 'url(/Images/' + SocialNet.ImageUrl + ')'}"></div>
+                                <div ng-click="onClickImageSocialNet($index)" class="image-socialnet" ng-style="{'background-image': 'url(' + SocialNet.ImgSrc + ')'}"></div>
                                 <input ng-model="SocialNet.Url" ng-true-value="SocialNet.Url.value" />
                             
                                     <a href="#" ng-click="RowDeleteNets($index)">
                                         <div class="btn-close-image"></div>
                                     </a>
                            
-                                <input type="file" id="InputImage {{$index}}" name='file' ng-model="SocialNet.ImageUrl"
+                                <input type="file" id="InputImage {{$index}}" name='file' ng-model="SocialNet.ImgSrc"
                                       class="input-for-label" file-on-change="onFileChange" additional-param="$index"/>
                             </div>
                             <a class="btn btn-primary" href="#" ng-click="AddNewRowNets()"><i class="fa fa-plus">+</i></a>
@@ -115,7 +115,7 @@
     //для обработки изменения <input type = "file">
     MyApp.directive('fileOnChange', function () {
         return {
-            restrict: 'A',
+            restrict: 'A', 
             scope: {
                 fileOnChange: '=',
                 additionalParam: '=' // Дополнительный параметр
@@ -143,10 +143,15 @@
         $scope.files = [] 
         $scope.onFileChange = function (event, index) {
             var filename = event.target.files[0].name;
-            $scope.SocialNets[index].ImageUrl = filename;
-
+            $scope.SocialNets[index].Image_name = filename;
+            
+            
+            
              //получили текущий файл
             var file = event.target.files[0];
+            var url = URL.createObjectURL(file);
+            $scope.SocialNets[index].ImgSrc = url;
+            alert(filename);
             //закинули во временный массив, где хранятся все файлы на текущий момент
             $scope.files.push(file);
 
@@ -242,7 +247,7 @@
 
 
         $scope.AddNewRowNets = function () {
-            $scope.SocialNets.push({ Url: '', ImageUrl: 'Default/SocialNet-default.png' });
+            $scope.SocialNets.push({ Url: '', ImgSrc: '/Images/Default/SocialNet-default.png' });
         };
         $scope.RowDeleteNets = function (index) {
             if (index > -1) {

@@ -507,25 +507,25 @@ namespace ApplicationManager.Controllers
         //вызов страницы просмотра "Контакты" перед редактированием
         public IActionResult ContactsAdmin()
         {
-            ContactsModel model = new()
-            {
-                Contacts = data.GetContacts().Where(i => i.Id != 1),
-                ImageUrl = data.GetContacts().First(i => i.Id == 1).Description,
-                Nets = data.GetSocialNet(),
-                Name_page = data.GetMains().First(i => i.Id == 5).Value,
-            };
+            ContactsModel model = data.GetContactsModel();
+            //{
+            //    Contacts = data.GetContacts().Where(i => i.Id != 1),
+            //    ImageUrl = data.GetContacts().First(i => i.Id == 1).Description,
+            //    Nets = data.GetSocialNet(),
+            //    Name_page = data.GetMains().First(i => i.Id == 5).Value,
+            //};
             return View(model);
         }
         //вызов страницы для редактирования "Контакты"
         public IActionResult EditContact()
         {
-            ContactsModel model = new()
-            {
-                //Contacts = data.GetContacts().Where(i => i.Id != 7),//это подгружает AngularJS
-                ImageUrl = data.GetContacts().First(i => i.Id == 1).Description,
-                //Nets = data.GetSocialNet(), //это подгружает AngularJS
-                Name_page = "Изменить контакты",
-            };
+            ContactsModel model = data.GetContactsModel();
+            //{
+            //    //Contacts = data.GetContacts().Where(i => i.Id != 7),//это подгружает AngularJS
+            //    ImageUrl = data.GetContacts().First(i => i.Id == 1).Description,
+            //    //Nets = data.GetSocialNet(), //это подгружает AngularJS
+            //    Name_page = "Изменить контакты",
+            //};
             return View(model);
         }
         //вызов информации от angular о контактах на стр. "Контакты"
@@ -539,6 +539,7 @@ namespace ApplicationManager.Controllers
         [HttpGet]
         public IActionResult GetSocialNetsDate() 
         {
+            //тут проблемка, надо через angular выводить ImgSrc
             string json = JsonConvert.SerializeObject(data.GetSocialNet());
             return new JsonResult(json);
         }
@@ -549,7 +550,8 @@ namespace ApplicationManager.Controllers
             {
                 ContactsUploadModel model = JsonConvert.DeserializeObject<ContactsUploadModel>(stringData);
                 model.Contacts.RemoveAll(i => i.Description == string.Empty || i.Name == string.Empty );
-                data.SaveContacts(model.Contacts, model.SocialNets, ImageUrl);
+                //при передаче в сохранение достать имена, из соц сетей, по возможности соединить с сохраненными картинками
+                //data.SaveContacts(model.Contacts, model.SocialNets, ImageUrl);
             }
             return Redirect("~/Admin/ContactsAdmin");
 

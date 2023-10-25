@@ -14,7 +14,8 @@ namespace ApplicationManager.Data
         public IQueryable<Service> GetServices();
         public BlogsModel GetBlogs();
         public IQueryable<Contacts> GetContacts();
-        public IQueryable<SocialNet> GetSocialNet();
+        public ContactsModel GetContactsModel();
+        public IQueryable<SocialNet_with_image> GetSocialNet();
         public IQueryable<Request> GetRequests();
         public IQueryable<Request> GetRequests(DateTime DateFor, DateTime DateTo);
         public IQueryable<Request> GetRequestsStatus(string statusName);
