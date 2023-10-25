@@ -161,32 +161,14 @@ namespace ApplicationManager.Controllers
         //вызов страницы просмотра "главная" перед редактированием
         public IActionResult MainAdmin()
         {
-
-            MainForm mainForm = data.GetMainsIndexPage();
-            //MainPageModel model = new()
-            //{
-            //    Image_path = mainForm.UrlImage,
-            //    Title = mainForm.Title,
-            //    ButtonTitle = mainForm.ButtonTitle,
-            //    RequestTitle = mainForm.RequestTitle,
-            //};
-            
-            return View(mainForm);
+            MainPageUploadModel model = data.GetMainsIndexPage();
+            return View(model);
         }
 
         //вызов страницы редактирования "Главная"
         public IActionResult EditMain()
         {
-            MainForm mainForm = data.GetMainsIndexPage();
-            MainPageUploadModel model = new()
-            {
-                Title = mainForm.Title,
-                ButtonTitle = mainForm.ButtonTitle,
-                RequestTitle = mainForm.RequestTitle,
-            };
-            //image идет отдельно, так как тут image это путь к файлу, а в модели это целый файл для загрузки
-            //возможно при написании api все таки придется в таблице хранить целый файл, и сюда грузить массив байтов
-            ViewBag.Image = mainForm.UrlImage;
+            MainPageUploadModel model = data.GetMainsIndexPage();
             return View(model);
         }
 
@@ -194,9 +176,9 @@ namespace ApplicationManager.Controllers
         [HttpPost]
         public IActionResult EditMainSave(MainPageUploadModel model)
         {
-            //всякое сохранение
             //тут разобрать модель на составляющие, потому что модель нужна только для копановки воедино инфы
             //и отправить на страницу, а потом тут её принять. то есть не надо эту модель дальше в appdata отправлять
+            //валидации не будет, вдруг это дизайнерское решение, убрать какую нибудь надпись
             IFormFile Image = model.Image;
             MainForm mainForm = new()
             {
@@ -607,6 +589,7 @@ namespace ApplicationManager.Controllers
             return Redirect("/Admin/EditNamePages");
         }
         #endregion
+
         // преобразование из ImgSrc в iformfile
         private IFormFile ConvertImgSrcToFormFile (string imgSrc, string image_name)
         {

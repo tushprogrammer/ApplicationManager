@@ -15,6 +15,7 @@ namespace ApplicationManager.ViewComponents
         public IViewComponentResult Invoke()
         {
             //это рандомные лозунги
+            //два обращения, может переделать в одно ?
             Random r = new Random();
             List<MainTitle> titles = data.GetMainTitles().ToList();
             int randIndex = r.Next(0, titles.Count());

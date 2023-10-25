@@ -1,10 +1,9 @@
-﻿@model MainForm
+﻿@model MainPageUploadModel
 @{
     ViewData["Title"] = "Просмотр страницы \"Главная\"";
 }
 @{
-    var image = Model.UrlImage;
-    var image_path = "/Images/" + image;
+    var image_path = Model.ImgSrc;
 }
 
 <div class="main-admin">

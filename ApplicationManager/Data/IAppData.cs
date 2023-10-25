@@ -7,7 +7,7 @@ namespace ApplicationManager.Data
     public interface IAppData
     {
         public IQueryable<MainPage> GetMains();
-        public MainForm GetMainsIndexPage();
+        public MainPageUploadModel GetMainsIndexPage();
         public IQueryable<MainPage> GetMainsAdmin();
         public IQueryable<MainPage> GetMainsHeader();
         public ProjectsModel GetProjects();

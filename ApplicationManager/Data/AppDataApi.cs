@@ -39,13 +39,26 @@ namespace ApplicationManager.Data
                 throw;
             }
         }
-        public MainForm GetMainsIndexPage()
+        public MainPageUploadModel GetMainsIndexPage()
         {
             //Butt_main, Title, Image_main, Main_request
+         
             try
             {
-                string json = httpClient.GetStringAsync(url_main + "/GetMainsIndexPage").Result;
-                return JsonConvert.DeserializeObject<MainForm>(json);
+                //запрос к api на получение модели главной страницы
+                HttpResponseMessage response = httpClient.GetAsync($"{url_main}/GetMainsIndexPage").Result;
+                //обработка запроса
+                if (response.IsSuccessStatusCode)
+                {
+                    //получение данных из запроса
+                    var data = response.Content.ReadAsStringAsync().Result;
+                    MainPageUploadModel model = JsonConvert.DeserializeObject<MainPageUploadModel>(data);
+                    //переделка массива байтов в картинку для отображения на странице
+                    var base64 = Convert.ToBase64String(model.Image_byte);
+                    model.ImgSrc = String.Format("data:image/gif;base64,{0}", base64);
+                    return model;
+                }
+                else return null;
             }
             catch (Exception ex)
             {
@@ -148,7 +161,7 @@ namespace ApplicationManager.Data
         {
             try
             {
-                string urlWithParams = $"{url_main}?statusName={statusName}";
+                string urlWithParams = $"{url_main}/GetRequestsStatus?statusName={statusName}";
                 string json = httpClient.GetStringAsync(urlWithParams).Result;
                 return JsonConvert.DeserializeObject<IEnumerable<Request>>(json).AsQueryable();
             }
@@ -243,14 +256,20 @@ namespace ApplicationManager.Data
         }
         public void AddRequest(Request request)
         {
-            var re = httpClient.PostAsJsonAsync($"{url_main}/AddRequest", request).Result;
+            using (var content = new MultipartFormDataContent())
+            {
+                var jsonForm = JsonConvert.SerializeObject(request);
+                content.Add(new StringContent(jsonForm), "request");
+                var response = httpClient.PostAsync($"{url_main}/AddRequest", content).Result;
+            }
         }
         public int CountRequests()
         {
             try
             {
-                string json = httpClient.GetStringAsync($"{url_main}/GetCountRequests").Result;
-                return JsonConvert.DeserializeObject<int>(json);
+                //string json = httpClient.GetStringAsync($"{url_main}/GetCountRequests").Result;
+                //return JsonConvert.DeserializeObject<int>(json);
+                return Convert.ToInt32(httpClient.GetStringAsync($"{url_main}/GetCountRequests").Result);
             }
             catch (Exception)
             {
@@ -261,8 +280,8 @@ namespace ApplicationManager.Data
         {
             try
             {
-                string urlWithParams = $"{url_main}?requestId={requestId}";
-                string json = httpClient.GetStringAsync($"{url_main}/GetRequestsNow").Result;
+                string urlWithParams = $"{url_main}/GetRequestNow?requestId={requestId}";
+                string json = httpClient.GetStringAsync($"{urlWithParams}").Result;
                 return JsonConvert.DeserializeObject<Request>(json);
             }
             catch (Exception)
@@ -272,10 +291,15 @@ namespace ApplicationManager.Data
         }
         public void SaveNewStatusRequest(Request reqNow)
         {
-            //проверить детально
-            var json = JsonConvert.SerializeObject(reqNow);
-            var content = new StringContent(json, Encoding.UTF8, "application/json-patch+json");
-            var response = httpClient.PatchAsync($"{url_main}/SaveNewStatusRequest", content).Result;
+            //var json = JsonConvert.SerializeObject(reqNow);
+            //var content = new StringContent(json, Encoding.UTF8, "application/json-patch+json");
+            //var response = httpClient.PatchAsync($"{url_main}/SaveNewStatusRequest", content).Result;
+            using (var content = new MultipartFormDataContent())
+            {
+                var jsonForm = JsonConvert.SerializeObject(reqNow);
+                content.Add(new StringContent(jsonForm), "request");
+                var response = httpClient.PatchAsync($"{url_main}/SaveNewStatusRequest", content).Result;
+            }
         }
         public void EditMain(MainForm form, IFormFile image)
         {
@@ -286,10 +310,10 @@ namespace ApplicationManager.Data
                 content.Add(new StringContent(jsonForm), "form");
 
                 // Добавляем изображение в контент запроса
-                using (var imageStream = new MemoryStream())
+                if (image != null)
                 {
-                    image.CopyToAsync(imageStream);
-                    content.Add(new StreamContent(imageStream), "image", image.FileName);
+                    var streamContent = new StreamContent(image.OpenReadStream());
+                    content.Add(streamContent, "image", image.FileName);
                 }
 
                 // Отправляем запрос к API

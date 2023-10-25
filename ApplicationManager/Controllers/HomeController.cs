@@ -22,8 +22,8 @@ namespace ApplicationManager.Controllers
         //Вызов страницы "Главная"
         public IActionResult Index()
         {
-            MainForm mainForm = data.GetMainsIndexPage();
-            return View(mainForm);
+            MainPageUploadModel model = data.GetMainsIndexPage();
+            return View(model);
         }
         //вызов верстки "Отправить заявку"
         public IActionResult AddRequest()

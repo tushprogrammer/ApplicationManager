@@ -3,8 +3,7 @@
     ViewData["Title"] = "Редактирование страницы 'Главная'";
 }
 @{
-    var image = ViewBag.Image;
-    var image_path = "/Images/" + image;
+    var image_path = Model.ImgSrc;
 }
 
     <form  method="post" asp-controller="Admin" asp-action="EditMainSave" 

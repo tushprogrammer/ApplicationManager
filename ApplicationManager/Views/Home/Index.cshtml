@@ -1,11 +1,10 @@
-﻿@model MainForm
+﻿@model MainPageUploadModel
 @{
     ViewData["Title"] = "Главная страница";
     Layout = "_Layout-main";
 }
 @{
-    var image = Model.UrlImage;
-    var image_path = "/Images/" + image;
+    var image_path = Model.ImgSrc;
 }
 
 <div class="text-center">
