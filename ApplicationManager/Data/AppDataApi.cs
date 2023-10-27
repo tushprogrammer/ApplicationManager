@@ -612,15 +612,15 @@ namespace ApplicationManager.Data
                 throw;
             }
         }
-        public void SaveContacts(List<Contacts> contacts, List<SocialNet> socialNets, IFormFile image)
+        public void SaveContacts(List<Contacts> contacts, IFormFile image)
         {
             using (var content = new MultipartFormDataContent())
             {
                 // Добавляем экземпляр класса в контент запроса как JSON
                 var jsonForm = JsonConvert.SerializeObject(contacts);
                 content.Add(new StringContent(jsonForm), "contacts");
-                jsonForm = JsonConvert.SerializeObject(socialNets);
-                content.Add(new StringContent(jsonForm), "socialNets");
+                //jsonForm = JsonConvert.SerializeObject(socialNets);
+                //content.Add(new StringContent(jsonForm), "socialNets");
 
                 // Добавляем изображение в контент запроса
                 if (image != null && image.Length > 0)
@@ -628,42 +628,41 @@ namespace ApplicationManager.Data
                     var streamContent = new StreamContent(image.OpenReadStream());
                     content.Add(streamContent, "image", image.FileName);
                 }
-                //using (var imageStream = new MemoryStream())
-                //{
-                //    image.CopyToAsync(imageStream);
-                //    content.Add(new StreamContent(imageStream), "image", image.FileName);
-                //}
+                
 
                 // Отправляем запрос к API
                 var response = httpClient.PostAsync($"{url_сontacts}/SaveContacts", content).Result;
                 // в переменной response ответ от api, успешно или нет
             }
         }
-        public void SaveNewImageSocialNets(List<IFormFile> files)
+        public void SaveSocialNets(List<IFormFile> files, List<SocialNet_with_image> SocialNets)
         {
-            //вот тут вопросики
-            // Создаем объект MultipartFormDataContent
-            var content = new MultipartFormDataContent();
-
-            // Добавляем файлы в контент
-            foreach (var file in files)
+            using (var content = new MultipartFormDataContent())
             {
-                // Читаем содержимое файла в байтовый массив
-                using (var stream = file.OpenReadStream())
-                using (var ms = new MemoryStream())
+                // Добавляем файлы в контент
+                foreach (var file in files)
                 {
-                    stream.CopyTo(ms);
-                    var fileBytes = ms.ToArray();
+                    // Читаем содержимое файла в байтовый массив
+                    using (var stream = file.OpenReadStream())
+                    using (var ms = new MemoryStream())
+                    {
+                        stream.CopyTo(ms);
+                        var fileBytes = ms.ToArray();
 
-                    // Создаем объект ByteArrayContent для передачи файла
-                    var fileContent = new ByteArrayContent(fileBytes);
+                        // Создаем объект ByteArrayContent для передачи файла
+                        var fileContent = new ByteArrayContent(fileBytes);
 
-                    // Добавляем файл в контент
-                    content.Add(fileContent, "files", file.FileName);
+                        // Добавляем файл в контент
+                        content.Add(fileContent, "files", file.FileName);
+                    }
                 }
+                string jsonForm = JsonConvert.SerializeObject(SocialNets);
+                content.Add(new StringContent(jsonForm), "SocialNets");
+                // Отправляем POST запрос на API
+                var response = httpClient.PostAsync($"{url_сontacts}/SaveSocialNets", content).Result;
             }
-            // Отправляем POST запрос на API
-            var response = httpClient.PostAsync($"{url_сontacts}/SaveNewImageSocialNets", content).Result;
+
+            
         }
         public void SaveNamePages(List<MainPage> names, List<MainPage> NamesAdmin)
         {

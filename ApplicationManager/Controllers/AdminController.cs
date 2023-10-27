@@ -550,23 +550,25 @@ namespace ApplicationManager.Controllers
             {
                 ContactsUploadModel model = JsonConvert.DeserializeObject<ContactsUploadModel>(stringData);
                 model.Contacts.RemoveAll(i => i.Description == string.Empty || i.Name == string.Empty );
+                //model.SocialNets.RemoveAll(i => i.Url == string.Empty);
                 //при передаче в сохранение достать имена, из соц сетей, по возможности соединить с сохраненными картинками
-                //data.SaveContacts(model.Contacts, model.SocialNets, ImageUrl);
+                data.SaveContacts(model.Contacts, ImageUrl);
             }
             return Redirect("~/Admin/ContactsAdmin");
 
         }
-        //сохранение изображений соц. сетей от angular
+        //сохранение соц. сетей от angular
         [HttpPost]
         public IActionResult SaveContactfiles(List<IFormFile> files)
         {
-            //загрузка на сервер картинок соц. сетей
-            if (files is not null)
-            {
-                data.SaveNewImageSocialNets(files);
-            }
+            string socialNetsJson = Request.Form["SocialNets"];
+            List<SocialNet_with_image> socialNets = JsonConvert.DeserializeObject<List<SocialNet_with_image>>(socialNetsJson);
+            //загрузка на сервер обновленных соц. сетей
             
-            return Ok();
+            data.SaveSocialNets(files, socialNets);
+            
+            //return Ok();
+            return Redirect("~/Admin/ContactsAdmin");
         }
 
         //вызов верстки модального окна (надо на случай, если данные динамические)

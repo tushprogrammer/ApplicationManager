@@ -151,7 +151,7 @@
             var file = event.target.files[0];
             var url = URL.createObjectURL(file);
             $scope.SocialNets[index].ImgSrc = url;
-            alert(filename);
+            // alert(filename);
             //закинули во временный массив, где хранятся все файлы на текущий момент
             $scope.files.push(file);
 
@@ -176,7 +176,7 @@
         }
 
         $scope.loadfiles = function(){
-            //alert('вызов сохранения картинок');
+            // alert('вызов сохранения картинок');
             // Создаем объект FormData
             var formData = new FormData();
 
@@ -184,9 +184,9 @@
             for (var i = 0; i < $scope.files.length; i++) {
                 formData.append("files", $scope.files[i]);
             }
-
+            formData.append("SocialNets", JSON.stringify($scope.SocialNets));
             // Отправляем данные формы на сервер
-            $http.post("/Admin/SaveContactfiles", formData, {
+            $http.post("/Admin/SaveContactfiles", formData,   {
                 transformRequest: angular.identity,
                 headers: { 'Content-Type': undefined }
             }).then(function (response) {
@@ -239,8 +239,8 @@
         //сбор значений двух массивов перед отправкой на сервер
         $scope.data = function(){
             var data = JSON.stringify({
-                Contacts: $scope.Contacts,
-                SocialNets: $scope.SocialNets
+                Contacts: $scope.Contacts
+                // , SocialNets: $scope.SocialNets
             });
             return data;
         }

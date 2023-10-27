@@ -46,8 +46,8 @@ namespace ApplicationManager.Data
         public void AddBlog(Blog new_blog, IFormFile image);
         public void EditBlog(Blog edit_blog, IFormFile image);
         public void DeleteBlog(int id);
-        public void SaveContacts(List<Contacts> contacts, List<SocialNet> socialNets, IFormFile Image);
-        public void SaveNewImageSocialNets(List<IFormFile> files);
+        public void SaveContacts(List<Contacts> contacts, IFormFile Image);
+        public void SaveSocialNets(List<IFormFile> files, List<SocialNet_with_image> socialNets);
         public void SaveNamePages(List<MainPage> names, List<MainPage> NamesAdmin);
     }
 }
