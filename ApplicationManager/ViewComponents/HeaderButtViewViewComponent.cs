@@ -12,17 +12,20 @@ namespace ApplicationManager.ViewComponents
         {
             this.data = data;
         }
-        public IViewComponentResult Invoke()
+        public async Task<IViewComponentResult> InvokeAsync()
         {
             //это рандомные лозунги
             //два обращения, может переделать в одно ?
             Random r = new Random();
-            List<MainTitle> titles = data.GetMainTitles().ToList();
+            IQueryable<MainTitle> titles = await data.GetMainTitlesAsync();
+            List<MainTitle> titles_list = titles.ToList();
             int randIndex = r.Next(0, titles.Count());
             HeaderModel model = new HeaderModel()
             {
-                Title = titles[randIndex].Title,
-                MainPages = data.GetMainsHeader()
+                //надо чтоб строго индекс был с 1 по количество 
+                //Title = titles.First(i => i.Id == randIndex).Title,
+                Title = titles_list[randIndex].Title,
+                MainPages = await data.GetMainsHeaderAsync()
             };
            
 

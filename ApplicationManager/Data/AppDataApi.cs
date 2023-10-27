@@ -14,6 +14,7 @@ namespace ApplicationManager.Data
     {
         private HttpClient httpClient { get; set; }
         static readonly string url_main = $@"api/Main";
+        static readonly string url_account = $@"api/Account";
         static readonly string url_project = $@"api/Project";
         static readonly string url_service = $@"api/Service";
         static readonly string url_blog = $@"api/Blog";
@@ -25,13 +26,13 @@ namespace ApplicationManager.Data
             //тут настроить базовый адрес, но указать его не в коде, а в appsetting.json
             httpClient.BaseAddress = new Uri(@"https://localhost:7292/");
         }
-        public IQueryable<MainPage> GetMains()
+        public async Task<IQueryable<MainPage>> GetMainsAsync()
         {
             //all
             //return Context.MainPage;
             try
             {
-                string json = httpClient.GetStringAsync(url_main + "/GetMains").Result;
+                string json = await httpClient.GetStringAsync(url_main + "/GetMains");
                 return JsonConvert.DeserializeObject<IEnumerable<MainPage>>(json).AsQueryable();
             }
             catch (Exception)
@@ -39,19 +40,19 @@ namespace ApplicationManager.Data
                 throw;
             }
         }
-        public MainPageUploadModel GetMainsIndexPage()
+        public async Task<MainPageUploadModel> GetMainsIndexPageAsync()
         {
             //Butt_main, Title, Image_main, Main_request
          
             try
             {
                 //запрос к api на получение модели главной страницы
-                HttpResponseMessage response = httpClient.GetAsync($"{url_main}/GetMainsIndexPage").Result;
+                HttpResponseMessage response = await httpClient.GetAsync($"{url_main}/GetMainsIndexPage");
                 //обработка запроса
                 if (response.IsSuccessStatusCode)
                 {
                     //получение данных из запроса
-                    var data = response.Content.ReadAsStringAsync().Result;
+                    var data = await response.Content.ReadAsStringAsync();
                     MainPageUploadModel model = JsonConvert.DeserializeObject<MainPageUploadModel>(data);
                     //переделка массива байтов в картинку для отображения на странице
                     var base64 = Convert.ToBase64String(model.Image_byte);
@@ -66,12 +67,12 @@ namespace ApplicationManager.Data
                 throw;
             }
         }
-        public IQueryable<MainPage> GetMainsAdmin()
+        public async Task<IQueryable<MainPage>> GetMainsAdminAsync()
         {
             //MainAdmin, ProjectAdmin, ServicesAdmin, BlogsAdmin, ContactsAdmin, Index
             try
             {
-                string json = httpClient.GetStringAsync(url_main + "/GetMainsAdmin").Result;
+                string json = await httpClient.GetStringAsync(url_main + "/GetMainsAdmin");
                 return JsonConvert.DeserializeObject<IEnumerable<MainPage>>(json).AsQueryable();
             }
             catch (Exception)
@@ -80,11 +81,11 @@ namespace ApplicationManager.Data
                 throw;
             }
         }
-        public IQueryable<MainPage> GetMainsHeader()
+        public async Task<IQueryable<MainPage>> GetMainsHeaderAsync()
         {
             try
             {
-                string json = httpClient.GetStringAsync(url_main + "/GetMainsHeader").Result;
+                string json = await httpClient.GetStringAsync(url_main + "/GetMainsHeader");
                 return JsonConvert.DeserializeObject<IEnumerable<MainPage>>(json).AsQueryable();
             }
             catch (Exception)
@@ -94,11 +95,11 @@ namespace ApplicationManager.Data
             }
         }
         
-        public IQueryable<Service> GetServices()
+        public async Task<IQueryable<Service>> GetServicesAsync()
         {
             try
             {
-                string json = httpClient.GetStringAsync(url_service).Result;
+                string json = await httpClient.GetStringAsync(url_service);
                 return JsonConvert.DeserializeObject<IEnumerable<Service>>(json).AsQueryable();
             }
             catch (Exception)
@@ -107,11 +108,11 @@ namespace ApplicationManager.Data
             }
         }
         
-        public IQueryable<Contacts> GetContacts()
+        public async Task<IQueryable<Contacts>> GetContactsAsync()
         {
             try
             {
-                string json = httpClient.GetStringAsync(url_сontacts).Result;
+                string json = await httpClient.GetStringAsync(url_сontacts);
                 return JsonConvert.DeserializeObject<IEnumerable<Contacts>>(json).AsQueryable();
             }
             catch (Exception)
@@ -119,12 +120,12 @@ namespace ApplicationManager.Data
                 throw;
             }
         }
-        public ContactsModel GetContactsModel()
+        public async Task<ContactsModel> GetContactsModelAsync()
         {
             try
             {
                 //запрос к api на получение модели 
-                HttpResponseMessage response = httpClient.GetAsync($"{url_сontacts}/GetContactsModel").Result;
+                HttpResponseMessage response = await httpClient.GetAsync($"{url_сontacts}/GetContactsModel");
                 //обработка запроса
                 if (response.IsSuccessStatusCode)
                 {
@@ -144,16 +145,16 @@ namespace ApplicationManager.Data
                 }
                 else return null;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
         }
-        public IQueryable<SocialNet_with_image> GetSocialNet()
+        public async Task<IQueryable<SocialNet_with_image>> GetSocialNetAsync()
         {
             try
             {
-                string json = httpClient.GetStringAsync($"{url_сontacts}/GetSocialNet").Result;
+                string json = await httpClient.GetStringAsync($"{url_сontacts}/GetSocialNet");
                 List<SocialNet_with_image> nets = JsonConvert.DeserializeObject<List<SocialNet_with_image>>(json);
                 foreach (SocialNet_with_image item in nets)
                 {
@@ -167,11 +168,11 @@ namespace ApplicationManager.Data
                 throw;
             }
         }
-        public IQueryable<Request> GetRequests()
+        public async Task<IQueryable<Request>> GetRequestsAsync()
         {
             try
             {
-                string json = httpClient.GetStringAsync($"{url_main}/GetRequests").Result;
+                string json = await httpClient.GetStringAsync($"{url_main}/GetRequests");
                 return JsonConvert.DeserializeObject<IEnumerable<Request>>(json).AsQueryable();
             }
             catch (Exception)
@@ -179,13 +180,13 @@ namespace ApplicationManager.Data
                 throw;
             }
         }
-        public IQueryable<Request> GetRequests(DateTime DateFor, DateTime DateTo)
+        public async Task<IQueryable<Request>> GetRequestsAsync(DateTime DateFor, DateTime DateTo)
         {
             try
             {
                 string urlWithParams = $"{url_main}/GetRequestsDate?DateFor={DateFor:yyyy-MM-dd}&DateTo={DateTo:yyyy-MM-dd}";
 
-                string json = httpClient.GetStringAsync(urlWithParams).Result;
+                string json = await httpClient.GetStringAsync(urlWithParams);
                 return JsonConvert.DeserializeObject<IEnumerable<Request>>(json).AsQueryable();
             }
             catch (Exception)
@@ -193,12 +194,12 @@ namespace ApplicationManager.Data
                 throw;
             }
         }
-        public IQueryable<Request> GetRequestsStatus(string statusName)
+        public async Task<IQueryable<Request>> GetRequestsStatusAsync(string statusName)
         {
             try
             {
                 string urlWithParams = $"{url_main}/GetRequestsStatus?statusName={statusName}";
-                string json = httpClient.GetStringAsync(urlWithParams).Result;
+                string json = await httpClient.GetStringAsync(urlWithParams);
                 return JsonConvert.DeserializeObject<IEnumerable<Request>>(json).AsQueryable();
             }
             catch (Exception)
@@ -206,11 +207,11 @@ namespace ApplicationManager.Data
                 throw;
             }
         }
-        public IQueryable<Request> GetRequestsToday()
+        public async Task<IQueryable<Request>> GetRequestsTodayAsync()
         {
             try
             {
-                string json = httpClient.GetStringAsync($"{url_main}/GetRequestsToday").Result;
+                string json = await httpClient.GetStringAsync($"{url_main}/GetRequestsToday");
                 return JsonConvert.DeserializeObject<IEnumerable<Request>>(json).AsQueryable();
             }
             catch (Exception)
@@ -218,11 +219,11 @@ namespace ApplicationManager.Data
                 throw;
             }
         }
-        public IQueryable<Request> GetRequestsYesterday()
+        public async Task<IQueryable<Request>> GetRequestsYesterdayAsync()
         {
             try
             {
-                string json = httpClient.GetStringAsync($"{url_main}/GetRequestsYesterday").Result;
+                string json = await httpClient.GetStringAsync($"{url_main}/GetRequestsYesterday");
                 return JsonConvert.DeserializeObject<IEnumerable<Request>>(json).AsQueryable();
             }
             catch (Exception)
@@ -230,11 +231,11 @@ namespace ApplicationManager.Data
                 throw;
             }
         }
-        public IQueryable<Request> GetRequestsWeek()
+        public async Task<IQueryable<Request>> GetRequestsWeekAsync()
         {
             try
             {
-                string json = httpClient.GetStringAsync($"{url_main}/GetRequestsWeek").Result;
+                string json = await httpClient.GetStringAsync($"{url_main}/GetRequestsWeek");
                 return JsonConvert.DeserializeObject<IEnumerable<Request>>(json).AsQueryable();
             }
             catch (Exception)
@@ -242,11 +243,11 @@ namespace ApplicationManager.Data
                 throw;
             }
         }
-        public IQueryable<Request> GetRequestsMonth()
+        public async Task<IQueryable<Request>> GetRequestsMonthAsync()
         {
             try
             {
-                string json = httpClient.GetStringAsync($"{url_main}/GetRequestsMonth").Result;
+                string json = await httpClient.GetStringAsync($"{url_main}/GetRequestsMonth");
                 return JsonConvert.DeserializeObject<IEnumerable<Request>>(json).AsQueryable();
             }
             catch (Exception)
@@ -254,11 +255,11 @@ namespace ApplicationManager.Data
                 throw;
             }
         }
-        public IQueryable<MainTitle> GetMainTitles()
+        public async Task<IQueryable<MainTitle>> GetMainTitlesAsync()
         {
             try
             {
-                string json = httpClient.GetStringAsync($"{url_main}/GetMainTitles").Result;
+                string json = await httpClient.GetStringAsync($"{url_main}/GetMainTitles");
                 return JsonConvert.DeserializeObject<IEnumerable<MainTitle>>(json).AsQueryable();
             }
             catch (Exception)
@@ -266,11 +267,11 @@ namespace ApplicationManager.Data
                 throw;
             }
         }
-        public IQueryable<StatusRequest> GetStatuses()
+        public async Task<IQueryable<StatusRequest>> GetStatusesAsync()
         {
             try
             {
-                string json = httpClient.GetStringAsync($"{url_main}/GetStatuses").Result;
+                string json = await httpClient.GetStringAsync($"{url_main}/GetStatuses");
                 return JsonConvert.DeserializeObject<IEnumerable<StatusRequest>>(json).AsQueryable();
             }
             catch (Exception)
@@ -278,11 +279,11 @@ namespace ApplicationManager.Data
                 throw;
             }
         }
-        public MainPage GetMainRequest()
+        public async Task<MainPage> GetMainRequestAsync()
         {
             try
             {
-                string json = httpClient.GetStringAsync($"{url_main}/GetMainRequest").Result;
+                string json = await httpClient.GetStringAsync($"{url_main}/GetMainRequest");
                 return JsonConvert.DeserializeObject<MainPage>(json);
             }
             catch (Exception)
@@ -290,34 +291,34 @@ namespace ApplicationManager.Data
                 throw;
             }
         }
-        public void AddRequest(Request request)
+        public async Task AddRequest(Request request)
         {
             using (var content = new MultipartFormDataContent())
             {
                 var jsonForm = JsonConvert.SerializeObject(request);
                 content.Add(new StringContent(jsonForm), "request");
-                var response = httpClient.PostAsync($"{url_main}/AddRequest", content).Result;
+                var response = await httpClient.PostAsync($"{url_main}/AddRequest", content);
             }
         }
-        public int CountRequests()
+        public async Task<int> CountRequestsAsync()
         {
             try
             {
                 //string json = httpClient.GetStringAsync($"{url_main}/GetCountRequests").Result;
                 //return JsonConvert.DeserializeObject<int>(json);
-                return Convert.ToInt32(httpClient.GetStringAsync($"{url_main}/GetCountRequests").Result);
+                return Convert.ToInt32(await httpClient.GetStringAsync($"{url_main}/GetCountRequests"));
             }
             catch (Exception)
             {
                 throw;
             }
         }
-        public Request GetRequestsNow(string requestId)
+        public async Task<Request> GetRequestsNowAsync(string requestId)
         {
             try
             {
                 string urlWithParams = $"{url_main}/GetRequestNow?requestId={requestId}";
-                string json = httpClient.GetStringAsync($"{urlWithParams}").Result;
+                string json = await httpClient.GetStringAsync($"{urlWithParams}");
                 return JsonConvert.DeserializeObject<Request>(json);
             }
             catch (Exception)
@@ -325,7 +326,7 @@ namespace ApplicationManager.Data
                 throw;
             }
         }
-        public void SaveNewStatusRequest(Request reqNow)
+        public async Task SaveNewStatusRequest(Request reqNow)
         {
             //var json = JsonConvert.SerializeObject(reqNow);
             //var content = new StringContent(json, Encoding.UTF8, "application/json-patch+json");
@@ -334,11 +335,12 @@ namespace ApplicationManager.Data
             {
                 var jsonForm = JsonConvert.SerializeObject(reqNow);
                 content.Add(new StringContent(jsonForm), "request");
-                var response = httpClient.PatchAsync($"{url_main}/SaveNewStatusRequest", content).Result;
+                var response = await httpClient.PatchAsync($"{url_main}/SaveNewStatusRequest", content);
             }
         }
-        public void EditMain(MainForm form, IFormFile image)
+        public async Task EditMain(MainForm form, IFormFile image)
         {
+
             using (var content = new MultipartFormDataContent())
             {
                 // Добавляем экземпляр класса в контент запроса как JSON
@@ -346,39 +348,79 @@ namespace ApplicationManager.Data
                 content.Add(new StringContent(jsonForm), "form");
 
                 // Добавляем изображение в контент запроса
-                if (image != null)
+                if (image != null && image.Length > 0)
                 {
-                    var streamContent = new StreamContent(image.OpenReadStream());
-                    content.Add(streamContent, "image", image.FileName);
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        await image.CopyToAsync(memoryStream);
+                        memoryStream.Position = 0;
+                        var streamContent = new StreamContent(memoryStream);
+                        content.Add(streamContent, "image", image.FileName);
+                        
+                        var response = await httpClient.PostAsync($"{url_main}/EditMain", content);
+                        //return response;
+                    }
                 }
+                else
+                {
+                    var response = await httpClient.PostAsync($"{url_main}/EditMain", content);
+                    //return response;
+                }
+                
+                //if (image != null)
+                //{
+                //    using (var memoryStream = new MemoryStream())
+                //    {
+
+                //        await image.CopyToAsync(memoryStream);
+                //        memoryStream.Position = 0;
+                //        var streamContent = new StreamContent(memoryStream);
+                //        content.Add(streamContent, "image", image.FileName);
+                //    }
+                //    //var streamContent = new StreamContent(image.OpenReadStream());
+                //    //content.Add(streamContent, "image", image.FileName);
+                //}
 
                 // Отправляем запрос к API
-                var response = httpClient.PostAsync($"{url_main}/EditMain", content).Result;
+                //var response = httpClient.PostAsync($"{url_main}/EditMain", content);
 
             }
         }
-        public void AddProject(Project new_project, IFormFile image)
+
+        public async Task AddProject(Project new_project, IFormFile image)
         {
             using (var content = new MultipartFormDataContent())
             {
                 var jsonForm = JsonConvert.SerializeObject(new_project);
                 content.Add(new StringContent(jsonForm), "new_project");
-                if (image != null)
+                if (image != null && image.Length > 0)
                 {
-                    var streamContent = new StreamContent(image.OpenReadStream());
-                    content.Add(streamContent, "image", image.FileName);
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        await image.CopyToAsync(memoryStream);
+                        memoryStream.Position = 0;
+                        var streamContent = new StreamContent(memoryStream);
+                        content.Add(streamContent, "image", image.FileName);
+
+                        var response = await httpClient.PostAsync($"{url_project}/AddProject", content);
+                    }
+                    //var streamContent = new StreamContent(image.OpenReadStream());
+                    //content.Add(streamContent, "image", image.FileName);
+                }
+                else
+                {
+                    var response = await httpClient.PostAsync($"{url_project}/AddProject", content);
                 }
                 
 
-                var response = httpClient.PostAsync($"{url_project}/AddProject", content).Result;
             }
         }
-        public Project GetProject(int id)
+        public async Task<Project> GetProjectAsync(int id)
         {
             try
             {
                 string urlWithParams = $"{url_project}/GetProject?id={id}";
-                string json = httpClient.GetStringAsync(urlWithParams).Result;
+                string json = await httpClient.GetStringAsync(urlWithParams);
                 return JsonConvert.DeserializeObject<Project>(json);
                 
             }
@@ -387,17 +429,17 @@ namespace ApplicationManager.Data
                 throw;
             }
         }
-        public ProjectsModel GetProjects()
+        public async Task<ProjectsModel> GetProjectsAsync()
         {
             try
             {
                 //запрос к api на получение проектов и имени страницы project
-                HttpResponseMessage response = httpClient.GetAsync($"{url_project}/GetProjects").Result;
+                HttpResponseMessage response = await httpClient.GetAsync($"{url_project}/GetProjects");
                 //обработка запроса
                 if (response.IsSuccessStatusCode)
                 {
                     //получение данных из запроса
-                    var data = response.Content.ReadAsStringAsync().Result;
+                    var data = await response.Content.ReadAsStringAsync();
                     ProjectsModel model = JsonConvert.DeserializeObject<ProjectsModel>(data);
                     //переделка массива байтов в картинку для отображения на странице
                     foreach (Project_with_image item in model.Projects)
@@ -416,15 +458,15 @@ namespace ApplicationManager.Data
         }
      
 
-        public ProjectModel GetProjectModel(int id)
+        public async Task<ProjectModel> GetProjectModelAsync(int id)
         {
             try
             {
                 string urlWithParams = $"{url_project}/GetProjectModel?id={id}";
-                HttpResponseMessage response = httpClient.GetAsync($"{urlWithParams}").Result;
+                HttpResponseMessage response = await httpClient.GetAsync($"{urlWithParams}");
                 if (response.IsSuccessStatusCode)
                 {
-                    var data = response.Content.ReadAsStringAsync().Result;
+                    var data = await response.Content.ReadAsStringAsync();
                     ProjectModel model = JsonConvert.DeserializeObject<ProjectModel>(data);
 
                     var base64 = Convert.ToBase64String(model.Project_with_image.Image_byte);
@@ -441,41 +483,56 @@ namespace ApplicationManager.Data
             }
         }
         
-        public   void EditProject(Project edit_project, IFormFile image)
+        public async Task EditProject(Project edit_project, IFormFile image)
         {
             using (var content = new MultipartFormDataContent())
             {
                 var jsonForm = JsonConvert.SerializeObject(edit_project);
                 content.Add(new StringContent(jsonForm, Encoding.UTF8, "application/json"), "edit_project");
                 // Перед добавлением изображения в контент запроса, дождитесь завершения копирования данных из файла
-                if (image != null)
+                if (image != null && image.Length > 0)
                 {
-                    var streamContent = new StreamContent(image.OpenReadStream());
-                    content.Add(streamContent, "image", image.FileName);
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        await image.CopyToAsync(memoryStream);
+                        memoryStream.Position = 0;
+                        var streamContent = new StreamContent(memoryStream);
+                        content.Add(streamContent, "image", image.FileName);
+
+                        var response = await httpClient.PostAsync($"{url_project}/EditProject", content);
+                    }
                 }
+                else
+                {
+                    var response = await httpClient.PostAsync($"{url_project}/EditProject", content);
+                }
+                //if (image != null)
+                //{
+                //    var streamContent = new StreamContent(image.OpenReadStream());
+                //    content.Add(streamContent, "image", image.FileName);
+                //}
                 
 
-                var response = httpClient.PostAsync($"{url_project}/EditProject", content).Result;
             }
         }
-        public void DeleteProject(int id)
+        public async Task DeleteProject(int id)
         {
             try
             {
                 string urlWithParams = $"{url_project}/DeleteProject?id={id}";
-                var response = httpClient.DeleteAsync($"{urlWithParams}").Result;
+                var response = await httpClient.DeleteAsync($"{urlWithParams}");
             }
             catch (Exception)
             {
                 throw;
             }
         }
-        public DetailsServiceModel GetServiceModel(int id)
+        public async Task<DetailsServiceModel> GetServiceModelAsync(int id)
         {
             try
             {
                 string urlWithParams = $"{url_service}/GetServiceModel?id={id}";
-                string json = httpClient.GetStringAsync($"{urlWithParams}").Result;
+                string json = await httpClient.GetStringAsync($"{urlWithParams}");
                 return JsonConvert.DeserializeObject<DetailsServiceModel>(json);
             }
             catch (Exception)
@@ -483,32 +540,32 @@ namespace ApplicationManager.Data
                 throw;
             }
         }
-        public void AddService(Service newService)
+        public async Task AddService(Service newService)
         {
-            var re = httpClient.PostAsJsonAsync($"{url_service}/AddService", newService).Result;
+            var re = await httpClient.PostAsJsonAsync($"{url_service}/AddService", newService);
         }
-        public void DeleteService(int id)
+        public async Task DeleteService(int id)
         {
             try
             {
                 string urlWithParams = $"{url_service}/DeleteService?id={id}";
-                var response = httpClient.DeleteAsync($"{urlWithParams}").Result;
+                var response = await httpClient.DeleteAsync($"{urlWithParams}");
             }
             catch (Exception)
             {
                 throw;
             }
         }
-        public void EditService(Service service)
+        public async Task EditService(Service service)
         {
-            var re = httpClient.PostAsJsonAsync($"{url_service}/EditService", service).Result;
+            var re = await httpClient.PostAsJsonAsync($"{url_service}/EditService", service);
         }
-        public Blog GetBlog(int id)
+        public async Task<Blog> GetBlogAsync(int id)
         {
             try
             {
                 string urlWithParams = $"{url_blog}/GetBlog?id={id}";
-                string json = httpClient.GetStringAsync($"{urlWithParams}").Result;
+                string json = await httpClient.GetStringAsync($"{urlWithParams}");
                 return JsonConvert.DeserializeObject<Blog>(json);
             }
             catch (Exception)
@@ -516,15 +573,15 @@ namespace ApplicationManager.Data
                 throw;
             }
         }
-        public BlogsModel GetBlogs()
+        public async Task<BlogsModel> GetBlogsAsync()
         {
             try
             {
-                HttpResponseMessage response = httpClient.GetAsync($"{url_blog}/GetBlogs").Result;
+                HttpResponseMessage response = await httpClient.GetAsync($"{url_blog}/GetBlogs");
                 if (response.IsSuccessStatusCode)
                 {
                     //получение данных из запроса
-                    var data = response.Content.ReadAsStringAsync().Result;
+                    var data = await response.Content.ReadAsStringAsync();
                     BlogsModel model = JsonConvert.DeserializeObject<BlogsModel>(data);
                     //переделка массива байтов в картинку для отображения на странице
                     foreach (Blog_with_image item in model.Blogs)
@@ -542,15 +599,15 @@ namespace ApplicationManager.Data
                 throw;
             }
         }
-        public BlogModel GetBlogModel(int id)
+        public async Task<BlogModel> GetBlogModelAsync(int id)
         {
             try
             {
                 string urlWithParams = $"{url_blog}/GetBlogModel?id={id}";
-                HttpResponseMessage response = httpClient.GetAsync($"{urlWithParams}").Result;
+                HttpResponseMessage response = await httpClient.GetAsync($"{urlWithParams}");
                 if (response.IsSuccessStatusCode)
                 {
-                    var data = response.Content.ReadAsStringAsync().Result;
+                    var data = await response.Content.ReadAsStringAsync();
                     BlogModel model = JsonConvert.DeserializeObject<BlogModel>(data);
 
                     var base64 = Convert.ToBase64String(model.blog_With_Image.Image_byte);
@@ -565,24 +622,34 @@ namespace ApplicationManager.Data
                 throw;
             }
         }
-        public void AddBlog(Blog new_blog, IFormFile image)
+        public async Task AddBlog(Blog new_blog, IFormFile image)
         {
 
             using (var content = new MultipartFormDataContent())
             {
                 var jsonForm = JsonConvert.SerializeObject(new_blog);
                 content.Add(new StringContent(jsonForm), "new_blog");
-                if (image != null)
+                if (image != null && image.Length > 0)
                 {
-                    var streamContent = new StreamContent(image.OpenReadStream());
-                    content.Add(streamContent, "image", image.FileName);
-                }
-                
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        await image.CopyToAsync(memoryStream);
+                        memoryStream.Position = 0;
+                        var streamContent = new StreamContent(memoryStream);
+                        content.Add(streamContent, "image", image.FileName);
 
-                var response = httpClient.PostAsync($"{url_blog}/AddBlog", content).Result;
+                        var response = await httpClient.PostAsync($"{url_blog}/AddBlog", content);
+                    }
+                }
+                else
+                {
+                    var response = await httpClient.PostAsync($"{url_blog}/AddBlog", content);
+                }
+
+
             }
         }
-        public void EditBlog(Blog edit_blog, IFormFile image)
+        public async Task EditBlog(Blog edit_blog, IFormFile image)
         {
             using (var content = new MultipartFormDataContent())
             {
@@ -591,28 +658,39 @@ namespace ApplicationManager.Data
                 content.Add(new StringContent(jsonForm), "edit_blog");
                 if (image != null && image.Length > 0)
                 {
-                    var streamContent = new StreamContent(image.OpenReadStream());
-                    content.Add(streamContent, "image", image.FileName);
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        await image.CopyToAsync(memoryStream);
+                        memoryStream.Position = 0;
+                        var streamContent = new StreamContent(memoryStream);
+                        content.Add(streamContent, "image", image.FileName);
+
+                        var response = await httpClient.PostAsync($"{url_blog}/EditBlog", content);
+                    }
+                }
+                else
+                {
+                    var response = await httpClient.PostAsync($"{url_blog}/EditBlog", content);
                 }
 
                 // Отправляем запрос к API
-                var response = httpClient.PostAsync($"{url_blog}/EditBlog", content).Result;
+                
                 // в переменной response ответ от api, успешно или нет
             }
         }
-        public void DeleteBlog(int id)
+        public async Task DeleteBlog(int id)
         {
             try
             {
                 string urlWithParams = $"{url_blog}/DeleteBlog?id={id}";
-                var response = httpClient.DeleteAsync($"{urlWithParams}").Result;
+                var response = await httpClient.DeleteAsync($"{urlWithParams}");
             }
             catch (Exception)
             {
                 throw;
             }
         }
-        public void SaveContacts(List<Contacts> contacts, IFormFile image)
+        public async Task SaveContacts(List<Contacts> contacts, IFormFile image)
         {
             using (var content = new MultipartFormDataContent())
             {
@@ -625,46 +703,74 @@ namespace ApplicationManager.Data
                 // Добавляем изображение в контент запроса
                 if (image != null && image.Length > 0)
                 {
-                    var streamContent = new StreamContent(image.OpenReadStream());
-                    content.Add(streamContent, "image", image.FileName);
-                }
-                
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        await image.CopyToAsync(memoryStream);
+                        memoryStream.Position = 0;
+                        var streamContent = new StreamContent(memoryStream);
+                        content.Add(streamContent, "image", image.FileName);
 
-                // Отправляем запрос к API
-                var response = httpClient.PostAsync($"{url_сontacts}/SaveContacts", content).Result;
-                // в переменной response ответ от api, успешно или нет
+                        var response = await httpClient.PostAsync($"{url_сontacts}/SaveContacts", content);
+                    }
+                }
+                else
+                {
+                    var response = await httpClient.PostAsync($"{url_сontacts}/SaveContacts", content);
+                }
+
+
+                
             }
         }
-        public void SaveSocialNets(List<IFormFile> files, List<SocialNet_with_image> SocialNets)
+        public async Task SaveSocialNets(List<IFormFile> files, List<SocialNet_with_image> SocialNets)
         {
             using (var content = new MultipartFormDataContent())
             {
-                // Добавляем файлы в контент
-                foreach (var file in files)
-                {
-                    // Читаем содержимое файла в байтовый массив
-                    using (var stream = file.OpenReadStream())
-                    using (var ms = new MemoryStream())
-                    {
-                        stream.CopyTo(ms);
-                        var fileBytes = ms.ToArray();
-
-                        // Создаем объект ByteArrayContent для передачи файла
-                        var fileContent = new ByteArrayContent(fileBytes);
-
-                        // Добавляем файл в контент
-                        content.Add(fileContent, "files", file.FileName);
-                    }
-                }
                 string jsonForm = JsonConvert.SerializeObject(SocialNets);
                 content.Add(new StringContent(jsonForm), "SocialNets");
+                // Добавляем файлы в контент
+                if (files != null)
+                {
+                    foreach (var file in files)
+                    {
+                        // Читаем содержимое файла в байтовый массив
+                        using (var stream = file.OpenReadStream())
+                        using (var ms = new MemoryStream())
+                        {
+                            await stream.CopyToAsync(ms);
+                            var fileBytes = ms.ToArray();
+
+                            // Создаем объект ByteArrayContent для передачи файла
+                            var fileContent = new ByteArrayContent(fileBytes);
+
+                            // Добавляем файл в контент
+                            content.Add(fileContent, "files", file.FileName);
+                        }
+                    }
+                    var response = await httpClient.PostAsync($"{url_сontacts}/SaveSocialNets", content);
+                    //using (var memoryStream = new MemoryStream())
+                    //{
+                    //    await image.CopyToAsync(memoryStream);
+                    //    memoryStream.Position = 0;
+                    //    var streamContent = new StreamContent(memoryStream);
+                    //    content.Add(streamContent, "image", image.FileName);
+
+                    //    var response = await httpClient.PostAsync($"{url_сontacts}/SaveContacts", content);
+                    //}
+                }
+                else
+                {
+                    var response = await httpClient.PostAsync($"{url_сontacts}/SaveSocialNets", content);
+                }
+
+                
                 // Отправляем POST запрос на API
-                var response = httpClient.PostAsync($"{url_сontacts}/SaveSocialNets", content).Result;
+                
             }
 
             
         }
-        public void SaveNamePages(List<MainPage> names, List<MainPage> NamesAdmin)
+        public async Task SaveNamePages(List<MainPage> names, List<MainPage> NamesAdmin)
         {
             using (var content = new MultipartFormDataContent())
             {
@@ -675,9 +781,21 @@ namespace ApplicationManager.Data
                 content.Add(new StringContent(jsonForm), "NamesAdmin");
 
                 // Отправляем запрос к API
-                var response = httpClient.PostAsync($"{url_main}/SaveNamePages", content).Result;
+                var response = await httpClient.PostAsync($"{url_main}/SaveNamePages", content);
                 // в переменной response ответ от api, успешно или нет
             }
+        }
+        public async Task<bool> Authenticate(string login, string password)
+        {
+            var loginData = new Dictionary<string, string>()
+                {
+                    { "username", login },
+                    { "password", password }
+                };
+
+            var content = new FormUrlEncodedContent(loginData);
+            var response = await httpClient.PostAsync($"{url_account}/authenticate", content);
+            return response.IsSuccessStatusCode;
         }
     }
 }

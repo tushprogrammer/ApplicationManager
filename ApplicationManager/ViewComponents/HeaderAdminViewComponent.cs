@@ -11,12 +11,12 @@ namespace ApplicationManager.ViewComponents
         {
             this.data = data;
         }
-        public IViewComponentResult Invoke()
+        public async Task<IViewComponentResult> InvokeAsync()
         {
             //возможно переделать заполнение кнопок, так как идут разные
             HeaderModel model = new HeaderModel()
             {
-                MainPages = data.GetMainsAdmin()
+                MainPages = await data.GetMainsAdminAsync()
             };
 
 

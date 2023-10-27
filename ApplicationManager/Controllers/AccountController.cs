@@ -1,7 +1,10 @@
-﻿using ApplicationManager.AuthApp;
+﻿using AjaxControlToolkit.HtmlEditor.ToolbarButtons;
+using ApplicationManager.AuthApp;
+using ApplicationManager.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Data;
 
 namespace ApplicationManager.Controllers
@@ -11,9 +14,12 @@ namespace ApplicationManager.Controllers
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        //private readonly IAppData data;
 
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, RoleManager<IdentityRole> roleManager)
+        public AccountController( /*IAppData Data*/
+            UserManager<User> userManager, SignInManager<User> signInManager, RoleManager<IdentityRole> roleManager)
         {
+            //data = Data;
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
@@ -39,10 +45,12 @@ namespace ApplicationManager.Controllers
         {
             if (ModelState.IsValid)
             {
+
+                //var loginResult = await data.Authenticate(model.LoginProp, model.Password);
                 var loginResult = await _signInManager.PasswordSignInAsync(model.LoginProp,
                     model.Password,
                     false,
-                    lockoutOnFailure: false); //попытка найти в бд пользователя с введенными логином и паролем
+                    lockoutOnFailure: false); //попытка найти в бд пользователя с введенными логином и паролем, вход в систему
 
                 if (loginResult.Succeeded) //если попытка успешна
                 {
@@ -55,7 +63,7 @@ namespace ApplicationManager.Controllers
                 }
 
             }
-
+            //выводится в любом случае, пусть то даже неккоректный ввод, или не найденный пользователь в бд
             ModelState.AddModelError("", "Пользователь не найден");
             return View(model); //если не найден, повторная попытка
         }

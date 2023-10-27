@@ -20,19 +20,20 @@ namespace ApplicationManager.Controllers
         #region стр. "Главная"
 
         //Вызов страницы "Главная"
-        public IActionResult Index()
+        public async Task<IActionResult> IndexAsync()
         {
-            MainPageUploadModel model = data.GetMainsIndexPage();
+            MainPageUploadModel model = await data.GetMainsIndexPageAsync();
             return View(model);
         }
         //вызов верстки "Отправить заявку"
-        public IActionResult AddRequest()
+        public async Task<IActionResult> AddRequestAsync()
         {
-            ViewBag.Title = data.GetMainRequest().Value;
+            MainPage request_title = await data.GetMainRequestAsync();
+            ViewBag.Title = request_title.Value;
             return PartialView();
         }
         //метод добавления заявки
-        public IActionResult AddNewRequest(RequestModel model)
+        public async Task<IActionResult> AddNewRequestAsync(RequestModel model)
         {
             if (ModelState.IsValid)
             {
@@ -44,7 +45,7 @@ namespace ApplicationManager.Controllers
                     Fullname = model.Fullname,
                     Textrequest = model.Textrequest,
                 };
-                data.AddRequest(new_req);
+                await data.AddRequest(new_req);
                 return Redirect("~/"); //возврат к первой странице
             }
             else
@@ -57,16 +58,16 @@ namespace ApplicationManager.Controllers
         #region стр. "Проекты"
 
         //вызов страницы "Проекты"
-        public IActionResult Project()
+        public async Task<IActionResult> ProjectAsync()
         {
             //подгрузка данных из бд: 
-            ProjectsModel model = data.GetProjects();
+            ProjectsModel model = await data.GetProjectsAsync();
             return View(model);
         }
         //вызов страницы об конкретном проекте
-        public IActionResult ProjectDetails(int id) 
+        public async Task<IActionResult> ProjectDetailsAsync(int id) 
         {
-            ProjectModel model = data.GetProjectModel(id);
+            ProjectModel model = await data.GetProjectModelAsync(id);
             
             return View(model);
         }
@@ -75,15 +76,15 @@ namespace ApplicationManager.Controllers
         #region стр. "Блог"
 
         //вызов страницы "Блог"
-        public IActionResult Blogs() 
+        public async Task<IActionResult> BlogsAsync() 
         {
-            BlogsModel model = data.GetBlogs();
+            BlogsModel model = await data.GetBlogsAsync();
             return View(model);
         }
         //вызов страницы об конкретном блоге
-        public IActionResult BlogDetails(int id)
+        public async Task<IActionResult> BlogDetailsAsync(int id)
         {
-            BlogModel model = data.GetBlogModel(id);
+            BlogModel model = await data.GetBlogModelAsync(id);
             model.Is_edit = false;
             //BlogsModel model = new()
             //{
@@ -98,12 +99,13 @@ namespace ApplicationManager.Controllers
         #region стр. "Услуги"
 
         //вызов страницы "Услуги"
-        public IActionResult Services() 
+        public async Task<IActionResult> ServicesAsync() 
         {
+            IQueryable<MainPage> mains = await data.GetMainsAsync();
             ServicesModel model = new()
             {
-                Services = data.GetServices(),
-                Name_page = data.GetMains().First(i => i.Id == 2).Value
+                Services = await data.GetServicesAsync(),
+                Name_page = mains.First(i => i.Id == 2).Value
             };
             return View(model);
         }
@@ -112,9 +114,9 @@ namespace ApplicationManager.Controllers
         #region стр. "Контакты"
 
         //вызов страницы "Контакты"
-        public IActionResult Contacts()
+        public async Task<IActionResult> ContactsAsync()
         {
-            ContactsModel model = data.GetContactsModel();
+            ContactsModel model = await data.GetContactsModelAsync();
             //{               
             //    Contacts = data.GetContacts().Where(i => i.Id != 1),
             //    ImageUrl = data.GetContacts().First(i => i.Id == 1).Description,

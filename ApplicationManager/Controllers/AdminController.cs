@@ -38,7 +38,7 @@ namespace ApplicationManager.Controllers
 
         //все заявки
         [Authorize(Roles = "Admin")]
-        public IActionResult Index()
+        public async Task<IActionResult> IndexAsync()
         {
             //на рабочий стол выводится информация о заявках
             //в зависимости от выборанной даты (сегодня, вчера, дата)
@@ -48,88 +48,88 @@ namespace ApplicationManager.Controllers
             //+сортировка заявок по выбранному статусу
             AdminModel model = new AdminModel()
             {
-                Requests = data.GetRequests(), //все заявки
-                Statuses = GetNameStatuses(),
-                AllRequestsCount = data.CountRequests(),
+                Requests = await data.GetRequestsAsync(), //все заявки
+                Statuses = await GetNameStatusesAsync(),
+                AllRequestsCount = await data.CountRequestsAsync(),
             };
             return View("Index", model);
         }
         //заявки сегодня
-        public IActionResult TodayRequests()
+        public async Task<IActionResult> TodayRequests()
         {
             //на экран надо выводить отсортированные заявки и общее количество в бд
-            int count = data.CountRequests(); 
+            int count = await data.CountRequestsAsync(); 
             AdminModel model = new AdminModel()
             {
-                Requests = data.GetRequestsToday(), 
-                Statuses = GetNameStatuses(),
+                Requests = await data.GetRequestsTodayAsync(), 
+                Statuses = await GetNameStatusesAsync(),
                 AllRequestsCount = count,
             };
             return View("Index", model);
         }
         //заявки вчера
-        public IActionResult YesterdayRequests()
+        public async Task<IActionResult> YesterdayRequestsAsync()
         {
             AdminModel model = new AdminModel()
             {
-                Requests = data.GetRequestsYesterday(), 
-                Statuses = GetNameStatuses(),
-                AllRequestsCount = data.CountRequests(),
+                Requests = await data.GetRequestsYesterdayAsync(), 
+                Statuses = await GetNameStatusesAsync(),
+                AllRequestsCount = await data.CountRequestsAsync(),
             };
             return View("Index", model);
         }
         //заявки на этой неделе
-        public IActionResult WeekRequests()
+        public async Task<IActionResult> WeekRequestsAsync()
         {
             AdminModel model = new AdminModel()
             {
-                Requests = data.GetRequestsWeek(), 
-                Statuses = GetNameStatuses(),
-                AllRequestsCount = data.CountRequests(),
+                Requests = await data.GetRequestsWeekAsync(), 
+                Statuses = await GetNameStatusesAsync(),
+                AllRequestsCount = await data.CountRequestsAsync(),
             };
             return View("Index", model);
         }
         //заявки в этом месяце
-        public IActionResult MonthRequests()
+        public async Task<IActionResult> MonthRequestsAsync()
         {
             AdminModel model = new AdminModel()
             {
-                Requests = data.GetRequestsMonth(), 
-                Statuses = GetNameStatuses(),
-                AllRequestsCount = data.CountRequests(),
+                Requests = await data.GetRequestsMonthAsync(), 
+                Statuses =  await GetNameStatusesAsync(),
+                AllRequestsCount = await data.CountRequestsAsync(),
             };
             return View("Index", model);
         }
         //заявки по диапазону дат
-        public IActionResult RangeDateRequests(DateTime DateFor, DateTime DateTo)
+        public async Task<IActionResult> RangeDateRequests(DateTime DateFor, DateTime DateTo)
         {
             AdminModel model = new AdminModel()
             {
-                Requests = data.GetRequests(DateFor, DateTo),
-                Statuses = GetNameStatuses(),
-                AllRequestsCount = data.CountRequests(),
+                Requests = await data.GetRequestsAsync(DateFor, DateTo),
+                Statuses = await GetNameStatusesAsync(),
+                AllRequestsCount = await data.CountRequestsAsync(),
             };
             return View("Index", model);
         }
         //заявки по статусам
         [HttpGet]
-        public IActionResult StatusRequests(string statusName) 
+        public async Task<IActionResult> StatusRequestsAsync(string statusName) 
         {
             AdminModel model = new AdminModel()
             {
-                Requests = data.GetRequestsStatus(statusName),
-                Statuses = GetNameStatuses(),
-                AllRequestsCount = data.CountRequests(),
+                Requests = await data.GetRequestsStatusAsync(statusName),
+                Statuses = await GetNameStatusesAsync(),
+                AllRequestsCount = await data.CountRequestsAsync(),
             };
             return View("Index", model);
         }
        
 
         //выдача заявкам элемент статуса в дополнение к id
-        private IQueryable<string> GetNameStatuses()
+        private async Task<IQueryable<string>> GetNameStatusesAsync()
         {
             List<string> ListStatuses = new();
-            IQueryable<StatusRequest> statusRequests = data.GetStatuses();
+            IQueryable<StatusRequest> statusRequests = await data.GetStatusesAsync();
             foreach (var statusRequest in statusRequests)
             {
                 ListStatuses.Add(statusRequest.StatusName);
@@ -137,17 +137,18 @@ namespace ApplicationManager.Controllers
             return ListStatuses.AsQueryable();
         }
         //обновление статусов у заявок
-        public IActionResult SaveNewStatusRequest(string RequestId, string StatusName)
+        public async Task<IActionResult> SaveNewStatusRequestAsync(string RequestId, string StatusName)
         {
-            Request reqNow = data.GetRequestsNow(RequestId);
-            StatusRequest Status = data.GetStatuses().First(s => s.StatusName == StatusName);
+            Request reqNow = await data.GetRequestsNowAsync(RequestId);
+            IQueryable<StatusRequest> statuses = await data.GetStatusesAsync();
+            StatusRequest Status = statuses.First(s => s.StatusName == StatusName);
             reqNow.StatusId = Status.Id;
-            data.SaveNewStatusRequest(reqNow);
+            await data.SaveNewStatusRequest(reqNow);
             AdminModel model = new()
             {
-                Requests = data.GetRequests(), //все заявки
-                Statuses = GetNameStatuses(),
-                AllRequestsCount = data.CountRequests(),
+                Requests = await data.GetRequestsAsync(), //все заявки
+                Statuses = await GetNameStatusesAsync(),
+                AllRequestsCount = await data.CountRequestsAsync(),
             };
             var r = Request.Headers["Referer"].ToString();
             return Redirect(r);
@@ -159,22 +160,22 @@ namespace ApplicationManager.Controllers
 
         
         //вызов страницы просмотра "главная" перед редактированием
-        public IActionResult MainAdmin()
+        public async Task<IActionResult> MainAdmin()
         {
-            MainPageUploadModel model = data.GetMainsIndexPage();
+            MainPageUploadModel model = await data.GetMainsIndexPageAsync();
             return View(model);
         }
 
         //вызов страницы редактирования "Главная"
-        public IActionResult EditMain()
+        public async Task<IActionResult> EditMainAsync()
         {
-            MainPageUploadModel model = data.GetMainsIndexPage();
+            MainPageUploadModel model = await data.GetMainsIndexPageAsync();
             return View(model);
         }
 
         //вызов метода редактирования страницы "Главная"
         [HttpPost]
-        public IActionResult EditMainSave(MainPageUploadModel model)
+        public async Task<IActionResult> EditMainSave(MainPageUploadModel model)
         {
             //тут разобрать модель на составляющие, потому что модель нужна только для копановки воедино инфы
             //и отправить на страницу, а потом тут её принять. то есть не надо эту модель дальше в appdata отправлять
@@ -186,7 +187,7 @@ namespace ApplicationManager.Controllers
                 ButtonTitle = model.ButtonTitle,
                 RequestTitle = model.RequestTitle,
             };
-            data.EditMain(mainForm, Image);            
+            await data.EditMain(mainForm, Image);            
             
             return Redirect("~/Admin/MainAdmin");
         }
@@ -195,22 +196,23 @@ namespace ApplicationManager.Controllers
         #region стр. "Проекты"
 
         //вывод страницы для просмотра "Проекты" перед редактированием
-        public IActionResult ProjectAdmin()
+        public async Task<IActionResult> ProjectAdminAsync()
         {
             //все проекты + имя страницы
-            ProjectsModel model = data.GetProjects();
+            ProjectsModel model = await data.GetProjectsAsync();
             return View(model);
         }
         //страница добавления нового проекта
-        public IActionResult AddNewProject() 
+        public async Task<IActionResult> AddNewProject() 
         {
             //заголовок для шапки
-            ViewBag.Name_page = data.GetMains().First(i => i.Id == 3).Value;
+            IQueryable<MainPage> mainPage = await data.GetMainsAsync();
+            ViewBag.Name_page = mainPage.First(i => i.Id == 3).Value;
             return View("DetailsProject");
         }
         //метод добавления нового проекта
         [HttpPost, ValidateAntiForgeryToken]
-        public IActionResult AddProjectMethod(ProjectModel model)
+        public async Task<IActionResult> AddProjectMethod(ProjectModel model)
         {
             //валидация модели на заполненность всех обязательных полей
             if (ModelState.IsValid)
@@ -226,12 +228,13 @@ namespace ApplicationManager.Controllers
                 if (model.Project_with_image.Image == null && model.Project_with_image.ImgSrc != null)
                 {
                     
-                    IFormFile image = ConvertImgSrcToFormFile(model.Project_with_image.ImgSrc, model.Project_with_image.Image_name);
-                    data.AddProject(new_project, image);
+                    IFormFile image = ConvertImgSrcToFormFile(model.Project_with_image.ImgSrc, 
+                        model.Project_with_image.Image_name);
+                    await data.AddProject(new_project, image);
                 }
                 else
                 {
-                    data.AddProject(new_project, model.Project_with_image.Image);
+                    await data.AddProject(new_project, model.Project_with_image.Image);
                 }
                 
                 return Redirect("~/Admin/ProjectAdmin"); //успех
@@ -252,15 +255,15 @@ namespace ApplicationManager.Controllers
             }
         }
         //страница изменения проекта
-        public IActionResult DetailsProject(int id)
+        public async Task<IActionResult> DetailsProjectAsync(int id)
         {
-            ProjectModel model = data.GetProjectModel(id);
+            ProjectModel model = await data.GetProjectModelAsync(id);
             model.Is_edit = true;
             return View("DetailsProject", model);
         }
         //метод изменения проекта
         [HttpPost, ValidateAntiForgeryToken]
-        public IActionResult EditProjectMethod(ProjectModel model)
+        public async Task<IActionResult> EditProjectMethod(ProjectModel model)
         {
             if (ModelState.IsValid)
             {
@@ -274,13 +277,14 @@ namespace ApplicationManager.Controllers
                 if (model.Project_with_image.Image == null && model.Project_with_image.ImgSrc != null)
                 {
                     // преобразование из ImgSrc в iformfile
-                    IFormFile image = ConvertImgSrcToFormFile(model.Project_with_image.ImgSrc, model.Project_with_image.Image_name);
+                    IFormFile image = ConvertImgSrcToFormFile(model.Project_with_image.ImgSrc, 
+                        model.Project_with_image.Image_name);
 
-                    data.EditProject(Edit_project, image);
+                    await data.EditProject(Edit_project, image);
                 }
                 else
                 {
-                    data.EditProject(Edit_project, model.Project_with_image.Image);
+                    await data.EditProject(Edit_project, model.Project_with_image.Image);
                 }
                 return Redirect("~/Admin/ProjectAdmin");
             }
@@ -300,42 +304,44 @@ namespace ApplicationManager.Controllers
             }
         }
         //метод удаления проекта
-        public IActionResult DeleteProjectMethod(int id)
+        public async Task<IActionResult> DeleteProjectMethod(int id)
         {
-            data.DeleteProject(id);
+            await data.DeleteProject(id);
             return Redirect("~/Admin/ProjectAdmin");
         }
         #endregion
 
         #region стр. "Услуги"
         //вызов страницы для редактирования страницы "Услуги"
-        public IActionResult ServicesAdmin()
+        public async Task<IActionResult> ServicesAdmin()
         {
+            IQueryable<MainPage> mains = await data.GetMainsAsync();
             ServicesModel model = new()
             {
-                Services = data.GetServices(),
-                Name_page = data.GetMains().First(i => i.Id == 2).Value
+                Services = await data.GetServicesAsync(),
+                Name_page = mains.First(i => i.Id == 2).Value
             };
             return View(model);
         }
         //страница изменения услуги
-        public IActionResult EditService(int id)
+        public async Task<IActionResult> EditService(int id)
         {
-            DetailsServiceModel model = data.GetServiceModel(id);
+            DetailsServiceModel model = await data.GetServiceModelAsync(id);
             model.is_edit = true;
             //Service model = data.GetService(id);
             //ViewBag.Name_page = data.GetMains().First(i => i.Id == 2).Value;
             return View("DetailsService", model);
         }
         //страница добавления услуги
-        public IActionResult AddNewService() 
+        public async Task<IActionResult> AddNewServiceAsync() 
         {
-            ViewBag.Name_page = data.GetMains().First(i => i.Id == 2).Value;
+            IQueryable<MainPage> mains = await data.GetMainsAsync();
+            ViewBag.Name_page = mains.First(i => i.Id == 2).Value;
             return View("DetailsService");
         }
         //метод добавления услуги
         [HttpPost, ValidateAntiForgeryToken]
-        public IActionResult AddNewServiceMethod(DetailsServiceModel model)
+        public async Task<IActionResult> AddNewServiceMethod(DetailsServiceModel model)
         {
             if (ModelState.IsValid)
             {
@@ -344,7 +350,7 @@ namespace ApplicationManager.Controllers
                     Title = model.Title,
                     Description = model.Description,
                 };
-                data.AddService(new_service);
+                await data.AddService(new_service);
                 return Redirect("~/Admin/ServicesAdmin");
             }
             else
@@ -357,14 +363,14 @@ namespace ApplicationManager.Controllers
             }
         }
         //метод удаления услуги
-        public IActionResult DeleteServiceMethod(int id)
+        public async Task<IActionResult> DeleteServiceMethod(int id)
         {
-            data.DeleteService(id);
+            await data.DeleteService(id);
             return Redirect("~/Admin/ServicesAdmin");
         }
         //метод изменения услуги
         [HttpPost, ValidateAntiForgeryToken]
-        public IActionResult EditServiceMethod(DetailsServiceModel model)
+        public async Task<IActionResult> EditServiceMethod(DetailsServiceModel model)
         {
             if (ModelState.IsValid)
             {
@@ -374,7 +380,7 @@ namespace ApplicationManager.Controllers
                     Title = model.Title,
                     Description = model.Description,
                 };
-                data.EditService(edit_service);
+                await data.EditService(edit_service);
                 return Redirect("~/Admin/ServicesAdmin");
             }
             else
@@ -389,22 +395,23 @@ namespace ApplicationManager.Controllers
 
         #region стр. "Блог"
         //вызов страницы для редактирования страницы "Блог"
-        public IActionResult BlogsAdmin()
+        public async Task<IActionResult> BlogsAdminAsync()
         {
             //все элементы блога + имя страницы
-            BlogsModel model = data.GetBlogs();            
+            BlogsModel model = await data.GetBlogsAsync();            
             return View(model);
         }
 
         //страница добавления блога
-        public IActionResult AddNewBlog()
+        public async Task<IActionResult> AddNewBlogAsync()
         {
-            ViewBag.Name_page = data.GetMains().First(i => i.Id == 4).Value;
+            IQueryable<MainPage> mains = await data.GetMainsAsync();
+            ViewBag.Name_page = mains.First(i => i.Id == 4).Value;
             return View("DetailsBlog");
         }
         //метод добавления блога
         [HttpPost, ValidateAntiForgeryToken]
-        public IActionResult AddNewBlogMethod(BlogModel model)
+        public async Task<IActionResult> AddNewBlogMethod(BlogModel model)
         {
             if (ModelState.IsValid)
             {
@@ -419,13 +426,14 @@ namespace ApplicationManager.Controllers
                 if (model.blog_With_Image.Image == null  && model.blog_With_Image.ImgSrc != null)
                 {
                     // преобразование из ImgSrc в iformfile
-                    IFormFile image = ConvertImgSrcToFormFile(model.blog_With_Image.ImgSrc, model.blog_With_Image.Image_name);
+                    IFormFile image = ConvertImgSrcToFormFile(model.blog_With_Image.ImgSrc, 
+                        model.blog_With_Image.Image_name);
                  
-                    data.AddBlog(new_blog, image);
+                    await data.AddBlog(new_blog, image);
                 }
                 else
                 {
-                    data.AddBlog(new_blog, model.blog_With_Image.Image);
+                    await data.AddBlog(new_blog, model.blog_With_Image.Image);
                 }
                 return Redirect("~/Admin/BlogsAdmin"); //успех
             }
@@ -447,15 +455,15 @@ namespace ApplicationManager.Controllers
             
         }
         //вызов страницы изменения блога
-        public IActionResult EditBlog(int id)
+        public async Task<IActionResult> EditBlogAsync(int id)
         {
-            BlogModel model = data.GetBlogModel(id);
+            BlogModel model = await data.GetBlogModelAsync(id);
             model.Is_edit = true;
             return View("DetailsBlog", model);
         }
         //метод изменения блога
         [HttpPost, ValidateAntiForgeryToken]
-        public IActionResult EditBlogMethod(BlogModel model)
+        public async Task<IActionResult> EditBlogMethodAsync(BlogModel model)
         {
             if (ModelState.IsValid)
             {
@@ -471,11 +479,11 @@ namespace ApplicationManager.Controllers
                     // преобразование из ImgSrc в iformfile
                     IFormFile image = ConvertImgSrcToFormFile(model.blog_With_Image.ImgSrc, model.blog_With_Image.Image_name);
 
-                    data.EditBlog(edit_blog, image);
+                    await data.EditBlog(edit_blog, image);
                 }
                 else
                 {
-                    data.EditBlog(edit_blog, model.blog_With_Image.Image);
+                    await data.EditBlog(edit_blog, model.blog_With_Image.Image);
                 }
                 return Redirect("~/Admin/BlogsAdmin"); //успех
             }
@@ -494,9 +502,9 @@ namespace ApplicationManager.Controllers
             }
         }
         //метод удаления блога
-        public IActionResult DeleteBlogMEthod(int id)
+        public async Task<IActionResult> DeleteBlogMEthodAsync(int id)
         {
-            data.DeleteBlog(id);
+            await data.DeleteBlog(id);
             return Redirect("~/Admin/BlogsAdmin");
         }
         #endregion
@@ -505,9 +513,9 @@ namespace ApplicationManager.Controllers
 
         
         //вызов страницы просмотра "Контакты" перед редактированием
-        public IActionResult ContactsAdmin()
+        public async Task<IActionResult> ContactsAdminAsync()
         {
-            ContactsModel model = data.GetContactsModel();
+            ContactsModel model = await data.GetContactsModelAsync();
             //{
             //    Contacts = data.GetContacts().Where(i => i.Id != 1),
             //    ImageUrl = data.GetContacts().First(i => i.Id == 1).Description,
@@ -517,9 +525,9 @@ namespace ApplicationManager.Controllers
             return View(model);
         }
         //вызов страницы для редактирования "Контакты"
-        public IActionResult EditContact()
+        public async Task<IActionResult> EditContactAsync()
         {
-            ContactsModel model = data.GetContactsModel();
+            ContactsModel model = await data.GetContactsModelAsync();
             //{
             //    //Contacts = data.GetContacts().Where(i => i.Id != 7),//это подгружает AngularJS
             //    ImageUrl = data.GetContacts().First(i => i.Id == 1).Description,
@@ -530,21 +538,23 @@ namespace ApplicationManager.Controllers
         }
         //вызов информации от angular о контактах на стр. "Контакты"
         [HttpGet]
-        public IActionResult GetContactsDate()
+        public async Task<IActionResult> GetContactsDateAsync()
         {
-            string json = JsonConvert.SerializeObject(data.GetContacts().Where(i => i.Id != 1));
+            IQueryable<Contacts> contacts = await data.GetContactsAsync();
+            string json = JsonConvert.SerializeObject(contacts.Where(i => i.Id != 1));
             return new JsonResult(json);
         }
         //вызов информации от angular о социальных сетях на стр. "Контакты"
         [HttpGet]
-        public IActionResult GetSocialNetsDate() 
+        public async Task<IActionResult> GetSocialNetsDate() 
         {
             //тут проблемка, надо через angular выводить ImgSrc
-            string json = JsonConvert.SerializeObject(data.GetSocialNet());
+            IQueryable<SocialNet_with_image> nets = await data.GetSocialNetAsync();
+            string json = JsonConvert.SerializeObject(nets);
             return new JsonResult(json);
         }
         //сохранение информации о контактах и соц сетях
-        public IActionResult SaveContacts(string stringData, IFormFile ImageUrl) 
+        public async Task<IActionResult> SaveContacts(string stringData, IFormFile ImageUrl) 
         {
             if (stringData is not null)
             {
@@ -552,20 +562,20 @@ namespace ApplicationManager.Controllers
                 model.Contacts.RemoveAll(i => i.Description == string.Empty || i.Name == string.Empty );
                 //model.SocialNets.RemoveAll(i => i.Url == string.Empty);
                 //при передаче в сохранение достать имена, из соц сетей, по возможности соединить с сохраненными картинками
-                data.SaveContacts(model.Contacts, ImageUrl);
+                await data.SaveContacts(model.Contacts, ImageUrl);
             }
             return Redirect("~/Admin/ContactsAdmin");
 
         }
         //сохранение соц. сетей от angular
         [HttpPost]
-        public IActionResult SaveContactfiles(List<IFormFile> files)
+        public async Task<IActionResult> SaveContactfiles(List<IFormFile> files)
         {
             string socialNetsJson = Request.Form["SocialNets"];
             List<SocialNet_with_image> socialNets = JsonConvert.DeserializeObject<List<SocialNet_with_image>>(socialNetsJson);
             //загрузка на сервер обновленных соц. сетей
             
-            data.SaveSocialNets(files, socialNets);
+            await data.SaveSocialNets(files, socialNets);
             
             //return Ok();
             return Redirect("~/Admin/ContactsAdmin");
@@ -581,20 +591,22 @@ namespace ApplicationManager.Controllers
 
         #region стр. "редактирование имен страниц"
 
-        public IActionResult EditNamePages()
+        public async Task<IActionResult> EditNamePagesAsync()
         {
+            IQueryable<MainPage> HeaderNames = await data.GetMainsHeaderAsync();
+            IQueryable<MainPage> HeaderAdmin = await data.GetMainsAdminAsync();
             NamePagesModel model = new()
             {
                 Name_page = "Изменение имен страниц",
-                Names = data.GetMainsHeader().ToList(),
-                Names_admin = data.GetMainsAdmin().ToList(),
+                Names = HeaderNames.ToList(),
+                Names_admin = HeaderAdmin.ToList(),
             };
             return View(model);
         }
-        public IActionResult EditNameMethod(List<MainPage> Names, List<MainPage> NamesAdmin)
+        public async Task<IActionResult> EditNameMethod(List<MainPage> Names, List<MainPage> NamesAdmin)
         {
             //сохранение новых имен
-            data.SaveNamePages(Names, NamesAdmin);
+            await data.SaveNamePages(Names, NamesAdmin);
             return Redirect("/Admin/EditNamePages");
         }
         #endregion
