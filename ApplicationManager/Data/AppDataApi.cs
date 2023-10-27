@@ -29,7 +29,6 @@ namespace ApplicationManager.Data
         public async Task<IQueryable<MainPage>> GetMainsAsync()
         {
             //all
-            //return Context.MainPage;
             try
             {
                 string json = await httpClient.GetStringAsync(url_main + "/GetMains");
@@ -304,8 +303,6 @@ namespace ApplicationManager.Data
         {
             try
             {
-                //string json = httpClient.GetStringAsync($"{url_main}/GetCountRequests").Result;
-                //return JsonConvert.DeserializeObject<int>(json);
                 return Convert.ToInt32(await httpClient.GetStringAsync($"{url_main}/GetCountRequests"));
             }
             catch (Exception)
@@ -343,11 +340,11 @@ namespace ApplicationManager.Data
 
             using (var content = new MultipartFormDataContent())
             {
-                // Добавляем экземпляр класса в контент запроса как JSON
+                // добавление экземпляра класса в контент запроса как JSON
                 var jsonForm = JsonConvert.SerializeObject(form);
                 content.Add(new StringContent(jsonForm), "form");
 
-                // Добавляем изображение в контент запроса
+                // добавлление изображение в контент запроса
                 if (image != null && image.Length > 0)
                 {
                     using (var memoryStream = new MemoryStream())
@@ -358,32 +355,12 @@ namespace ApplicationManager.Data
                         content.Add(streamContent, "image", image.FileName);
                         
                         var response = await httpClient.PostAsync($"{url_main}/EditMain", content);
-                        //return response;
                     }
                 }
                 else
                 {
                     var response = await httpClient.PostAsync($"{url_main}/EditMain", content);
-                    //return response;
                 }
-                
-                //if (image != null)
-                //{
-                //    using (var memoryStream = new MemoryStream())
-                //    {
-
-                //        await image.CopyToAsync(memoryStream);
-                //        memoryStream.Position = 0;
-                //        var streamContent = new StreamContent(memoryStream);
-                //        content.Add(streamContent, "image", image.FileName);
-                //    }
-                //    //var streamContent = new StreamContent(image.OpenReadStream());
-                //    //content.Add(streamContent, "image", image.FileName);
-                //}
-
-                // Отправляем запрос к API
-                //var response = httpClient.PostAsync($"{url_main}/EditMain", content);
-
             }
         }
 
@@ -404,8 +381,6 @@ namespace ApplicationManager.Data
 
                         var response = await httpClient.PostAsync($"{url_project}/AddProject", content);
                     }
-                    //var streamContent = new StreamContent(image.OpenReadStream());
-                    //content.Add(streamContent, "image", image.FileName);
                 }
                 else
                 {
@@ -433,15 +408,11 @@ namespace ApplicationManager.Data
         {
             try
             {
-                //запрос к api на получение проектов и имени страницы project
                 HttpResponseMessage response = await httpClient.GetAsync($"{url_project}/GetProjects");
-                //обработка запроса
                 if (response.IsSuccessStatusCode)
                 {
-                    //получение данных из запроса
                     var data = await response.Content.ReadAsStringAsync();
                     ProjectsModel model = JsonConvert.DeserializeObject<ProjectsModel>(data);
-                    //переделка массива байтов в картинку для отображения на странице
                     foreach (Project_with_image item in model.Projects)
                     {
                         var base64 = Convert.ToBase64String(item.Image_byte);
@@ -489,7 +460,7 @@ namespace ApplicationManager.Data
             {
                 var jsonForm = JsonConvert.SerializeObject(edit_project);
                 content.Add(new StringContent(jsonForm, Encoding.UTF8, "application/json"), "edit_project");
-                // Перед добавлением изображения в контент запроса, дождитесь завершения копирования данных из файла
+                // Перед добавлением изображения в контент запроса, ожидание завершения копирования данных из файла
                 if (image != null && image.Length > 0)
                 {
                     using (var memoryStream = new MemoryStream())
@@ -506,13 +477,6 @@ namespace ApplicationManager.Data
                 {
                     var response = await httpClient.PostAsync($"{url_project}/EditProject", content);
                 }
-                //if (image != null)
-                //{
-                //    var streamContent = new StreamContent(image.OpenReadStream());
-                //    content.Add(streamContent, "image", image.FileName);
-                //}
-                
-
             }
         }
         public async Task DeleteProject(int id)
@@ -672,10 +636,6 @@ namespace ApplicationManager.Data
                 {
                     var response = await httpClient.PostAsync($"{url_blog}/EditBlog", content);
                 }
-
-                // Отправляем запрос к API
-                
-                // в переменной response ответ от api, успешно или нет
             }
         }
         public async Task DeleteBlog(int id)
@@ -694,13 +654,11 @@ namespace ApplicationManager.Data
         {
             using (var content = new MultipartFormDataContent())
             {
-                // Добавляем экземпляр класса в контент запроса как JSON
+                // добавление экземпляра класса в контент запроса как JSON
                 var jsonForm = JsonConvert.SerializeObject(contacts);
                 content.Add(new StringContent(jsonForm), "contacts");
-                //jsonForm = JsonConvert.SerializeObject(socialNets);
-                //content.Add(new StringContent(jsonForm), "socialNets");
 
-                // Добавляем изображение в контент запроса
+                // добавление изображение в контент запроса
                 if (image != null && image.Length > 0)
                 {
                     using (var memoryStream = new MemoryStream())
@@ -717,9 +675,6 @@ namespace ApplicationManager.Data
                 {
                     var response = await httpClient.PostAsync($"{url_сontacts}/SaveContacts", content);
                 }
-
-
-                
             }
         }
         public async Task SaveSocialNets(List<IFormFile> files, List<SocialNet_with_image> SocialNets)
@@ -748,24 +703,11 @@ namespace ApplicationManager.Data
                         }
                     }
                     var response = await httpClient.PostAsync($"{url_сontacts}/SaveSocialNets", content);
-                    //using (var memoryStream = new MemoryStream())
-                    //{
-                    //    await image.CopyToAsync(memoryStream);
-                    //    memoryStream.Position = 0;
-                    //    var streamContent = new StreamContent(memoryStream);
-                    //    content.Add(streamContent, "image", image.FileName);
-
-                    //    var response = await httpClient.PostAsync($"{url_сontacts}/SaveContacts", content);
-                    //}
                 }
                 else
                 {
                     var response = await httpClient.PostAsync($"{url_сontacts}/SaveSocialNets", content);
                 }
-
-                
-                // Отправляем POST запрос на API
-                
             }
 
             

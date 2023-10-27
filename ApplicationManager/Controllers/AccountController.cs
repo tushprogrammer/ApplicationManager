@@ -33,7 +33,9 @@ namespace ApplicationManager.Controllers
             {
                 returnUrl = "/Home/Index";
             }
-            return View(new UserLogin()
+            //если была попытка перехода на страницу, где обязательна авторизация
+            //после успешной авторизации будет пересылка на нужную страницу
+            return View(new UserLogin() 
             {
                 ReturnUrl = returnUrl
             });
@@ -52,7 +54,7 @@ namespace ApplicationManager.Controllers
                     false,
                     lockoutOnFailure: false); //попытка найти в бд пользователя с введенными логином и паролем, вход в систему
 
-                if (loginResult.Succeeded) //если попытка успешна
+                if (loginResult.Succeeded) //если авторизация успешна
                 {
                     if (Url.IsLocalUrl(model.ReturnUrl)) // если при входе была переадресация с другой страницы
                     {
@@ -63,7 +65,7 @@ namespace ApplicationManager.Controllers
                 }
 
             }
-            //выводится в любом случае, пусть то даже неккоректный ввод, или не найденный пользователь в бд
+            //выводится в любом случае, пусть то даже неккоректный ввод или не найденный пользователь в бд
             ModelState.AddModelError("", "Пользователь не найден");
             return View(model); //если не найден, повторная попытка
         }
@@ -93,6 +95,7 @@ namespace ApplicationManager.Controllers
                 }
                 else //если регистрация не удалась
                 {
+                    //вывод ошибкок - причин
                     foreach (var identityError in createResult.Errors)
                     {
                         ModelState.AddModelError("", identityError.Description);
@@ -116,7 +119,6 @@ namespace ApplicationManager.Controllers
         [Authorize(Roles = "Admin")]
         public IActionResult UserList() //список пользователей
         {
-            //var r = _userManager.UpdateAsync().Result;
             return View("Users", _userManager.Users.ToList());
         }
 
@@ -128,9 +130,7 @@ namespace ApplicationManager.Controllers
             User user = await _userManager.FindByIdAsync(userid);
             if (user != null)
             {
-                //работает как задержка, ожидает удаления пользователя, так как если не дожидаться
-                //то на повторно открывающейся странице по прежнему будет виден удаляемый пользователь
-                var r = _userManager.DeleteAsync(user).Result;
+                var r = await _userManager.DeleteAsync(user);
             }
             return Redirect("UserList");
         }

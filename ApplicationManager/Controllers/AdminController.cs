@@ -16,7 +16,6 @@ using static System.Net.Mime.MediaTypeNames;
 using ApplicationManager_ClassLibrary;
 using System.Text.RegularExpressions;
 using System.Net.Mime;
-//using System.Web.HttpPostedFileWrapper;
 
 namespace ApplicationManager.Controllers
 {
@@ -44,8 +43,6 @@ namespace ApplicationManager.Controllers
             //в зависимости от выборанной даты (сегодня, вчера, дата)
             //по умолчанию выводятся все заявки
 
-            //пока что все, но тут должна быть сортировка в зависимтости от нажатия на кнопки (перегрузка метода вызова страницы)
-            //+сортировка заявок по выбранному статусу
             AdminModel model = new AdminModel()
             {
                 Requests = await data.GetRequestsAsync(), //все заявки
@@ -57,14 +54,12 @@ namespace ApplicationManager.Controllers
         //заявки сегодня
         public async Task<IActionResult> TodayRequests()
         {
-            //на экран надо выводить отсортированные заявки и общее количество в бд
-            int count = await data.CountRequestsAsync(); 
             AdminModel model = new AdminModel()
             {
                 Requests = await data.GetRequestsTodayAsync(), 
                 Statuses = await GetNameStatusesAsync(),
-                AllRequestsCount = count,
-            };
+                AllRequestsCount = await data.CountRequestsAsync()
+        };
             return View("Index", model);
         }
         //заявки вчера
@@ -144,12 +139,6 @@ namespace ApplicationManager.Controllers
             StatusRequest Status = statuses.First(s => s.StatusName == StatusName);
             reqNow.StatusId = Status.Id;
             await data.SaveNewStatusRequest(reqNow);
-            AdminModel model = new()
-            {
-                Requests = await data.GetRequestsAsync(), //все заявки
-                Statuses = await GetNameStatusesAsync(),
-                AllRequestsCount = await data.CountRequestsAsync(),
-            };
             var r = Request.Headers["Referer"].ToString();
             return Redirect(r);
             //обновление всего рабочего стола, а все настройки сортировки остаются
@@ -177,9 +166,7 @@ namespace ApplicationManager.Controllers
         [HttpPost]
         public async Task<IActionResult> EditMainSave(MainPageUploadModel model)
         {
-            //тут разобрать модель на составляющие, потому что модель нужна только для копановки воедино инфы
-            //и отправить на страницу, а потом тут её принять. то есть не надо эту модель дальше в appdata отправлять
-            //валидации не будет, вдруг это дизайнерское решение, убрать какую нибудь надпись
+            //валидации нет на случай необходимости удаление всей надписи
             IFormFile Image = model.Image;
             MainForm mainForm = new()
             {
@@ -198,14 +185,12 @@ namespace ApplicationManager.Controllers
         //вывод страницы для просмотра "Проекты" перед редактированием
         public async Task<IActionResult> ProjectAdminAsync()
         {
-            //все проекты + имя страницы
             ProjectsModel model = await data.GetProjectsAsync();
             return View(model);
         }
         //страница добавления нового проекта
         public async Task<IActionResult> AddNewProject() 
         {
-            //заголовок для шапки
             IQueryable<MainPage> mainPage = await data.GetMainsAsync();
             ViewBag.Name_page = mainPage.First(i => i.Id == 3).Value;
             return View("DetailsProject");
@@ -247,7 +232,7 @@ namespace ApplicationManager.Controllers
                 if (model.Project_with_image.ImgSrc is null && model.Project_with_image.Image != null)
                 {
                     //то есть попытались ввести новый элемент блога, загрузили картинку, но где то в другом месте ошиблись
-                    //чтоб картинку заного не загружать, можно преобразовать её в ImgSrc и вывести снова
+                    //чтоб картинку заного не загружать, проиходит преобразование в ImgSrc и вывести снова
                     model.Project_with_image.ImgSrc = ConvertFormFileToImgSrc(model.Project_with_image.Image);
                     model.Project_with_image.Image_name = model.Project_with_image.Image.FileName;
                 }
@@ -276,7 +261,6 @@ namespace ApplicationManager.Controllers
                 };
                 if (model.Project_with_image.Image == null && model.Project_with_image.ImgSrc != null)
                 {
-                    // преобразование из ImgSrc в iformfile
                     IFormFile image = ConvertImgSrcToFormFile(model.Project_with_image.ImgSrc, 
                         model.Project_with_image.Image_name);
 
@@ -294,8 +278,6 @@ namespace ApplicationManager.Controllers
                 ModelState.AddModelError("", "Заполните все обязательные поля");
                 if (model.Project_with_image.Image != null)
                 {
-                    //то есть попытались ввести новый элемент блога, загрузили картинку, но где то в другом месте ошиблись
-                    //чтоб картинку заного не загружать, можно преобразовать её в ImgSrc и вывести снова
                     model.Project_with_image.ImgSrc = ConvertFormFileToImgSrc(model.Project_with_image.Image);
                     model.Project_with_image.Image_name = model.Project_with_image.Image.FileName;
                 }
@@ -328,8 +310,6 @@ namespace ApplicationManager.Controllers
         {
             DetailsServiceModel model = await data.GetServiceModelAsync(id);
             model.is_edit = true;
-            //Service model = data.GetService(id);
-            //ViewBag.Name_page = data.GetMains().First(i => i.Id == 2).Value;
             return View("DetailsService", model);
         }
         //страница добавления услуги
@@ -357,7 +337,6 @@ namespace ApplicationManager.Controllers
             {
                 //красная надпись сверху и подсвеченные поля, которые не заполнили
                 ModelState.AddModelError("", "Заполните все обязательные поля");
-                //ViewBag.Name_page = data.GetMains().First(i => i.Id == 2).Value;
                 model.is_edit = false;
                 return View("DetailsService", model); //повторная попытка
             }
@@ -386,7 +365,6 @@ namespace ApplicationManager.Controllers
             else
             {
                 ModelState.AddModelError("", "Заполните все обязательные поля");
-                //ViewBag.Name_page = data.GetMains().First(i => i.Id == 2).Value;
                 model.is_edit = true;
                 return View("DetailsService", model);
             }
@@ -422,10 +400,9 @@ namespace ApplicationManager.Controllers
                     Created = DateTime.Now,
                 };
                
-                //если повторно вводили, и основная картинка скинулась, возможно остался её ImgSrc
+                //если повторно вводили, и основная картинка скинулась, остался её ImgSrc
                 if (model.blog_With_Image.Image == null  && model.blog_With_Image.ImgSrc != null)
                 {
-                    // преобразование из ImgSrc в iformfile
                     IFormFile image = ConvertImgSrcToFormFile(model.blog_With_Image.ImgSrc, 
                         model.blog_With_Image.Image_name);
                  
@@ -444,12 +421,9 @@ namespace ApplicationManager.Controllers
                 model.Is_edit = false;
                 if (model.blog_With_Image.ImgSrc is null && model.blog_With_Image.Image != null)
                 {
-                    //то есть попытались ввести новый элемент блога, загрузили картинку, но где то в другом месте ошиблись
-                    //чтоб картинку заного не загружать, можно преобразовать её в ImgSrc и вывести снова
                     model.blog_With_Image.ImgSrc = ConvertFormFileToImgSrc(model.blog_With_Image.Image);
                     model.blog_With_Image.Image_name = model.blog_With_Image.Image.FileName;
                 }
-                //ViewBag.Name_page = data.GetMains().First(i => i.Id == 4).Value;
                 return View("DetailsBlog", model); //повторная попытка
             }
             
@@ -476,7 +450,6 @@ namespace ApplicationManager.Controllers
                 //если повторно вводили, и основная картинка скинулась, возможно остался её ImgSrc
                 if (model.blog_With_Image.Image == null && model.blog_With_Image.ImgSrc != null)
                 {
-                    // преобразование из ImgSrc в iformfile
                     IFormFile image = ConvertImgSrcToFormFile(model.blog_With_Image.ImgSrc, model.blog_With_Image.Image_name);
 
                     await data.EditBlog(edit_blog, image);
@@ -492,8 +465,6 @@ namespace ApplicationManager.Controllers
                 ModelState.AddModelError("", "Заполните все обязательные поля");
                 if (model.blog_With_Image.Image != null)
                 {
-                    //то есть попытались ввести новый элемент блога, загрузили картинку, но где то в другом месте ошиблись
-                    //чтоб картинку заного не загружать, можно преобразовать её в ImgSrc и вывести снова
                     model.blog_With_Image.ImgSrc = ConvertFormFileToImgSrc(model.blog_With_Image.Image);
                     model.blog_With_Image.Image_name = model.blog_With_Image.Image.FileName;
                 }
@@ -516,27 +487,15 @@ namespace ApplicationManager.Controllers
         public async Task<IActionResult> ContactsAdminAsync()
         {
             ContactsModel model = await data.GetContactsModelAsync();
-            //{
-            //    Contacts = data.GetContacts().Where(i => i.Id != 1),
-            //    ImageUrl = data.GetContacts().First(i => i.Id == 1).Description,
-            //    Nets = data.GetSocialNet(),
-            //    Name_page = data.GetMains().First(i => i.Id == 5).Value,
-            //};
             return View(model);
         }
         //вызов страницы для редактирования "Контакты"
         public async Task<IActionResult> EditContactAsync()
         {
             ContactsModel model = await data.GetContactsModelAsync();
-            //{
-            //    //Contacts = data.GetContacts().Where(i => i.Id != 7),//это подгружает AngularJS
-            //    ImageUrl = data.GetContacts().First(i => i.Id == 1).Description,
-            //    //Nets = data.GetSocialNet(), //это подгружает AngularJS
-            //    Name_page = "Изменить контакты",
-            //};
             return View(model);
         }
-        //вызов информации от angular о контактах на стр. "Контакты"
+        //запрос информации от angular о контактах на стр. "Контакты"
         [HttpGet]
         public async Task<IActionResult> GetContactsDateAsync()
         {
@@ -544,7 +503,7 @@ namespace ApplicationManager.Controllers
             string json = JsonConvert.SerializeObject(contacts.Where(i => i.Id != 1));
             return new JsonResult(json);
         }
-        //вызов информации от angular о социальных сетях на стр. "Контакты"
+        //запрос информации от angular о социальных сетях на стр. "Контакты"
         [HttpGet]
         public async Task<IActionResult> GetSocialNetsDate() 
         {
@@ -556,12 +515,13 @@ namespace ApplicationManager.Controllers
         //сохранение информации о контактах и соц сетях
         public async Task<IActionResult> SaveContacts(string stringData, IFormFile ImageUrl) 
         {
-            if (stringData is not null)
+            if (stringData != null)
             {
-                ContactsUploadModel model = JsonConvert.DeserializeObject<ContactsUploadModel>(stringData);
-                model.Contacts.RemoveAll(i => i.Description == string.Empty || i.Name == string.Empty );
-                //model.SocialNets.RemoveAll(i => i.Url == string.Empty);
-                //при передаче в сохранение достать имена, из соц сетей, по возможности соединить с сохраненными картинками
+                ContactsUploadModel? model = JsonConvert.DeserializeObject<ContactsUploadModel>(stringData);
+                if (model != null)
+                {
+                    model.Contacts.RemoveAll(i => i.Description == string.Empty || i.Name == string.Empty );
+                }
                 await data.SaveContacts(model.Contacts, ImageUrl);
             }
             return Redirect("~/Admin/ContactsAdmin");
@@ -573,18 +533,16 @@ namespace ApplicationManager.Controllers
         {
             string socialNetsJson = Request.Form["SocialNets"];
             List<SocialNet_with_image> socialNets = JsonConvert.DeserializeObject<List<SocialNet_with_image>>(socialNetsJson);
+
             //загрузка на сервер обновленных соц. сетей
-            
             await data.SaveSocialNets(files, socialNets);
             
-            //return Ok();
             return Redirect("~/Admin/ContactsAdmin");
         }
 
-        //вызов верстки модального окна (надо на случай, если данные динамические)
+        //вызов верстки модального окна 
         public IActionResult ModalViewContactsSocialNets()
         {
-            //данные подгружаются за счёт angular?
             return View();
         }
         #endregion
